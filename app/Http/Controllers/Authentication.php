@@ -26,7 +26,7 @@ class Authentication extends Controller
 
         if ($user && Hash::check($credentials['password'], $user->password)) {
             session(['loginData' => $request->all()]);
-            session(['loginSecurityQuestionTimeLimit' => now()]);
+            session(['loginSecurityQuestionTimeLimit' => now()->addMinutes(2)]);
 
             return redirect()->route('login.security.question');
         }
@@ -36,13 +36,13 @@ class Authentication extends Controller
 
     public function showLoginSecurityQuestion()
     {
-        $loginSecurityQuestionTimeLimit = Session::get('loginSecurityQuestionTimeLimit');
-        if ($loginSecurityQuestionTimeLimit && now()->diffInMinutes($loginSecurityQuestionTimeLimit) > 1) {
+        if (Helper::isExpired('loginSecurityQuestionTimeLimit')) {
             Session::flush();
             return redirect()->route('welcome')->with('info', 'You took too long on security question. Please start again.');
         }
 
         $loginData = session('loginData');
+        Helper::isAccessingPrivateUrl($loginData);
         $user = User::where('email', $loginData['email'])->with('securityQuestionsAndAnswer')->first();
         if (!$user) {
             return redirect()->route('welcome')->with('error', 'something went wrong.');
@@ -60,17 +60,13 @@ class Authentication extends Controller
         ]);
 
         $loginData = session('loginData');
+        Helper::isAccessingPrivateUrl($loginData);
         $user = User::where('email', $loginData['email'])->first();
         if ($user && Crypt::decrypt($user->securityAnswer) === $request->security_answer) {
-
             $phoneNumber = $user->contactNumber;
-            $otp = mt_rand(100000, 999999); // Generate a random 6-digit OTP
-            session(['smsGatewayData' => array(
-                'otp' => $otp,
-                'phoneNumber' => $user->contactNumber
-            )]);
-
+            $otp = mt_rand(100000, 999999); // Generate a random 6-digit OTP 
             Helper::sendOtp($phoneNumber, $otp);
+            session(['loginSecurityOtpTimeLimit' => now()->addMinutes(2)]);
             return redirect()->route('login.otp.security')->with('success', 'Temporary OTP: ' . $otp);
         }
 
@@ -79,33 +75,53 @@ class Authentication extends Controller
 
     public function showOtpPage()
     {
-        $otpCode = session('smsGatewayData');
-        $recipientNumber = $otpCode['phoneNumber'];
-        $loginSecurityQuestionTimeLimit = Session::get('loginSecurityQuestionTimeLimit');
-        if ($loginSecurityQuestionTimeLimit && now()->diffInMinutes($loginSecurityQuestionTimeLimit) > 2) {
-            Session::flush();
-            return redirect()->route('welcome')->with('info', 'The One-Time Password has reached its expiration period.');
+        $otpData = session('smsGatewayData');
+        Helper::isAccessingPrivateUrl($otpData);
+        $recipientNumber = Helper::otpPrivateNumberFormat($otpData['phoneNumber']);
+        $isTimeReached = false;
+        if (Helper::isExpired('loginSecurityOtpTimeLimit')) {
+            unset($otpData['otp']);
+            $isTimeReached = true;
         }
-        return view('auth.login-otp-security', compact('recipientNumber'));
+        return view('auth.login-otp-security', compact(['recipientNumber', 'isTimeReached']));
     }
 
     public function verifyOtp(Request $request)
     {
         $combinedOTP = implode('', $request->otp);
         $otpCode = session('smsGatewayData');
+        Helper::isAccessingPrivateUrl($otpCode);
+        if (Helper::isExpired('loginSecurityOtpTimeLimit')) {
+            return back()->with('info', 'The One-Time Password has reached its expiration period.');
+        }
 
         if (strlen($combinedOTP) === 6 && ctype_digit($combinedOTP) && $otpCode['otp'] == intval($combinedOTP)) {
+
             $loginData = session('loginData');
+
             $credentials = [
                 'email' => $loginData['email'],
                 'password' => $loginData['password']
             ];
 
             if (Auth::attempt($credentials)) {
+                Session::forget(['loginSecurityOtpTimeLimit', 'loginSecurityQuestionTimeLimit', 'loginData']); // burahin lahat ng session na ginamit sa security login bago pumasok sa dashboard
                 return redirect('/dashboard')->with('success', 'Welcome ' . Auth::user()->name);
             }
-        } else {
-            return back()->with('error', 'The One-Time Password is invalid.');
+        }
+        return back()->with('error', 'The One-Time Password is invalid.');
+    }
+
+    public function resendOTP()
+    {
+        $otp = mt_rand(100000, 999999); // mag giginerate mg 6 digit OTP random number
+        $otpData = session('smsGatewayData');
+        Helper::isAccessingPrivateUrl($otpData);
+        $recipientNumber = $otpData['phoneNumber'];
+        $sendOTP = Helper::sendOtp($recipientNumber, $otp);
+        if ($sendOTP['status']) {
+            session(['loginSecurityOtpTimeLimit' => now()->addMinutes(2)]);
+            return back()->with('success', 'Temporary OTP: ' . $otp);
         }
     }
 }

@@ -9,8 +9,6 @@
     <link rel="icon" type="image/png" href="{{ asset('assets/images/logo32x32.png') }}" sizes="32x32">
     <link rel="icon" type="image/png" href="{{ asset('assets/images/logo16x16.png') }}" sizes="16x16">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('vendors/feather/feather.css') }}">
-    <link rel="stylesheet" href="{{ asset('vendors/ti-icons/css/themify-icons.css') }}">
     <link rel="stylesheet" href="{{ asset('vendors/ti-icons/css/themify-icons.css') }}">
     <link rel="stylesheet" href="{{ asset('css/vertical-layout-light/style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/aos.css') }}" />
@@ -35,14 +33,16 @@
                     <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
                         <button class="navbar-toggler navbar-toggler align-self-center" type="button"
                             data-toggle="minimize">
-                            <span class="icon-menu"></span>
+                            <span class="icon-menu"><i class="ti-align-left"></i></span>
                         </button>
                         <ul class="navbar-nav navbar-nav-right">
                             <li class="nav-item nav-profile dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown"
                                     id="profileDropdown">
-                                    <img src="{{asset('images/faces/face28.jpg')}}" alt="profile" />
+                                    <img src="{{ asset(Auth::user()->avatarUrl ? 'storage/' . Auth::user()->avatarUrl . '' : 'assets/images/logo.png') }}"
+                                        alt="profile" />
                                 </a>
+                                {{-- storage/'.Auth::user()->avatarUrl.' --}}
                                 <div class="dropdown-menu dropdown-menu-right navbar-dropdown"
                                     aria-labelledby="profileDropdown">
                                     <a class="dropdown-item">
@@ -61,101 +61,81 @@
                                 </div>
                             </li>
                         </ul>
-                        <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button"
-                            data-toggle="offcanvas">
-                            <span class="icon-menu"></span>
-                        </button>
                     </div>
                 </nav>
                 <div class="container-fluid page-body-wrapper">
-                    <div class="theme-setting-wrapper">
-                        <div id="settings-trigger"><i class="ti-settings"></i></div>
-                        <div id="theme-settings" class="settings-panel">
-                            <i class="settings-close ti-close"></i>
-                            <p class="settings-heading">SIDEBAR SKINS</p>
-                            <div class="sidebar-bg-options selected" id="sidebar-light-theme">
-                                <div class="img-ss rounded-circle bg-light border mr-3"></div>Light
-                            </div>
-                            <div class="sidebar-bg-options" id="sidebar-dark-theme">
-                                <div class="img-ss rounded-circle bg-dark border mr-3"></div>Dark
-                            </div>
-                            <p class="settings-heading mt-2">HEADER SKINS</p>
-                            <div class="color-tiles mx-0 px-4">
-                                <div class="tiles success"></div>
-                                <div class="tiles warning"></div>
-                                <div class="tiles danger"></div>
-                                <div class="tiles info"></div>
-                                <div class="tiles dark"></div>
-                                <div class="tiles default"></div>
-                            </div>
-                        </div>
-                    </div>
-
                     <nav class="sidebar sidebar-offcanvas" id="sidebar">
                         <ul class="nav">
                             @if (Auth::user()->role != 'student')
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('dashboard') }}">
-                                        <i class="icon-grid menu-icon"></i>
+                                    <a class="nav-link @if (\Route::currentRouteName() == 'dashboard') active @endif"
+                                        href="{{ route('dashboard') }}">
+                                        <i class="ti-dashboard menu-icon"></i>
                                         <span class="menu-title">Dashboard</span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" data-toggle="collapse" href="#sidebar_academic_focus"
-                                        aria-expanded="false" aria-controls="sidebar_academic_focus">
-                                        <i class="icon-layout menu-icon"></i>
+                                    <a class="nav-link @if ((new \App\Helper\Helper())->isAcaddemicFocusRoutes(\Route::currentRouteName())) active @endif"
+                                        data-toggle="collapse" href="#sidebar_academic_focus"
+                                        @if ((new \App\Helper\Helper())->isAcaddemicFocusRoutes(\Route::currentRouteName())) aria-expanded="true" @else aria-expanded="false" @endif
+                                        aria-controls="sidebar_academic_focus">
+                                        <i class="ti-filter menu-icon"></i>
                                         <span class="menu-title">Academic Focus</span>
                                         <i class="menu-arrow"></i>
                                     </a>
-                                    <div class="collapse" id="sidebar_academic_focus">
+                                    <div class="collapse @if ((new \App\Helper\Helper())->isAcaddemicFocusRoutes(\Route::currentRouteName())) show @endif"
+                                        id="sidebar_academic_focus">
                                         <ul class="nav flex-column sub-menu">
-                                            <li class="nav-item"> <a class="nav-link"
-                                                    href="{{route('subjects')}}">Subjects</a>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="{{ route('subjects') }}">Subjects</a>
                                             </li>
-                                            <li class="nav-item"> <a class="nav-link"
-                                                    href="{{ route('courses') }}">Courses</a>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="{{ route('courses') }}">Courses</a>
                                             </li>
-                                            <li class="nav-item"> <a class="nav-link"
-                                                    href="{{ route('academics') }}">Academic Year</a>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="{{ route('academics') }}">Academic Year</a>
                                             </li>
                                         </ul>
                                     </div>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" data-toggle="collapse" href="#sidebar_users"
-                                        aria-expanded="false" aria-controls="sidebar_users">
+                                    <a class="nav-link @if ((new \App\Helper\Helper())->isUsersRoutes(\Route::currentRouteName())) active @endif"
+                                        data-toggle="collapse" href="#sidebar_users"
+                                        @if ((new \App\Helper\Helper())->isUsersRoutes(\Route::currentRouteName())) aria-expanded="true" @else aria-expanded="false" @endif
+                                        aria-controls="sidebar_users">
                                         <i class="ti-user menu-icon"></i>
                                         <span class="menu-title">Users</span>
                                         <i class="menu-arrow"></i>
                                     </a>
-                                    <div class="collapse" id="sidebar_users">
+                                    <div class="collapse @if ((new \App\Helper\Helper())->isUsersRoutes(\Route::currentRouteName())) show @endif" id="sidebar_users">
                                         <ul class="nav flex-column sub-menu">
-                                            <li class="nav-item"> <a class="nav-link"
-                                                    href="pages/ui-features/buttons.html">Teachers</a>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="{{ route('teachers') }}">Teachers</a>
                                             </li>
-                                            <li class="nav-item"> <a class="nav-link"
-                                                    href="pages/ui-features/dropdowns.html">Students</a>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="{{ route('students') }}">Students</a>
                                             </li>
-                                            <li class="nav-item"> <a class="nav-link"
-                                                    href="pages/ui-features/dropdowns.html">HR</a>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="{{ route('hrs') }}">HR</a>
                                             </li>
                                         </ul>
                                     </div>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="">
-                                        <i class="ti-clipboard menu-icon"></i>
-                                        <span class="menu-title">Questionnaires</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="">
+                                    <a class="nav-link @if (\Route::currentRouteName() == 'criterias') active @endif"
+                                        href="{{ route('criterias') }}">
                                         <i class="ti-calendar menu-icon"></i>
                                         <span class="menu-title">Evaluation Criteria</span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="">
+                                    <a class="nav-link" href="{{ route('dashboard') }}">
+                                        <i class="ti-clipboard menu-icon"></i>
+                                        <span class="menu-title">Questionnaires</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('dashboard') }}">
                                         <i class="ti-agenda menu-icon"></i>
                                         <span class="menu-title">Evaluation Report</span>
                                     </a>
@@ -182,28 +162,42 @@
                                 <div class="col-md-12 grid-margin">
                                     <div class="row">
                                         <div class="col-5 col-xl-9 mb-4 mb-xl-0">
-                                            <h3 class="font-weight-bold">Welcome {{ Auth::user()->name }}</h3>
+                                            @if (\Route::currentRouteName() == 'dashboard')
+                                                <h3 class="font-weight-bold">Welcome {{ Auth::user()->name }}</h3>
+                                            @else
+                                                <h3 class="font-weight-bold">@yield('pageTitle')</h3>
+                                            @endif
                                             <ul class="breadcrumb">
                                                 <li>
-                                                    <a class="active" href="{{route('dashboard')}}">Dashboard</a>
+                                                    <a class="active" href="{{ route('dashboard') }}">Dashboard</a>
                                                 </li>
-                                                @for($i = 2; $i <= count(Request::segments()); $i++)
+                                                @for ($i = 2; $i <= count(Request::segments()); $i++)
                                                     <li><i class='ti-angle-right menu-icon'></i></li>
                                                     <li>
-                                                        <a class="text-capitalize" href="{{ URL::to( implode( '/', array_slice(Request::segments(), 0 ,$i, true)))}}">
-                                                            {{str_replace("-"," ",Request::segment($i))}}
+                                                        <a class="text-capitalize"
+                                                            href="{{ URL::to(implode('/', array_slice(Request::segments(), 0, $i, true))) }}">
+                                                            @if(preg_match('/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/', Request::segment($i)))
+                                                                @yield('uuid')
+                                                            @else 
+                                                                {{ str_replace('-', ' ', Request::segment($i)) }}
+                                                            @endif
                                                         </a>
                                                     </li>
                                                 @endfor
                                             </ul>
                                         </div>
                                         <div class="col-7 col-xl-3 mb-8">
-                                            <div class="input-group flex-nowrap" data-aos="fade-up" data-aos-delay="100">
-                                                <span class="input-group-text bg-transparent" id="addon-wrapping"><i
-                                                        class="ti-search"></i></span>
-                                                <input type="search" class="form-control py-1 search-input" id="search_{{\Route::currentRouteName()}}"
-                                                    oninput="load{{ucfirst(\Route::currentRouteName())}}('/dashboard/load-{{\Route::currentRouteName()}}')" placeholder="Search for {{\Route::currentRouteName()}}">
-                                            </div>
+                                            @if ((new \App\Helper\Helper())->isListPage(\Route::currentRouteName()))
+                                                <div class="input-group flex-nowrap" data-aos="fade-up"
+                                                    data-aos-delay="100">
+                                                    <span class="input-group-text bg-transparent" id="addon-wrapping"><i
+                                                            class="ti-search"></i></span>
+                                                    <input type="search" class="form-control py-1 search-input"
+                                                        id="search_{{ \Route::currentRouteName() }}"
+                                                        oninput="load{{ ucfirst(\Route::currentRouteName()) }}('/dashboard/load-{{ \Route::currentRouteName() }}')"
+                                                        placeholder="Search for {{ \Route::currentRouteName() }}">
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -228,15 +222,17 @@
 
     <script src="{{ asset('js/app.js') }}" defer></script>
     <script src="{{ asset('vendors/js/vendor.bundle.base.js') }}"></script>
-    <script src="{{ asset('js/off-canvas.js') }}"></script>
-    <script src="{{ asset('js/hoverable-collapse.js') }}"></script>
     <script src="{{ asset('js/template.js') }}"></script>
-    <script src="{{ asset('js/settings.js') }}"></script>
     <script src="{{ asset('js/aos.js') }}"></script>
     @include('layouts.alert')
-    <script>AOS.init({once: true,offset: 10,});</script>
-    @auth 
-    <script src="{{ asset('js/axios.js') }}"></script>
+    <script>
+        AOS.init({
+            once: true,
+            offset: 10,
+        });
+    </script>
+    @auth
+        <script src="{{ asset('js/axios.js') }}"></script>
     @endauth
     @if (\Route::currentRouteName() == 'dashboard')
         <script>

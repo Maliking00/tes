@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAcademicsTable extends Migration
+class CreateCriteriasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,11 @@ class CreateAcademicsTable extends Migration
      */
     public function up()
     {
-        Schema::create('academics', function (Blueprint $table) {
+        Schema::create('criterias', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('academicYear');
-            $table->string('academicSemester');
-            $table->boolean('academicSystemDefault')->default(0);
-            $table->enum('academicEvaluationStatus', ['Not started', 'Starting', 'Closed'])->default('Not started');
+            $table->string('criterias');
             $table->timestamps();
+
         });
     }
 
@@ -30,6 +28,6 @@ class CreateAcademicsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('academics');
+        Schema::dropIfExists('criterias');
     }
 }

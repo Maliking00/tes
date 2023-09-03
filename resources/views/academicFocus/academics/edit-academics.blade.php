@@ -2,6 +2,10 @@
 
 @section('title', 'Academic Info | Teacher Evaluation System')
 
+@section('pageTitle', 'Academic Info | '. $academic->academicYear)
+
+@section('uuid', $academic->academicYear)
+
 @section('content')
     <div class="row">
         <div class="col-lg-4">
@@ -13,15 +17,19 @@
                         <div class="form-group text-left">
                             <label for="academicYear">Year</label>
                             <div>
-                                <input type="text" id="academicYear" class="form-control" placeholder="Year"
-                                    name="academicYear" value="{{ $academic->academicYear }}" />
+                                <input type="text" id="academicYear" class="form-control" placeholder="Year (xxxx-xxxx)"
+                                    name="academicYear" maxlength="9" value="{{ $academic->academicYear }}" />
                             </div>
                         </div>
                         <div class="form-group text-left">
                             <label for="academicSemester">Semester</label>
                             <div>
-                                <input type="text" id="academicSemester" class="form-control" placeholder="Semester"
-                                    name="academicSemester" value="{{ $academic->academicSemester }}" />
+                                <select id="academicSemester" class="form-select form-control" name="academicSemester">
+                                    <option value="1" {{ $academic->academicSemester == 1 ? 'selected' : '' }}>1</option>
+                                    <option value="2" {{ $academic->academicSemester == 2 ? 'selected' : '' }}>2</option>
+                                    <option value="3" {{ $academic->academicSemester == 3 ? 'selected' : '' }}>3</option>
+                                    <option value="4" {{ $academic->academicSemester == 4 ? 'selected' : '' }}>4</option>
+                                </select>
                             </div>
                         </div>
                         <hr class="hr-divider">
@@ -42,8 +50,56 @@
                 </div>
             </div>
             <div class="v-100" data-aos="fade-up" data-aos-delay="400">
-                <h3 class="font-weight-normal my-4 aos-init aos-animate" data-aos="fade-up" data-aos-delay="100">Danger Zone
-                </h3>
+                <h5 class="font-weight-normal mt-4 aos-init aos-animate" data-aos="fade-up" data-aos-delay="100">System
+                    Default
+                </h5>
+                <div class="card border">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="font-weight-bold">Set <span
+                                    style="font-weight: 700;color:#aad1f8;">{{ $academic->academicYear }}</span> as a
+                                default</p>
+                            <p>This will set the academic year to its default.</p>
+                        </div>
+                        <form action="{{ route('update.academic.default.year', $academic->id) }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="academicSystemDefault"
+                                value="{{ $academic->academicSystemDefault }}">
+                            @if ($academic->academicSystemDefault == 0)
+                                <button class="btn btn-outline-info">Make it Default</button>
+                            @else
+                                <button class="btn btn-outline-warning">Unset</button>
+                            @endif
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="v-100" data-aos="fade-up" data-aos-delay="400">
+                <h5 class="font-weight-normal mt-4 aos-init aos-animate" data-aos="fade-up" data-aos-delay="100">Evaluation
+                    Status
+                </h5>
+                <div class="card border">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="font-weight-bold">Select Evaluation Status</p>
+                            <p>This will set the academic evaluation status.</p>
+                        </div>
+                        <form id="evaluationStatus" action="{{ route('update.academic.evaluation.status', $academic->id) }}" method="POST">
+                            @csrf
+                            <select name="academicEvaluationStatus" class="form-select form-control"
+                                aria-label="Default select example" style="padding-left:40px;padding-right:40px;" onchange="document.querySelector('#evaluationStatus').submit()">
+                                <option selected>Choose Status</option>
+                                <option value="Starting">Starting</option>
+                                <option value="Closed">Closed</option>
+                                <option value="Not started">Not started</option>
+                            </select>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="v-100" data-aos="fade-up" data-aos-delay="400">
+                <h5 class="font-weight-normal mt-4 aos-init aos-animate" data-aos="fade-up" data-aos-delay="100">Danger Zone
+                </h5>
                 <div class="card danger-zone">
                     <div class="card-body d-flex justify-content-between align-items-center">
                         <div>

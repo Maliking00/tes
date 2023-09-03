@@ -64,7 +64,7 @@ class CoursesController extends Controller
             $html = '<div class="v-100 text-center" data-aos="fade-up" data-aos-delay="400">
                         <div class="card">
                             <div class="card-body">
-                                <img class="img-fluid" src="' . asset('/images/404.jpg') . '" alt="Not found">
+                                <img class="img-fluid" src="' . asset('/assets/images/404.jpg') . '" alt="Not found">
                                 <h3 class="font-weight-normal mt-4">No Courses found</h3>
                                 <p>I\'m sorry, but the specified course could not be found.</p>
                                 <p>Please provide additional details or clarify your request for further assistance.</p>
@@ -84,7 +84,7 @@ class CoursesController extends Controller
         try {
             $validatedData = $request->validate([
                 'courseName' => 'required|string|unique:courses',
-                'courseYearLevel' => 'required|string',
+                'courseYearLevel' => 'required|numeric',
                 'courseSection' => 'required|string',
             ]);
             if ($courseModel->create($validatedData)) {
@@ -105,15 +105,10 @@ class CoursesController extends Controller
     public function updateCourse($id, Request $request, Courses $courseModel) {
         $course = $courseModel->findOrFail($id);
         $validatedData = $request->validate([
-            'courseName' => 'required|string',
-            'courseYearLevel' => 'required|string',
+            'courseName' => 'required|string|unique:courses,courseName,' . $course->id,
+            'courseYearLevel' => 'required|numeric',
             'courseSection' => 'required|string',
         ]);
-        
-        $existingCourse = $courseModel->where('courseName', $validatedData['courseName'])->where('id', '<>', $id)->first();
-        if ($existingCourse) {
-            $validatedData['courseName'] = $validatedData['courseName'] . '-copy';
-        }
     
         if (!$course->update($validatedData)) {
             return back()->with('error', 'An error occurred.');

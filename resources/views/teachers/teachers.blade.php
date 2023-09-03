@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
-@section('title', 'Courses | Teacher Evaluation System')
+@section('title', 'Teachers | Teacher Evaluation System')
 
-@section('pageTitle', 'Courses')
+@section('pageTitle', 'Teachers')
 
 @section('content')
     <div class="row">
@@ -10,38 +10,39 @@
             <div class="card py-4" data-aos="fade-up" data-aos-delay="200">
                 <div class="card-body p-4 text-right">
                     <br>
-                    <form id="add_{{ \Route::currentRouteName() }}_form">
+                    <form id="add_{{ \Route::currentRouteName() }}_form" enctype="multipart/form-data">
                         @csrf
-                        <div class="form-group text-left">
-                            <label>Course Name</label>
-                            <div>
-                                <input type="text" class="form-control" placeholder="Course Name" name="courseName" />
-                                <small class="text-danger" id="courseName-error"></small>
-                            </div>
+                        <div class="form-group mb-2 text-left">
+                            <label for="teachersFullName" class="form-label">Full Name</label>
+                            <input type="text" name="teachersFullName" id="teachersFullName" class="form-control"
+                                placeholder="Full Name">
+                            <small class="text-danger" id="teachersFullName-error"></small>
                         </div>
-                        <div class="form-group text-left">
-                            <label>Year Level</label>
-                            <div>
-                                {{-- <input type="text" class="form-control" placeholder="Year Level" name="courseYearLevel" /> --}}
-                                <select name="courseYearLevel" class="form-select form-control">
-                                    <option selected>Choose Year Level</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                </select>
-                                <small class="text-danger" id="courseYearLevel-error"></small>
-                            </div>
+                        <div class="form-group mb-2 text-left">
+                            <label for="teachersEmail" class="form-label">Email</label>
+                            <input type="email" name="teachersEmail" id="teachersEmail" class="form-control" placeholder="Email">
+                            <small class="text-danger" id="teachersEmail-error"></small>
                         </div>
-                        <div class="form-group text-left">
-                            <label>Section</label>
-                            <div>
-                                <input type="text" name="courseSection" class="form-control" placeholder="Section">
-                                <small class="text-danger" id="courseSection-error"></small>
-                            </div>
+                        <div class="form-group mb-2 text-left">
+                            <label for="teachersIdNumber" class="form-label">ID Number</label>
+                            <input type="text" name="teachersIdNumber" id="teachersIdNumber" class="form-control"
+                                placeholder="ID Number">
+                            <small class="text-danger" id="teachersIdNumber-error"></small>
+                        </div>
+                        <div class="form-group mb-2 text-left">
+                            <label for="teachersContactNumber" class="form-label">Contact Number</label>
+                            <input type="text" name="teachersContactNumber" id="teachersContactNumber" class="form-control"
+                                placeholder="Contact Number">
+                            <small class="text-danger" id="teachersContactNumber-error"></small>
+                        </div>
+                        <div class="form-group mb-4 text-left">
+                            <label for="teachersAvatar" class="form-label">Upload avatar</label>
+                            <input type="file" name="teachersAvatar" id="teachersAvatar" class="form-control"
+                                placeholder="Security Answer">
+                            <small class="text-danger" id="teachersAvatar-error"></small>
                         </div>
                         <hr class="hr-divider">
-                        <button type="submit" class="btn tes-btn">Add Course</button>
+                        <button type="submit" class="btn tes-btn">Add Teacher</button>
                     </form>
                 </div>
             </div>
@@ -118,15 +119,13 @@
 
             await axios.post('/dashboard/store-{{ \Route::currentRouteName() }}', formData)
                 .then(function(response) {
-                    if (response.status == 200) {
-                        load{{ ucfirst(\Route::currentRouteName()) }}(
-                            '/dashboard/load-{{ \Route::currentRouteName() }}');
-                        {{ \Route::currentRouteName() }}Form.reset();
-                        scrollToTop();
-                        errorOutput.forEach(function(item) {
-                            item.innerHTML = '';
-                        });
-                    }
+                    load{{ ucfirst(\Route::currentRouteName()) }}(
+                        '/dashboard/load-{{ \Route::currentRouteName() }}');
+                    {{ \Route::currentRouteName() }}Form.reset();
+                    scrollToTop();
+                    errorOutput.forEach(function(item) {
+                        item.innerHTML = '';
+                    });
                 })
                 .catch(function(error) {
                     const errors = error.response.data.errors;
@@ -145,7 +144,7 @@
                             }
                         }
                     }
-                });
+                })
         });
 
         function scrollToTop() {

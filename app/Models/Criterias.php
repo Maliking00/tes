@@ -6,16 +6,17 @@ use App\Traits\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Teachers extends Model
+class Criterias extends Model
 {
     use HasFactory;
     use Uuid;
 
     protected $fillable = [
-        'teachersFullName',
-        'teachersIdNumber',
-        'teachersContactNumber',
-        'teachersAvatar',
-        'teachersEmail',
+        'criterias'
     ];
+
+    public function questionnaires()
+    {
+        return $this->hasMany(Questionnaires::class);
+    }
 }

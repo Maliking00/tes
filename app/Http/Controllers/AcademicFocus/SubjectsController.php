@@ -64,7 +64,7 @@ class SubjectsController extends Controller
             $html = '<div class="v-100 text-center" data-aos="fade-up" data-aos-delay="400">
                         <div class="card">
                             <div class="card-body">
-                                <img class="img-fluid" src="' . asset('/images/404.jpg') . '" alt="Not found">
+                                <img class="img-fluid" src="' . asset('/assets/images/404.jpg') . '" alt="Not found">
                                 <h3 class="font-weight-normal mt-4">No Subject found</h3>
                                 <p>I\'m sorry, but the specified subject could not be found.</p>
                                 <p>Please provide additional details or clarify your request for further assistance.</p>
@@ -105,7 +105,7 @@ class SubjectsController extends Controller
     public function updateSubject($id, Request $request, Subjects $subjectModel) {
         $subject = $subjectModel->findOrFail($id);
         $validatedData = $request->validate([
-            'subjectCode' => 'required|string',
+            'subjectCode' => 'required|string|unique:subjects,subjectCode,' . $subject->id,
             'subjectName' => 'required|string',
             'subjectDescription' => 'required|string',
         ]);

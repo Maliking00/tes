@@ -1,5 +1,6 @@
 <?php
 
+use App\Helper\Helper;
 use Illuminate\Support\Facades\Route;
 
 Auth::routes();
@@ -18,6 +19,8 @@ Route::group(['middleware' => ['guest']], function () {
     Route::post('/register-data', [App\Http\Controllers\Auth\RegisterController::class, 'registrationFirst'])->name('register.data');
     Route::get('/registration-security-question', [App\Http\Controllers\Auth\RegisterController::class, 'showRegistrationSecurityQuestion'])->name('register.security.question');
     Route::post('/registration-security-question', [App\Http\Controllers\Auth\RegisterController::class, 'postRegistrationSecurityQuestion']);
+    Route::get('/registration-avatar-upload', [App\Http\Controllers\Auth\RegisterController::class, 'showRegistrationAvatarUpload'])->name('register.avatar.upload');
+    Route::post('/registration-avatar-upload', [App\Http\Controllers\Auth\RegisterController::class, 'postRegistrationAvatarUpload']);
 
     // login
     Route::post('/login-data', [App\Http\Controllers\Authentication::class, 'loginSecurityQuestion'])->name('login.data');
@@ -26,6 +29,7 @@ Route::group(['middleware' => ['guest']], function () {
     // OTP
     Route::get('/login-otp-security', [App\Http\Controllers\Authentication::class, 'showOtpPage'])->name('login.otp.security');
     Route::post('/verify-otp-security', [App\Http\Controllers\Authentication::class, 'verifyOtp'])->name('verify.otp.security');
+    Route::post('/resend-otp-security', [App\Http\Controllers\Authentication::class, 'resendOTP'])->name('resend.otp.security');
 });
 
 // is Authenticate
@@ -45,7 +49,7 @@ Route::middleware('auth')->group(function () {
             Route::post('/dashboard/subjects/update/{id}', [App\Http\Controllers\AcademicFocus\SubjectsController::class, 'updateSubject'])->name('update.subject');
             Route::post('/dashboard/subjects/delete/{id}', [App\Http\Controllers\AcademicFocus\SubjectsController::class, 'deleteSubject'])->name('delete.subject');
 
-            // courses
+            // courses 711085 
             Route::get('/dashboard/courses', [App\Http\Controllers\AcademicFocus\CoursesController::class, 'index'])->name('courses');
             Route::get('/dashboard/load-courses', [App\Http\Controllers\AcademicFocus\CoursesController::class, 'loadCourses'])->name('load.courses');
             Route::post('/dashboard/store-courses', [App\Http\Controllers\AcademicFocus\CoursesController::class, 'storeCourse'])->name('store.course');
@@ -59,7 +63,48 @@ Route::middleware('auth')->group(function () {
             Route::post('/dashboard/store-academics', [App\Http\Controllers\AcademicFocus\AcademicsController::class, 'storeAcademic'])->name('store.academic');
             Route::get('/dashboard/academics/{id}', [App\Http\Controllers\AcademicFocus\AcademicsController::class, 'showEditAcademic'])->name('show.edit.academic');
             Route::post('/dashboard/academics/update/{id}', [App\Http\Controllers\AcademicFocus\AcademicsController::class, 'updateAcademic'])->name('update.academic');
+            Route::post('/dashboard/academics/update/academic/year/{id}', [App\Http\Controllers\AcademicFocus\AcademicsController::class, 'updateAcademicDefaultYear'])->name('update.academic.default.year');
+            Route::post('/dashboard/academics/update/academic/evaluation-status/{id}', [App\Http\Controllers\AcademicFocus\AcademicsController::class, 'updateAcademicEvaluationStatus'])->name('update.academic.evaluation.status');
             Route::post('/dashboard/academics/delete/{id}', [App\Http\Controllers\AcademicFocus\AcademicsController::class, 'deleteAcademic'])->name('delete.academic');
+            
+            // criteria
+            Route::get('/dashboard/criterias', [App\Http\Controllers\CriteriasController::class, 'index'])->name('criterias');
+            Route::get('/dashboard/load-criterias', [App\Http\Controllers\CriteriasController::class, 'loadCriterias'])->name('load.criterias');
+            Route::post('/dashboard/store-criterias', [App\Http\Controllers\CriteriasController::class, 'storeCriteria'])->name('store.criteria');
+            Route::get('/dashboard/criterias/{id}', [App\Http\Controllers\CriteriasController::class, 'showEditCriteria'])->name('show.edit.criteria');
+            Route::post('/dashboard/criterias/update/{id}', [App\Http\Controllers\CriteriasController::class, 'updateCriteria'])->name('update.criteria');
+            Route::post('/dashboard/criterias/delete/{id}', [App\Http\Controllers\CriteriasController::class, 'deleteCriteria'])->name('delete.criteria');
+
+            //teachers
+            Route::get('/dashboard/teachers', [App\Http\Controllers\TeachersController::class, 'index'])->name('teachers');
+            Route::get('/dashboard/load-teachers', [App\Http\Controllers\TeachersController::class, 'loadTeachers'])->name('load.teachers');
+            Route::post('/dashboard/store-teachers', [App\Http\Controllers\TeachersController::class, 'storeTeacher'])->name('store.teacher');
+            Route::get('/dashboard/teachers/{id}', [App\Http\Controllers\TeachersController::class, 'showEditTeacher'])->name('show.edit.teacher');
+            Route::post('/dashboard/teachers/update/{id}', [App\Http\Controllers\TeachersController::class, 'updateTeacher'])->name('update.teacher');
+            Route::post('/dashboard/teachers/delete/{id}', [App\Http\Controllers\TeachersController::class, 'deleteTeacher'])->name('delete.teacher');
+            Route::post('/dashboard/teachers/update/avatar/{id}', [App\Http\Controllers\TeachersController::class, 'updateTeacherAvatar'])->name('update.teacher.avatar');
+
+            // student
+            Route::get('/dashboard/students', [App\Http\Controllers\StudentsController::class, 'index'])->name('students');
+            Route::get('/dashboard/load-students', [App\Http\Controllers\StudentsController::class, 'loadStudents'])->name('load.students');
+            Route::post('/dashboard/store-students', [App\Http\Controllers\StudentsController::class, 'storeStudent'])->name('store.student');
+            Route::get('/dashboard/students/{id}', [App\Http\Controllers\StudentsController::class, 'showEditStudent'])->name('show.edit.student');
+            Route::post('/dashboard/students/update/{id}', [App\Http\Controllers\StudentsController::class, 'updateStudent'])->name('update.student');
+            Route::post('/dashboard/students/delete/{id}', [App\Http\Controllers\StudentsController::class, 'deleteStudent'])->name('delete.student');
+            Route::post('/dashboard/students/update/role/{id}', [App\Http\Controllers\StudentsController::class, 'updateStudentRole'])->name('update.student.role');
+            Route::post('/dashboard/students/update/status/{id}', [App\Http\Controllers\StudentsController::class, 'updateStudentStatus'])->name('update.student.status');
+            Route::post('/dashboard/students/update/avatar/{id}', [App\Http\Controllers\StudentsController::class, 'updateStudentAvatar'])->name('update.student.avatar');
+
+            // HR
+            Route::get('/dashboard/hrs', [App\Http\Controllers\HrControllers::class, 'index'])->name('hrs');
+            Route::get('/dashboard/load-hrs', [App\Http\Controllers\HrControllers::class, 'loadHrs'])->name('load.hrs');
+            Route::post('/dashboard/store-hrs', [App\Http\Controllers\HrControllers::class, 'storeHr'])->name('store.student');
+            Route::get('/dashboard/hrs/{id}', [App\Http\Controllers\HrControllers::class, 'showEditHr'])->name('show.edit.hr');
+            Route::post('/dashboard/hrs/update/{id}', [App\Http\Controllers\HrControllers::class, 'updateHr'])->name('update.hr');
+            Route::post('/dashboard/hrs/delete/{id}', [App\Http\Controllers\HrControllers::class, 'deleteHr'])->name('delete.hr');
+            Route::post('/dashboard/hrs/update/role/{id}', [App\Http\Controllers\HrControllers::class, 'updateHrRole'])->name('update.hr.role');
+            Route::post('/dashboard/hrs/update/status/{id}', [App\Http\Controllers\HrControllers::class, 'updateHrStatus'])->name('update.hr.status');
+            Route::post('/dashboard/hrs/update/avatar/{id}', [App\Http\Controllers\HrControllers::class, 'updateHrAvatar'])->name('update.hr.avatar');
         });
 
         // // routes for HR only

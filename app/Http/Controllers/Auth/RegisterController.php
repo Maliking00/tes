@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\URL;
 
 class RegisterController extends Controller
 {
@@ -52,26 +53,51 @@ class RegisterController extends Controller
     public function postRegistrationSecurityQuestion(Request $request)
     {
         $request->validate([
-            'security_question' => ['required', 'exists:security_questions,id'],
-            'security_answer' => ['required', 'string'],
+            'security_question' => 'required|exists:security_questions,id',
+            'security_answer' => 'required|string'
         ]);
 
+        session(['registerSecurityQuestions' => $request->all()]);
+        return redirect()->route('register.avatar.upload');
+    }
+
+    public function showRegistrationAvatarUpload() {
+
+        return view('auth.register-avatar-upload');
+    }
+
+    public function postRegistrationAvatarUpload(Request $request) {
+
+        $request->validate([
+            'avatarUrl' => 'required|image|mimes:jpg,png|max:2048',
+        ]);
+
+        $avatarName = uniqid().'.'.$request->avatarUrl->extension();
+        $avatarPathUrl = $request->avatarUrl->storeAs('public/avatars', $avatarName);
+        if(!$avatarPathUrl){
+            return back()->with('error', 'An error occured.');
+        }
+
         $registrationData = session('registrationData');
+        $sessionSecurityQuestionAndAnswer = session('registerSecurityQuestions');
         $user = User::create([
             'name' => $registrationData['name'],
             'email' => $registrationData['email'],
             'password' => Hash::make($registrationData['password']),
             'idNumber' => $registrationData['idNumber'],
             'contactNumber' => $registrationData['contactNumber'],
-            'securityAnswer' => Crypt::encrypt($request->security_answer)
+            'securityAnswer' => Crypt::encrypt($sessionSecurityQuestionAndAnswer['security_answer']),
+            'avatarUrl' => $avatarPathUrl
         ]);
 
-        $securityQuestion = SecurityQuestion::find($request->input('security_question'));
+        
+        $securityQuestion = SecurityQuestion::find($sessionSecurityQuestionAndAnswer['security_question']);
         $user->securityQuestionsAndAnswer()->create([
             'question' => $securityQuestion->question,
-            'answer' => $request->security_answer,
+            'answer' => $sessionSecurityQuestionAndAnswer['security_answer'],
         ]);
-
-        return redirect()->route('welcome')->with('success', 'Account registration received; login possible upon admin approval'); 
+        
+        Session::forget(['registerSecurityQuestionTimeLimit', 'registrationData', 'registerSecurityQuestions']);
+        return redirect()->route('welcome')->with('success', 'Account registration received; login possible upon admin approval');
     }
 }

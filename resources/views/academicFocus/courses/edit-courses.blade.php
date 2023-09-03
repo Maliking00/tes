@@ -2,6 +2,10 @@
 
 @section('title', 'Course Info | Teacher Evaluation System')
 
+@section('pageTitle', 'Course Info | '. $course->courseName)
+
+@section('uuid', $course->courseName)
+
 @section('content')
     <div class="row">
         <div class="col-lg-4">
@@ -49,8 +53,8 @@
                 </div>
             </div>
             <div class="v-100" data-aos="fade-up" data-aos-delay="400">
-                <h3 class="font-weight-normal my-4 aos-init aos-animate" data-aos="fade-up" data-aos-delay="100">Danger Zone
-                </h3>
+                <h5 class="font-weight-normal my-4 aos-init aos-animate" data-aos="fade-up" data-aos-delay="100">Danger Zone
+                </h5>
                 <div class="card danger-zone">
                     <div class="card-body d-flex justify-content-between align-items-center">
                         <div>

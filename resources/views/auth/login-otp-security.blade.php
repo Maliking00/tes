@@ -16,25 +16,40 @@
                     <div class="my-4 text-center">
                         <img src="{{ asset('/assets/images/logo.png') }}" alt="welcom-logo">
                     </div>
-                    <form action="{{ route('verify.otp.security') }}" method="POST">
+                    <form action="{{ route(!$isTimeReached ? 'verify.otp.security' : 'resend.otp.security') }}"
+                        method="POST">
                         @csrf
-                        <div class="form-group mb-4">
-                            <label for="security_answer" class="form-label text-center">
-                                An One-Time Password (OTP) has been dispatched to : {{ $recipientNumber }}. Kindly verify
-                                the number for OTP receipt. Thank you.
-                            </label>
-                            <div class="input-field">
-                                <input type="number" name="otp[]" />
-                                <input type="number" name="otp[]" disabled />
-                                <input type="number" name="otp[]" disabled />
-                                <input type="number" name="otp[]" disabled />
-                                <input type="number" name="otp[]" disabled />
-                                <input type="number" name="otp[]" disabled />
+                        @if (!$isTimeReached)
+                            <div class="form-group mb-4 text-center">
+                                <label class="form-label">
+                                    An One-Time Password (OTP) has been dispatched to : {{ $recipientNumber }}. Kindly
+                                    verify
+                                    the number for OTP receipt. Thank you.
+                                </label>
+                                <div class="input-field mb-3">
+                                    <input type="number" name="otp[]" />
+                                    <input type="number" name="otp[]" disabled />
+                                    <input type="number" name="otp[]" disabled />
+                                    <input type="number" name="otp[]" disabled />
+                                    <input type="number" name="otp[]" disabled />
+                                    <input type="number" name="otp[]" disabled />
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-goup">
-                            <button type="submit" class="btn tes-btn w-100">Verify</button>
-                        </div>
+                            <div class="form-group text-center">
+                                <small id="countdown"></small>
+                                <button type="submit" class="btn tes-btn w-100 mt-2">Verify</button>
+                            </div>
+                        @else
+                            <div class="form-group mb-4 text-center">
+                                <label class="form-label">
+                                    The One-Time Password has reached its expiration period. Please request a new OTP to
+                                    continue the authentication process.
+                                </label>
+                            </div>
+                            <div class="form-goup">
+                                <button type="submit" class="btn tes-btn w-100">Resend OTP</button>
+                            </div>
+                        @endif
                     </form>
                 </div>
             </div>
@@ -77,5 +92,19 @@
             });
         });
         window.addEventListener("load", () => inputs[0].focus());
+
+        function updateCountdown() {
+            const timeLimit = new Date("{{ Session::get('loginSecurityOtpTimeLimit') }}").getTime();
+            const currentTime = new Date().getTime();
+            const remainingTime = timeLimit - currentTime;
+            const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+            document.getElementById("countdown").innerHTML = 'Resend OTP in ' + (minutes <= 0 ? seconds + "s" : minutes + "m " + seconds + "s") ;
+            if (remainingTime <= 0) {
+                location.reload();
+            }
+        }
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
     </script>
 @endsection

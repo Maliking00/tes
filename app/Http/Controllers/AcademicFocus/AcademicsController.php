@@ -49,12 +49,12 @@ class AcademicsController extends Controller
                     <tr class="t-row" data-aos="fade-up" data-aos-delay="' . $delay . '00">
                         <td class="text-capitalize">' . $academic->academicYear . '</td>
                         <td class="text-capitalize">' . $academic->academicSemester . '</td>
-                        <td class="text-capitalize">' . $academic->academicSystemDefault . '</td>
-                        <td class="text-capitalize">' . $academic->academicEvaluationStatus . '</td>
+                        <td class="text-capitalize">' . ($academic->academicSystemDefault ? '<span class="badge bg-primary">Yes</span>' : '<span class="badge bg-danger">No</span>') . '</td>
+                        <td class="text-capitalize"><span class="badge bg-'.($academic->academicEvaluationStatus == 'Starting' ? 'success' : 'primary').'">' . $academic->academicEvaluationStatus . '</span></td>
                         <td class="text-lowercase">' . $academic->updated_at->diffForHumans() . '</td>
                         <td>
                         <div class="dropup">
-                            <a href="' . route('show.edit.academic', $academic->id) . '"><i class="ti-angle-double-right show-options"></i></a>
+                            <a href="' . route('show.edit.academic', $academic->id) . '" title="Edit"><i class="ti-angle-double-right show-options"></i></a>
                         </div>
                         </td>
                     </tr>';
@@ -65,7 +65,7 @@ class AcademicsController extends Controller
             $html = '<div class="v-100 text-center" data-aos="fade-up" data-aos-delay="400">
                         <div class="card">
                             <div class="card-body">
-                                <img class="img-fluid" src="' . asset('/images/404.jpg') . '" alt="Not found">
+                                <img class="img-fluid" src="' . asset('/assets/images/404.jpg') . '" alt="Not found">
                                 <h3 class="font-weight-normal mt-4">No Academics found</h3>
                                 <p>I\'m sorry, but the specified academic could not be found.</p>
                                 <p>Please provide additional details or clarify your request for further assistance.</p>
@@ -83,10 +83,15 @@ class AcademicsController extends Controller
     public function storeAcademic(Request $request, Academic $academicModel)
     {
         try {
-            $validatedData = $request->validate([
-                'academicYear' => 'required|string|unique:academics',
-                'academicSemester' => 'required|string'
-            ]);
+            $validatedData = $request->validate(
+                [
+                    'academicYear' => 'required|string|unique:academics|regex:/^\d{4}-\d{4}$/',
+                    'academicSemester' => 'required|numeric|in:1,2,3,4'
+                ],
+                [
+                    'academicSemester.in' => 'The semester must be only 1, 2, 3, or 4.',
+                ]
+            );
             if ($academicModel->create($validatedData)) {
                 return response()->json([
                     'success' => $request->courseName . ' successfully added.',
@@ -106,21 +111,58 @@ class AcademicsController extends Controller
     public function updateAcademic($id, Request $request, Academic $academicModel)
     {
         $academic = $academicModel->findOrFail($id);
-        $validatedData = $request->validate([
-            'academicYear' => 'required|string',
-            'academicSemester' => 'required|string'
-        ]);
-
-        $existingAcademic = $academicModel->where('academicYear', $validatedData['academicYear'])->where('id', '<>', $id)->first();
-        if ($existingAcademic) {
-            $validatedData['academicYear'] = $validatedData['academicYear'] . '-copy';
-        }
+        $validatedData = $request->validate(
+            [
+                'academicYear' => 'required|string|regex:/^\d{4}-\d{4}$/|unique:academics,academicYear,' . $academic->id,
+                'academicSemester' => 'required|numeric|in:1,2,3,4'
+            ],
+            [
+                'academicSemester.in' => 'The semester must be only 1, 2, 3, or 4.',
+            ]
+        );
 
         if (!$academic->update($validatedData)) {
             return back()->with('error', 'An error occurred.');
         }
 
         return redirect()->route('academics')->with('success', 'Academic successfully updated.');
+    }
+
+    public function updateAcademicDefaultYear($id, Request $request, Academic $academicModel)
+    {
+        $academic = $academicModel->findOrFail($id);
+        $validatedData = $request->validate(
+            [
+                'academicSystemDefault' => 'in:0,1'
+            ],
+            [
+                'academicSystemDefault.in' => 'System Default is invalid.',
+            ]
+        );
+
+        $request->academicSystemDefault == 1 ? $validatedData['academicSystemDefault'] = 0 : $validatedData['academicSystemDefault'] = 1;
+
+        if (!$academic->update($validatedData)) {
+            return back()->with('error', 'An error occurred.');
+        }
+        return redirect()->route('academics')->with('success', 'System Default successfully updated.');
+    }
+    public function updateAcademicEvaluationStatus($id, Request $request, Academic $academicModel)
+    {
+        $academic = $academicModel->findOrFail($id);
+        $validatedData = $request->validate(
+            [
+                'academicEvaluationStatus' => 'in:Starting,Closed,Not started'
+            ],
+            [
+                'academicEvaluationStatus.in' => 'Evaluation status is invalid.',
+            ]
+        );
+
+        if (!$academic->update($validatedData)) {
+            return back()->with('error', 'An error occurred.');
+        }
+        return redirect()->route('academics')->with('success', 'Evaluation status successfully updated.');
     }
 
     public function deleteAcademic($id, Academic $academicModel)

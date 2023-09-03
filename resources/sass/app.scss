@@ -27,8 +27,13 @@
 
 .sidebar {
     .nav {
-        .nav-item.active>.nav-link {
+        .nav-item>.nav-link.active {
             background: var(--primary) !important;
+            color: var(--white) !important;
+
+            i{
+                color: var(--white) !important;
+            }
         }
 
         .nav-item>.nav-link {
@@ -59,17 +64,12 @@
                 }
             }
         }
-
-        &:not(.sub-menu)>.nav-item.active {
-            background: none !important;
-        }
-
         .nav-item.active .nav-link {
             margin-bottom: 8px !important;
         }
 
         &.sub-menu {
-            background: #0b2238 !important;
+            background: var(--primary) !important;
             border-radius: 8px !important;
 
             .nav-item>.nav-link {
@@ -242,6 +242,8 @@ table {
             img {
                 width: 50px;
                 height: 50px;
+                object-fit: cover;
+                border: 2px solid var(--secondary-light);
             }
         }
     }
@@ -373,6 +375,10 @@ table {
         img {
             width: 100%;
             max-width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 4px solid var(--primary);
+            object-fit: cover;
         }
     }
 }
@@ -437,4 +443,13 @@ ul#pagination_link {
 // ADMIN DASHBOARD MODIFIED
 .navbar {
     box-shadow: none !important;
+}
+
+// users pages
+img.user-avatar {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid var(--primary);
 }

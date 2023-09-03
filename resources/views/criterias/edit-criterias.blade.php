@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Subject Info | Teacher Evaluation System')
+@section('title', 'Criterias Info | Teacher Evaluation System')
 
-@section('pageTitle', 'Subject Info | '. $subject->subjectCode)
+@section('pageTitle', 'Criteria Info | '. $criteria->criterias)
 
-@section('uuid', $subject->subjectCode)
+@section('uuid', $criteria->criterias)
 
 @section('content')
     <div class="row">
@@ -12,31 +12,17 @@
             <div class="card py-4" data-aos="fade-up" data-aos-delay="200">
                 <div class="card-body p-4 text-right">
                     <br>
-                    <form method="POST" action="{{ route('update.subject', $subject->id) }}">
+                    <form method="POST" action="{{ route('update.criteria', $criteria->id) }}">
                         @csrf
                         <div class="form-group text-left">
-                            <label for="subjectCode">Subject Code</label>
+                            <label for="criterias">Criterias</label>
                             <div>
-                                <input type="text" id="subjectCode" class="form-control" placeholder="Subject Code"
-                                    name="subjectCode" value="{{ $subject->subjectCode }}" />
-                            </div>
-                        </div>
-                        <div class="form-group text-left">
-                            <label for="subjectName">Subject Name</label>
-                            <div>
-                                <input type="text" id="subjectName" class="form-control" placeholder="Subject Name"
-                                    name="subjectName" value="{{ $subject->subjectName }}" />
-                            </div>
-                        </div>
-                        <div class="form-group text-left">
-                            <label for="subjectDescription">Subject Description</label>
-                            <div>
-                                <textarea name="subjectDescription" id="subjectDescription" cols="30" rows="3" class="form-control"
-                                    placeholder="Subject Description">{{ $subject->subjectDescription }}</textarea>
+                                <input type="text" id="criterias" class="form-control" placeholder="Subject Code"
+                                    name="criterias" value="{{ $criteria->criterias }}" />
                             </div>
                         </div>
                         <hr class="hr-divider">
-                        <button type="submit" class="btn tes-btn">Update Subject</button>
+                        <button type="submit" class="btn tes-btn">Update Criteria</button>
                     </form>
                 </div>
             </div>
@@ -47,7 +33,7 @@
                     <div class="card-body">
                         <img class="img-fluid" src="{{ asset('assets/images/dashboard/bg-wave-logo.jpg') }}"
                             alt="Not found">
-                        <h3 class="font-weight-normal mt-4">Subject Information</h3>
+                        <h3 class="font-weight-normal mt-4">Criteria Information</h3>
                         <p>Please review the information below and make any necessary updates</p>
                     </div>
                 </div>
@@ -58,10 +44,10 @@
                 <div class="card danger-zone">
                     <div class="card-body d-flex justify-content-between align-items-center">
                         <div>
-                            <p class="font-weight-bold">Delete this subject</p>
+                            <p class="font-weight-bold">Delete this criteria</p>
                             <p>Once you delete this, there is no going back. Please be certain.</p>
                         </div>
-                        <form action="{{ route('delete.subject', $subject->id) }}" method="POST">
+                        <form action="{{ route('delete.criteria', $criteria->id) }}" method="POST">
                             @csrf
                             <button class="btn btn-outline-danger">Delete</button>
                         </form>

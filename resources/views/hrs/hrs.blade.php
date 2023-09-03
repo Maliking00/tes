@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
-@section('title', 'Courses | Teacher Evaluation System')
+@section('title', 'HR | Teacher Evaluation System')
 
-@section('pageTitle', 'Courses')
+@section('pageTitle', 'HR / Head Departments')
 
 @section('content')
     <div class="row">
@@ -10,38 +10,65 @@
             <div class="card py-4" data-aos="fade-up" data-aos-delay="200">
                 <div class="card-body p-4 text-right">
                     <br>
-                    <form id="add_{{ \Route::currentRouteName() }}_form">
+                    <form id="add_{{ \Route::currentRouteName() }}_form" enctype="multipart/form-data">
                         @csrf
-                        <div class="form-group text-left">
-                            <label>Course Name</label>
-                            <div>
-                                <input type="text" class="form-control" placeholder="Course Name" name="courseName" />
-                                <small class="text-danger" id="courseName-error"></small>
-                            </div>
+                        <p class="font-weight-bold text-left">Basic Info</p>
+                        <div class="form-group mb-2 text-left">
+                            <label for="fullname" class="form-label">Full Name</label>
+                            <input type="text" name="name" id="fullname" class="form-control"
+                                placeholder="Full Name">
+                            <small class="text-danger" id="name-error"></small>
                         </div>
-                        <div class="form-group text-left">
-                            <label>Year Level</label>
-                            <div>
-                                {{-- <input type="text" class="form-control" placeholder="Year Level" name="courseYearLevel" /> --}}
-                                <select name="courseYearLevel" class="form-select form-control">
-                                    <option selected>Choose Year Level</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                </select>
-                                <small class="text-danger" id="courseYearLevel-error"></small>
-                            </div>
+                        <div class="form-group mb-2 text-left">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="text" name="email" id="email" class="form-control" placeholder="Email">
+                            <small class="text-danger" id="email-error"></small>
                         </div>
-                        <div class="form-group text-left">
-                            <label>Section</label>
-                            <div>
-                                <input type="text" name="courseSection" class="form-control" placeholder="Section">
-                                <small class="text-danger" id="courseSection-error"></small>
-                            </div>
+                        <div class="form-group mb-2 text-left">
+                            <label for="idNumber" class="form-label">ID Number</label>
+                            <input type="text" name="idNumber" id="idNumber" class="form-control"
+                                placeholder="ID Number">
+                            <small class="text-danger" id="idNumber-error"></small>
+                        </div>
+                        <div class="form-group mb-2 text-left">
+                            <label for="contactNumber" class="form-label">Contact Number</label>
+                            <input type="text" name="contactNumber" id="contactNumber" class="form-control"
+                                placeholder="Contact Number">
+                            <small class="text-danger" id="contactNumber-error"></small>
+                        </div>
+                        <div class="form-group mb-2 text-left">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" name="password" id="password" class="form-control"
+                                placeholder="Password">
+                            <small class="text-danger" id="password-error"></small>
+                        </div>
+                        <p class="font-weight-bold mt-4 text-left">Security Question and Answer</p>
+                        <div class="form-group mb-4 text-left">
+                            <label for="securityQuestion" class="form-label">Select a security question</label>
+                            <select name="security_question" id="securityQuestion"
+                                class="form-select form-control @error('security_question') is-invalid @enderror"
+                                aria-label="Default select example">
+                                <option selected>Choose</option>
+                                @foreach ($hrSecurityQuestions as $question)
+                                    <option value="{{ $question->id }}">{{ $question->question }}</option>
+                                @endforeach
+                            </select>
+                            <small class="text-danger" id="security_question-error"></small>
+                        </div>
+                        <div class="form-group mb-4 text-left">
+                            <label for="security_answer" class="form-label text-left">Security Answer</label>
+                            <input type="text" name="security_answer" id="security_answer" class="form-control"
+                                placeholder="Security Answer">
+                            <small class="text-danger" id="security_answer-error"></small>
+                        </div>
+                        <div class="form-group mb-4 text-left">
+                            <label for="avatar" class="form-label">Upload avatar</label>
+                            <input type="file" name="avatar" id="avatar" class="form-control"
+                                placeholder="Security Answer">
+                            <small class="text-danger" id="avatar-error"></small>
                         </div>
                         <hr class="hr-divider">
-                        <button type="submit" class="btn tes-btn">Add Course</button>
+                        <button type="submit" class="btn tes-btn">Add Hr</button>
                     </form>
                 </div>
             </div>
@@ -118,15 +145,13 @@
 
             await axios.post('/dashboard/store-{{ \Route::currentRouteName() }}', formData)
                 .then(function(response) {
-                    if (response.status == 200) {
-                        load{{ ucfirst(\Route::currentRouteName()) }}(
-                            '/dashboard/load-{{ \Route::currentRouteName() }}');
-                        {{ \Route::currentRouteName() }}Form.reset();
-                        scrollToTop();
-                        errorOutput.forEach(function(item) {
-                            item.innerHTML = '';
-                        });
-                    }
+                    load{{ ucfirst(\Route::currentRouteName()) }}(
+                        '/dashboard/load-{{ \Route::currentRouteName() }}');
+                    {{ \Route::currentRouteName() }}Form.reset();
+                    scrollToTop();
+                    errorOutput.forEach(function(item) {
+                        item.innerHTML = '';
+                    });
                 })
                 .catch(function(error) {
                     const errors = error.response.data.errors;
@@ -145,7 +170,7 @@
                             }
                         }
                     }
-                });
+                })
         });
 
         function scrollToTop() {
