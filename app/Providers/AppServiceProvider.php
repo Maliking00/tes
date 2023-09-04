@@ -34,5 +34,6 @@ class AppServiceProvider extends ServiceProvider
             $this->app['request']->server->set('HTTPS', true);
             URL::forceScheme('https');
         }
+        date_default_timezone_set('Asia/Manila');
     }
 }
