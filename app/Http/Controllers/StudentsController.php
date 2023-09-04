@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helper\Helper;
+use App\Models\Courses;
 use App\Models\SecurityQuestion;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -21,7 +22,8 @@ class StudentsController extends Controller
     public function index()
     {
         $studentSecurityQuestions = SecurityQuestion::all();
-        return view('students.students', compact('studentSecurityQuestions'));
+        $courses = Courses::all();
+        return view('students.students', compact(['studentSecurityQuestions', 'courses']));
     }
 
     public function loadStudents(Request $request, User $userModel)
@@ -101,6 +103,7 @@ class StudentsController extends Controller
                 'security_question' => 'required|exists:security_questions,id',
                 'security_answer' => 'required|string',
                 'avatar' => 'required|image|mimes:jpg,png|max:2048',
+                'courses' => 'required|exists:courses,id',
             ]);
 
             $avatarName = uniqid() . '.' . $request->avatar->extension();
@@ -118,7 +121,8 @@ class StudentsController extends Controller
                 'securityAnswer' => Crypt::encrypt($request->security_answer),
                 'role' => 'student',
                 'status' => 'approved',
-                'avatarUrl' => $avatarPathUrl
+                'avatarUrl' => $avatarPathUrl,
+                'course_id' => $request->courses,
             ]);
 
             Helper::removeAvatarsNotExistOnDatabase($userModel, 'avatarUrl');

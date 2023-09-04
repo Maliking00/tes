@@ -12,7 +12,7 @@ class Questionnaires extends Model
     use Uuid;
 
     protected $fillable = [
-        'criterias',
+        'criteria_id',
         'questions'
     ];
 

@@ -129,7 +129,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('dashboard') }}">
+                                    <a class="nav-link" href="{{ route('questionnaires') }}">
                                         <i class="ti-clipboard menu-icon"></i>
                                         <span class="menu-title">Questionnaires</span>
                                     </a>
@@ -176,9 +176,9 @@
                                                     <li>
                                                         <a class="text-capitalize"
                                                             href="{{ URL::to(implode('/', array_slice(Request::segments(), 0, $i, true))) }}">
-                                                            @if(preg_match('/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/', Request::segment($i)))
+                                                            @if (preg_match('/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/', Request::segment($i)))
                                                                 @yield('uuid')
-                                                            @else 
+                                                            @else
                                                                 {{ str_replace('-', ' ', Request::segment($i)) }}
                                                             @endif
                                                         </a>
@@ -274,6 +274,13 @@
     @endif
     {{-- DYNAMIC SCRIPTS --}}
     @yield('scripts')
+    <script>
+        if(document.querySelector('.alert')){
+            setTimeout(() => {
+            document.querySelector('.alert').style.display = 'none';
+        }, 11000);
+        }
+    </script>
 </body>
 
 </html>

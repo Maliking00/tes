@@ -66,14 +66,6 @@ Route::middleware('auth')->group(function () {
             Route::post('/dashboard/academics/update/academic/year/{id}', [App\Http\Controllers\AcademicFocus\AcademicsController::class, 'updateAcademicDefaultYear'])->name('update.academic.default.year');
             Route::post('/dashboard/academics/update/academic/evaluation-status/{id}', [App\Http\Controllers\AcademicFocus\AcademicsController::class, 'updateAcademicEvaluationStatus'])->name('update.academic.evaluation.status');
             Route::post('/dashboard/academics/delete/{id}', [App\Http\Controllers\AcademicFocus\AcademicsController::class, 'deleteAcademic'])->name('delete.academic');
-            
-            // criteria
-            Route::get('/dashboard/criterias', [App\Http\Controllers\CriteriasController::class, 'index'])->name('criterias');
-            Route::get('/dashboard/load-criterias', [App\Http\Controllers\CriteriasController::class, 'loadCriterias'])->name('load.criterias');
-            Route::post('/dashboard/store-criterias', [App\Http\Controllers\CriteriasController::class, 'storeCriteria'])->name('store.criteria');
-            Route::get('/dashboard/criterias/{id}', [App\Http\Controllers\CriteriasController::class, 'showEditCriteria'])->name('show.edit.criteria');
-            Route::post('/dashboard/criterias/update/{id}', [App\Http\Controllers\CriteriasController::class, 'updateCriteria'])->name('update.criteria');
-            Route::post('/dashboard/criterias/delete/{id}', [App\Http\Controllers\CriteriasController::class, 'deleteCriteria'])->name('delete.criteria');
 
             //teachers
             Route::get('/dashboard/teachers', [App\Http\Controllers\TeachersController::class, 'index'])->name('teachers');
@@ -105,6 +97,20 @@ Route::middleware('auth')->group(function () {
             Route::post('/dashboard/hrs/update/role/{id}', [App\Http\Controllers\HrControllers::class, 'updateHrRole'])->name('update.hr.role');
             Route::post('/dashboard/hrs/update/status/{id}', [App\Http\Controllers\HrControllers::class, 'updateHrStatus'])->name('update.hr.status');
             Route::post('/dashboard/hrs/update/avatar/{id}', [App\Http\Controllers\HrControllers::class, 'updateHrAvatar'])->name('update.hr.avatar');
+
+            // criteria
+            Route::get('/dashboard/criterias', [App\Http\Controllers\CriteriasController::class, 'index'])->name('criterias');
+            Route::get('/dashboard/load-criterias', [App\Http\Controllers\CriteriasController::class, 'loadCriterias'])->name('load.criterias');
+            Route::post('/dashboard/store-criterias', [App\Http\Controllers\CriteriasController::class, 'storeCriteria'])->name('store.criteria');
+            Route::get('/dashboard/criterias/{id}', [App\Http\Controllers\CriteriasController::class, 'showEditCriteria'])->name('show.edit.criteria');
+            Route::post('/dashboard/criterias/update/{id}', [App\Http\Controllers\CriteriasController::class, 'updateCriteria'])->name('update.criteria');
+            Route::post('/dashboard/criterias/delete/{id}', [App\Http\Controllers\CriteriasController::class, 'deleteCriteria'])->name('delete.criteria');
+
+            // questionnaire
+            Route::get('/dashboard/questionnaires', [App\Http\Controllers\QuestionnairesController::class, 'index'])->name('questionnaires');
+            Route::get('/dashboard/load-questionnaires', [App\Http\Controllers\QuestionnairesController::class, 'loadQuestionnaire'])->name('load.questionnaires');
+            Route::post('/dashboard/store-questionnaires', [App\Http\Controllers\QuestionnairesController::class, 'storeQuestionnaire'])->name('store.questionnaire');
+            Route::post('/dashboard/questionnaires/delete/{id}', [App\Http\Controllers\QuestionnairesController::class, 'deleteQuestionnaire'])->name('delete.questionnaire');
         });
 
         // // routes for HR only

@@ -4,9 +4,7 @@ namespace App\Http\Controllers\AcademicFocus;
 
 use App\Http\Controllers\Controller;
 use App\Models\Academic;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
 
 class AcademicsController extends Controller
 {
@@ -82,23 +80,35 @@ class AcademicsController extends Controller
 
     public function storeAcademic(Request $request, Academic $academicModel)
     {
-        try {
-            $validatedData = $request->validate(
-                [
-                    'academicYear' => 'required|string|unique:academics|regex:/^\d{4}-\d{4}$/',
-                    'academicSemester' => 'required|numeric|in:1,2,3,4'
-                ],
-                [
-                    'academicSemester.in' => 'The semester must be only 1, 2, 3, or 4.',
-                ]
-            );
-            if ($academicModel->create($validatedData)) {
-                return response()->json([
-                    'success' => $request->courseName . ' successfully added.',
-                ], 200);
-            }
-        } catch (ValidationException $e) {
-            return new JsonResponse(['errors' => $e->errors()], 422);
+        $validatedData = $request->validate(
+            [
+                'academicYear' => 'required|string|regex:/^\d{4}-\d{4}$/',
+                'academicSemester' => 'required|numeric|in:1,2,3,4'
+            ],
+            [
+                'academicSemester.in' => 'The semester must be only 1, 2, 3, or 4.',
+            ]
+        );
+
+        $isAcademicYearAndSemesterExist = $academicModel::where('academicYear', $validatedData['academicYear'])->where('academicSemester', $validatedData['academicSemester'])->first();
+
+        if ($isAcademicYearAndSemesterExist) {
+            return response()->json([
+                'errors' => array(
+                    'academicYear' => array(
+                        0 => 'Year is exist'
+                    ),
+                    'academicSemester' => array(
+                        0 => 'Semester is exist'
+                    ),
+                )
+            ], 422);
+        }
+        
+        if ($academicModel->create($validatedData)) {
+            return response()->json([
+                'success' => $request->courseName . ' successfully added.',
+            ], 200);
         }
     }
 
@@ -113,7 +123,7 @@ class AcademicsController extends Controller
         $academic = $academicModel->findOrFail($id);
         $validatedData = $request->validate(
             [
-                'academicYear' => 'required|string|regex:/^\d{4}-\d{4}$/|unique:academics,academicYear,' . $academic->id,
+                'academicYear' => 'required|string|regex:/^\d{4}-\d{4}$/',
                 'academicSemester' => 'required|numeric|in:1,2,3,4'
             ],
             [

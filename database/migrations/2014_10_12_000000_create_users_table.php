@@ -23,6 +23,7 @@ class CreateUsersTable extends Migration
             $table->string('contactNumber');
             $table->string('securityAnswer');
             $table->string('avatarUrl')->nullable();
+            $table->uuid('course_id')->nullable();
             $table->enum('role', ['student', 'admin', 'HR'])->default('student');
             $table->enum('status', ['pending', 'approved'])->default('pending');
             $table->rememberToken();

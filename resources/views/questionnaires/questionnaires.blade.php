@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
-@section('title', 'Academic | Teacher Evaluation System')
+@section('title', 'Questionnaires | Teacher Evaluation System')
 
-@section('pageTitle', 'Academic')
+@section('pageTitle', 'Questionnaires')
 
 @section('content')
     <div class="row">
@@ -13,28 +13,28 @@
                     <form id="add_{{ \Route::currentRouteName() }}_form">
                         @csrf
                         <div class="form-group text-left">
-                            <label>Year</label>
+                            <label for="criterias">Criteria</label>
                             <div>
-                                <input type="text" class="form-control" placeholder="Year (xxxx-xxxx)" name="academicYear"
-                                    maxlength="9" />
-                                <small class="text-danger" id="academicYear-error"></small>
+                                <select name="criterias" id="criterias" class="form-select form-control"
+                                    aria-label="Default select example">
+                                    <option selected>Choose</option>
+                                    @foreach ($criterias as $criteria)
+                                        <option value="{{ $criteria->id }}">{{ $criteria->criterias }}</option>
+                                    @endforeach
+                                </select>
                             </div>
+                            <small class="text-danger" id="criterias-error"></small>
                         </div>
                         <div class="form-group text-left">
-                            <label>Semester</label>
+                            <label for="questions">Question for teacher</label>
                             <div>
-                                <select name="academicSemester" class="form-select form-control">
-                                    <option selected>Choose Semester</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                </select>
-                                <small class="text-danger" id="academicSemester-error"></small>
+                                <textarea name="questions" class="form-control" id="questions" cols="30" rows="5"
+                                    placeholder="Write a question"></textarea>
+                                <small class="text-danger" id="questions-error"></small>
                             </div>
                         </div>
                         <hr class="hr-divider">
-                        <button type="submit" class="btn tes-btn">Add Course</button>
+                        <button type="submit" class="btn tes-btn">Add Question</button>
                     </form>
                 </div>
             </div>
@@ -65,7 +65,7 @@
             const page_total = document.querySelector('.page_total')
 
             {{ \Route::currentRouteName() }}Output.innerHTML = `<div class="text-center">
-            <img src="{{asset('assets/images/loading.gif')}}" alt="loading">
+            <img src="{{ asset('assets/images/loading.gif') }}" alt="loading">
             <p>I am about to search for it.</p>
             </div>`;
 
@@ -123,7 +123,6 @@
                 })
                 .catch(function(error) {
                     const errors = error.response.data.errors;
-                    console.log(errors);
                     if (errors) {
                         let errorOutput = document.querySelectorAll('.text-danger')
                         errorOutput.forEach(function(item) {

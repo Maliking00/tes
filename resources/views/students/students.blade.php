@@ -36,6 +36,17 @@
                                 placeholder="Contact Number">
                             <small class="text-danger" id="contactNumber-error"></small>
                         </div>
+                        <div class="form-group mb-4 text-left">
+                            <label for="courses" class="form-label">Select a courses</label>
+                            <select name="courses" id="courses"
+                                class="form-select form-control @error('courses') is-invalid @enderror">
+                                <option selected>Choose</option>
+                                @foreach ($courses as $course)
+                                    <option value="{{ $course->id }}">{{ $course->courseName . ' ' . $course->courseYearLevel . '-' . $course->courseSection}}</option>
+                                @endforeach
+                            </select>
+                            <small class="text-danger" id="security_question-error"></small>
+                        </div>
                         <div class="form-group mb-2 text-left">
                             <label for="password" class="form-label">Password</label>
                             <input type="password" name="password" id="password" class="form-control"
@@ -46,8 +57,7 @@
                         <div class="form-group mb-4 text-left">
                             <label for="securityQuestion" class="form-label">Select a security question</label>
                             <select name="security_question" id="securityQuestion"
-                                class="form-select form-control @error('security_question') is-invalid @enderror"
-                                aria-label="Default select example">
+                                class="form-select form-control @error('security_question') is-invalid @enderror">
                                 <option selected>Choose</option>
                                 @foreach ($studentSecurityQuestions as $question)
                                     <option value="{{ $question->id }}">{{ $question->question }}</option>

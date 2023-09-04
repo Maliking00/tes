@@ -83,10 +83,27 @@ class CoursesController extends Controller
     {
         try {
             $validatedData = $request->validate([
-                'courseName' => 'required|string|unique:courses',
+                'courseName' => 'required|string',
                 'courseYearLevel' => 'required|numeric',
                 'courseSection' => 'required|string',
             ]);
+            $isNameAndYearAndSectionExist = $courseModel::where('courseName', $validatedData['courseName'])->where('courseYearLevel', $validatedData['courseYearLevel'])->where('courseSection', $validatedData['courseSection'])->first();
+
+            if ($isNameAndYearAndSectionExist) {
+                return response()->json([
+                    'errors' => array(
+                        'courseName' => array(
+                            0 => 'Name is exist'
+                        ),
+                        'courseYearLevel' => array(
+                            0 => 'Year level is exist'
+                        ),
+                        'courseSection' => array(
+                            0 => 'Section is exist'
+                        ),
+                    )
+                ], 422);
+            }
             if ($courseModel->create($validatedData)) {
                 return response()->json([
                     'success' => $request->courseName . ' successfully added.',
@@ -97,32 +114,35 @@ class CoursesController extends Controller
         }
     }
 
-    public function showEditCourse($id, Courses $courseModel) {
+    public function showEditCourse($id, Courses $courseModel)
+    {
         $course = $courseModel->findOrFail($id);
         return view('academicFocus.courses.edit-courses', compact('course'));
     }
 
-    public function updateCourse($id, Request $request, Courses $courseModel) {
+    public function updateCourse($id, Request $request, Courses $courseModel)
+    {
         $course = $courseModel->findOrFail($id);
         $validatedData = $request->validate([
-            'courseName' => 'required|string|unique:courses,courseName,' . $course->id,
+            'courseName' => 'required|string',
             'courseYearLevel' => 'required|numeric',
             'courseSection' => 'required|string',
         ]);
-    
+
         if (!$course->update($validatedData)) {
             return back()->with('error', 'An error occurred.');
         }
-    
+
         return redirect()->route('courses')->with('success', 'Course successfully updated.');
     }
 
-    public function deleteCourse($id, Courses $courseModel) {
+    public function deleteCourse($id, Courses $courseModel)
+    {
         $courses = $courseModel->findOrFail($id);
         if (!$courses->delete()) {
             return back()->with('error', 'An error occurred.');
         }
-    
+
         return redirect()->route('courses')->with('success', 'Course successfully deleted.');
     }
 }

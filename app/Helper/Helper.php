@@ -78,7 +78,7 @@ class Helper
     }
 
     public static function isListPage($routeName){
-        $arrayRouteName = array('subjects', 'courses', 'academics', 'criterias', 'students', 'hrs', 'teachers');
+        $arrayRouteName = array('subjects', 'courses', 'academics', 'criterias', 'students', 'hrs', 'teachers', 'questionnaires');
 
         if(!in_array($routeName, $arrayRouteName)){
             return false;

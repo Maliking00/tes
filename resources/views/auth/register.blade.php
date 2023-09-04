@@ -47,6 +47,17 @@
                                 </span>
                             @enderror
                         </div>
+                        <div class="form-group mb-4 text-left">
+                            <label for="courses" class="form-label">Select a courses</label>
+                            <select name="courses" id="courses"
+                                class="form-select form-control @error('courses') is-invalid @enderror">
+                                <option selected>Choose</option>
+                                @foreach ($courses as $course)
+                                    <option value="{{ $course->id }}">{{ $course->courseName . ' ' . $course->courseYearLevel . '-' . $course->courseSection}}</option>
+                                @endforeach
+                            </select>
+                            <small class="text-danger" id="security_question-error"></small>
+                        </div>
                         <div class="form-group mb-2">
                             <label for="contactNumber" class="form-label">Contact Number</label>
                             <input type="text" name="contactNumber" id="contactNumber"

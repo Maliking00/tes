@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Courses;
 use App\Models\SecurityQuestion;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
@@ -28,11 +29,12 @@ class RegisterController extends Controller
     public function registrationFirst(Request $request)
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'idNumber' => ['required', 'regex:/^\d{3}-\d{3}-\d{3}$/'],
-            'contactNumber' => ['required', 'numeric', 'regex:/^0\d{10}$/'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'idNumber' => 'required|regex:/^\d{3}-\d{3}-\d{3}$/',
+            'courses' => 'required|exists:courses,id',
+            'contactNumber' => 'required|numeric|regex:/^0\d{10}$/',
+            'password' => 'required|string|min:8|confirmed',
         ]);
 
         session(['registrationData' => $request->all()]);
@@ -47,7 +49,9 @@ class RegisterController extends Controller
         if ($registerSecurityQuestionTimeLimit && now()->diffInMinutes($registerSecurityQuestionTimeLimit) > 1) {
             return redirect()->route('register')->with('info', 'You took too long on security question. Please start again from registration.');
         }
-        return view('auth.register-security-question', ['registerSecurityQuestions' => SecurityQuestion::all()]);
+        
+        $registerSecurityQuestions = SecurityQuestion::all();
+        return view('auth.register-security-question', compact('registerSecurityQuestions'));
     }
 
     public function postRegistrationSecurityQuestion(Request $request)
