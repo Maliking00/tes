@@ -90,7 +90,7 @@ Route::middleware('auth')->group(function () {
             // HR
             Route::get('/dashboard/hrs', [App\Http\Controllers\HrControllers::class, 'index'])->name('hrs');
             Route::get('/dashboard/load-hrs', [App\Http\Controllers\HrControllers::class, 'loadHrs'])->name('load.hrs');
-            Route::post('/dashboard/store-hrs', [App\Http\Controllers\HrControllers::class, 'storeHr'])->name('store.student');
+            Route::post('/dashboard/store-hrs', [App\Http\Controllers\HrControllers::class, 'storeHr'])->name('store.hrs');
             Route::get('/dashboard/hrs/{id}', [App\Http\Controllers\HrControllers::class, 'showEditHr'])->name('show.edit.hr');
             Route::post('/dashboard/hrs/update/{id}', [App\Http\Controllers\HrControllers::class, 'updateHr'])->name('update.hr');
             Route::post('/dashboard/hrs/delete/{id}', [App\Http\Controllers\HrControllers::class, 'deleteHr'])->name('delete.hr');
