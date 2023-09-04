@@ -116,7 +116,7 @@ class Helper
                 $filePath = 'teachers/avatars/' . $file;
                 if (!in_array($filePath, $existingImages)) {
                     // unlink(storage_path('app/public/' . $filePath));
-                    unlink(storage_path('app/' . $filePath));
+                    unlink(storage_path('app/public/' . $filePath));
                 }
             }
         }
