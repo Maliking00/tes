@@ -89,17 +89,14 @@ class Helper
     public static function removeAvatarsNotExistOnDatabase($model, $field) {
         $existingImages = $model->pluck($field)->all();
         // $avatarDirectory = storage_path('app/public/public/avatars');
-        // $avatarDirectory = storage_path('app/public/avatars');
         $avatarDirectory = storage_path('public/avatars');
         $filesInDirectory = scandir($avatarDirectory);
 
         foreach ($filesInDirectory as $file) {
             if ($file !== '.' && $file !== '..') {
-                // $filePath = 'public/avatars/' . $file;
-                $filePath = 'avatars/' . $file;
+                $filePath = 'public/avatars/' . $file;
                 if (!in_array($filePath, $existingImages)) {
-                    // unlink(storage_path('app/public/' . $filePath));
-                    unlink(storage_path('public/' . $filePath));
+                    unlink(storage_path('app/public/' . $filePath));
                 }
             }
         }
@@ -107,17 +104,45 @@ class Helper
 
     public static function removeTeacherAvatarsNotExistOnDatabase($model, $field) {
         $existingImages = $model->pluck($field)->all();
-        // $avatarDirectory = storage_path('app/public/public/teachers/avatars');
-        // $avatarDirectory = storage_path('app/public/teachers/avatars');
+        $avatarDirectory = storage_path('app/public/public/teachers/avatars');
+        $filesInDirectory = scandir($avatarDirectory);
+
+        foreach ($filesInDirectory as $file) {
+            if ($file !== '.' && $file !== '..') {
+                $filePath = 'public/teachers/avatars/' . $file;
+                if (!in_array($filePath, $existingImages)) {
+                    unlink(storage_path('app/public/' . $filePath));
+                }
+            }
+        }
+    }
+
+
+    // PRODUCTION
+    public static function removeAvatarsNotExistOnDatabaseProd($model, $field) {
+        $existingImages = $model->pluck($field)->all();
+        $avatarDirectory = storage_path('public/avatars');
+        $filesInDirectory = scandir($avatarDirectory);
+
+        foreach ($filesInDirectory as $file) {
+            if ($file !== '.' && $file !== '..') {
+                $filePath = 'avatars/' . $file;
+                if (!in_array($filePath, $existingImages)) {
+                    unlink(storage_path('public/' . $filePath));
+                }
+            }
+        }
+    }
+
+    public static function removeTeacherAvatarsNotExistOnDatabaseProd($model, $field) {
+        $existingImages = $model->pluck($field)->all();
         $avatarDirectory = storage_path('public/teachers/avatars');
         $filesInDirectory = scandir($avatarDirectory);
 
         foreach ($filesInDirectory as $file) {
             if ($file !== '.' && $file !== '..') {
-                // $filePath = 'public/teachers/avatars/' . $file;
                 $filePath = 'teachers/avatars/' . $file;
                 if (!in_array($filePath, $existingImages)) {
-                    // unlink(storage_path('app/public/' . $filePath));
                     unlink(storage_path('public/' . $filePath));
                 }
             }

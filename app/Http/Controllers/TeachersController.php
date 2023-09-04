@@ -107,7 +107,7 @@ class TeachersController extends Controller
                 'teachersAvatar' => $avatarPathUrl
             ]);
 
-            Helper::removeTeacherAvatarsNotExistOnDatabase($teacherModel, 'teachersAvatar');
+            // Helper::removeTeacherAvatarsNotExistOnDatabase($teacherModel, 'teachersAvatar');
 
             if ($teacher) {
                 return response()->json([
@@ -162,7 +162,7 @@ class TeachersController extends Controller
             return back()->with('error', 'An error occurred.');
         }
 
-        Helper::removeTeacherAvatarsNotExistOnDatabase($teacherModel, 'teachersAvatar');
+        // Helper::removeTeacherAvatarsNotExistOnDatabase($teacherModel, 'teachersAvatar');
 
         return back()->with('success', 'Avatar successfully updated.');
     }
