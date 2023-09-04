@@ -46,7 +46,7 @@ class TeachersController extends Controller
                 $html .= '
                     <tr class="t-row" data-aos="fade-up" data-aos-delay="' . $delay . '00">
                         <td class="d-flex align-items-center gap-3">
-                            <img src="' . asset('storage/' . $teacher->teachersAvatar) . '" alt="' . $teacher->teachersFullName . '"/>
+                            <img src="' . asset('storage/teachers/avatars/' . $teacher->teachersAvatar) . '" alt="' . $teacher->teachersFullName . '"/>
                             <div>
                             <p>' . $teacher->teachersFullName . '</p>
                             <p style="color: #1376da;">' . $teacher->teachersEmail . '</p>

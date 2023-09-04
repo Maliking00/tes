@@ -121,14 +121,14 @@ class Helper
     // PRODUCTION
     public static function removeAvatarsNotExistOnDatabaseProd($model, $field) {
         $existingImages = $model->pluck($field)->all();
-        $avatarDirectory = storage_path('public/avatars');
+        $avatarDirectory = storage_path('avatars');
         $filesInDirectory = scandir($avatarDirectory);
 
         foreach ($filesInDirectory as $file) {
             if ($file !== '.' && $file !== '..') {
                 $filePath = 'avatars/' . $file;
                 if (!in_array($filePath, $existingImages)) {
-                    unlink(storage_path('public/' . $filePath));
+                    unlink(storage_path($filePath));
                 }
             }
         }
@@ -136,14 +136,14 @@ class Helper
 
     public static function removeTeacherAvatarsNotExistOnDatabaseProd($model, $field) {
         $existingImages = $model->pluck($field)->all();
-        $avatarDirectory = storage_path('public/teachers/avatars');
+        $avatarDirectory = storage_path('teachers/avatars');
         $filesInDirectory = scandir($avatarDirectory);
 
         foreach ($filesInDirectory as $file) {
             if ($file !== '.' && $file !== '..') {
-                $filePath = 'teachers/avatars/' . $file;
+                $filePath = 'avatars/' . $file;
                 if (!in_array($filePath, $existingImages)) {
-                    unlink(storage_path('public/' . $filePath));
+                    unlink(storage_path('teachers/' . $filePath));
                 }
             }
         }
