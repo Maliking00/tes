@@ -278,7 +278,7 @@
         if(document.querySelector('.alert')){
             setTimeout(() => {
             document.querySelector('.alert').style.display = 'none';
-        }, 11000);
+        }, 20000);
         }
     </script>
 </body>

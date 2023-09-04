@@ -88,7 +88,7 @@ class Helper
 
     public static function removeAvatarsNotExistOnDatabase($model, $field) {
         $existingImages = $model->pluck($field)->all();
-        $avatarDirectory = storage_path('app/public/public/avatars');
+        $avatarDirectory = storage_path('app/public/avatars');
         $filesInDirectory = scandir($avatarDirectory);
 
         foreach ($filesInDirectory as $file) {
@@ -103,14 +103,14 @@ class Helper
 
     public static function removeTeacherAvatarsNotExistOnDatabase($model, $field) {
         $existingImages = $model->pluck($field)->all();
-        $avatarDirectory = storage_path('app/public/public/teachers/avatars');
+        $avatarDirectory = storage_path('app/public/teachers/avatars');
         $filesInDirectory = scandir($avatarDirectory);
 
         foreach ($filesInDirectory as $file) {
             if ($file !== '.' && $file !== '..') {
-                $filePath = 'public/teachers/avatars/' . $file;
+                $filePath = 'teachers/avatars/' . $file;
                 if (!in_array($filePath, $existingImages)) {
-                    unlink(storage_path('app/public/' . $filePath));
+                    unlink(storage_path('app/' . $filePath));
                 }
             }
         }
