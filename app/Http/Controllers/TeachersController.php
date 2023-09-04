@@ -104,7 +104,7 @@ class TeachersController extends Controller
                 'teachersEmail' => $request->teachersEmail,
                 'teachersIdNumber' => $request->teachersIdNumber,
                 'teachersContactNumber' => $request->teachersContactNumber,
-                'teachersAvatar' => $avatarPathUrl
+                'teachersAvatar' => $avatarName
             ]);
 
             // Helper::removeTeacherAvatarsNotExistOnDatabase($teacherModel, 'teachersAvatar');
@@ -158,7 +158,7 @@ class TeachersController extends Controller
             return back()->with('error', 'An error occured while updating the avatar.');
         }
 
-        if (!$user->update(['teachersAvatar' => $avatarPathUrl])) {
+        if (!$user->update(['teachersAvatar' => $avatarName])) {
             return back()->with('error', 'An error occurred.');
         }
 
