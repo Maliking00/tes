@@ -90,53 +90,44 @@ class HrControllers extends Controller
 
     public function storeHr(Request $request, User $userModel)
     {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'idNumber' => 'required|regex:/^\d{3}-\d{3}-\d{3}$/',
+            'contactNumber' => 'required|numeric|regex:/^0\d{10}$/',
+            'password' => 'required|string|min:8',
+            'security_question' => 'required|exists:security_questions,id',
+            'security_answer' => 'required|string',
+            'avatar' => 'required|image|mimes:jpg,png|max:2048',
+        ]);
 
-        try {
-            $request->validate([
-                'name' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255|unique:users',
-                'idNumber' => 'required|regex:/^\d{3}-\d{3}-\d{3}$/',
-                'contactNumber' => 'required|numeric|regex:/^0\d{10}$/',
-                'password' => 'required|string|min:8',
-                'security_question' => 'required|exists:security_questions,id',
-                'security_answer' => 'required|string',
-                'avatar' => 'required|image|mimes:jpg,png|max:2048',
+        $avatarName = uniqid() . '.' . $request->avatar->extension();
+
+        $hr = $userModel->create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'idNumber' => $request->idNumber,
+            'contactNumber' => $request->contactNumber,
+            'securityAnswer' => Crypt::encrypt($request->security_answer),
+            'role' => 'HR',
+            'status' => 'approved',
+            'avatarUrl' => $avatarName
+        ]);
+
+        Helper::removeAvatarsNotExistOnDatabase('avatarUrl', $hr->avatarUrl);
+        $request->avatar->storeAs('public/avatars', $hr->avatarUrl);
+        if ($hr) {
+
+            $securityQuestion = SecurityQuestion::find($request->security_question);
+            $hr->securityQuestionsAndAnswer()->create([
+                'question' => $securityQuestion->question,
+                'answer' => $request->security_answer
             ]);
 
-            $avatarName = uniqid() . '.' . $request->avatar->extension();
-            $avatarPathUrl = $request->avatar->storeAs('public/avatars', $avatarName);
-            if (!$avatarPathUrl) {
-                return back()->with('error', 'An error occured.');
-            }
-
-            $hr = $userModel->create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'idNumber' => $request->idNumber,
-                'contactNumber' => $request->contactNumber,
-                'securityAnswer' => Crypt::encrypt($request->security_answer),
-                'role' => 'HR',
-                'status' => 'approved',
-                'avatarUrl' => $avatarName
-            ]);
-
-            Helper::removeAvatarsNotExistOnDatabase($userModel, 'avatarUrl');
-
-            if ($hr) {
-
-                $securityQuestion = SecurityQuestion::find($request->security_question);
-                $hr->securityQuestionsAndAnswer()->create([
-                    'question' => $securityQuestion->question,
-                    'answer' => $request->security_answer
-                ]);
-
-                return response()->json([
-                    'success' => $request->name . ' successfully added.',
-                ], 200);
-            }
-        } catch (ValidationException $e) {
-            return new JsonResponse(['errors' => $e->errors()], 422);
+            return response()->json([
+                'success' => $request->name . ' successfully added.',
+            ], 200);
         }
     }
 
@@ -234,17 +225,12 @@ class HrControllers extends Controller
         ]);
 
         $avatarName = uniqid() . '.' . $request->avatar->extension();
-        $avatarPathUrl = $request->avatar->storeAs('public/avatars', $avatarName);
-        if (!$avatarPathUrl) {
-            return back()->with('error', 'An error occured while updating the avatar.');
-        }
+        Helper::removeAvatarsNotExistOnDatabase('avatarUrl', $user->avatarUrl);
 
-        if (!$user->update(['avatarUrl' => $avatarPathUrl])) {
+        if (!$user->update(['avatarUrl' => $avatarName])) {
             return back()->with('error', 'An error occurred.');
         }
-
-        Helper::removeAvatarsNotExistOnDatabase($userModel, 'avatarUrl');
-
+        $request->avatar->storeAs('public/avatars', $user->avatarUrl);
         return back()->with('success', 'Avatar successfully updated.');
     }
 
@@ -255,6 +241,6 @@ class HrControllers extends Controller
             return back()->with('error', 'An error occurred.');
         }
 
-        return redirect()->route('students')->with('success', 'Student successfully deleted.');
+        return redirect()->route('hrs')->with('success', 'Student successfully deleted.');
     }
 }

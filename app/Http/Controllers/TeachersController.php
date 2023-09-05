@@ -84,38 +84,31 @@ class TeachersController extends Controller
 
     public function storeTeacher(Request $request, Teachers $teacherModel)
     {
-        try {
-            $request->validate([
-                'teachersFullName' => 'required|string|max:255',
-                'teachersEmail' => 'required|string|email|max:255|unique:teachers',
-                'teachersIdNumber' => 'required|regex:/^\d{3}-\d{3}-\d{3}$/',
-                'teachersContactNumber' => 'required|numeric|regex:/^0\d{10}$/',
-                'teachersAvatar' => 'required|image|mimes:jpg,png|max:2048',
-            ]);
+        $request->validate([
+            'teachersFullName' => 'required|string|max:255',
+            'teachersEmail' => 'required|string|email|max:255|unique:teachers',
+            'teachersIdNumber' => 'required|regex:/^\d{3}-\d{3}-\d{3}$/',
+            'teachersContactNumber' => 'required|numeric|regex:/^0\d{10}$/',
+            'teachersAvatar' => 'required|image|mimes:jpg,png|max:2048',
+        ]);
 
-            $avatarName = uniqid() . '.' . $request->teachersAvatar->extension();
-            $avatarPathUrl = $request->teachersAvatar->storeAs('public/teachers/avatars', $avatarName);
-            if (!$avatarPathUrl) {
-                return back()->with('error', 'An error occured.');
-            }
+        $avatarName = uniqid() . '.' . $request->teachersAvatar->extension();
 
-            $teacher = $teacherModel->create([
-                'teachersFullName' => $request->teachersFullName,
-                'teachersEmail' => $request->teachersEmail,
-                'teachersIdNumber' => $request->teachersIdNumber,
-                'teachersContactNumber' => $request->teachersContactNumber,
-                'teachersAvatar' => $avatarName
-            ]);
+        $teacher = $teacherModel->create([
+            'teachersFullName' => $request->teachersFullName,
+            'teachersEmail' => $request->teachersEmail,
+            'teachersIdNumber' => $request->teachersIdNumber,
+            'teachersContactNumber' => $request->teachersContactNumber,
+            'teachersAvatar' => $avatarName
+        ]);
 
-            Helper::removeAvatarsNotExistOnDatabase($teacherModel, 'teachersAvatar');
+        Helper::removeAvatarsNotExistOnDatabase('teachersAvatar', $teacher->teachersAvatar);
+        $request->teachersAvatar->storeAs('public/teachers/avatars', $teacher->teachersAvatar);
 
-            if ($teacher) {
-                return response()->json([
-                    'success' => $request->name . ' successfully added.',
-                ], 200);
-            }
-        } catch (ValidationException $e) {
-            return new JsonResponse(['errors' => $e->errors()], 422);
+        if ($teacher) {
+            return response()->json([
+                'success' => $request->name . ' successfully added.',
+            ], 200);
         }
     }
 
@@ -153,16 +146,11 @@ class TeachersController extends Controller
         ]);
 
         $avatarName = uniqid() . '.' . $request->teachersAvatar->extension();
-        $avatarPathUrl = $request->teachersAvatar->storeAs('public/teachers/avatars', $avatarName);
-        if (!$avatarPathUrl) {
-            return back()->with('error', 'An error occured while updating the avatar.');
-        }
-
+        Helper::removeAvatarsNotExistOnDatabase('teachersAvatar', $user->teachersAvatar);
         if (!$user->update(['teachersAvatar' => $avatarName])) {
             return back()->with('error', 'An error occurred.');
         }
-
-        Helper::removeAvatarsNotExistOnDatabase($teacherModel, 'teachersAvatar');
+        $request->teachersAvatar->storeAs('public/teachers/avatars', $avatarName);
         return back()->with('success', 'Avatar successfully updated.');
     }
 

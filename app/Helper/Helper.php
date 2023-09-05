@@ -4,6 +4,7 @@ namespace App\Helper;
 
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Http;
+use File;
 
 class Helper
 {
@@ -100,26 +101,16 @@ class Helper
         return true;
     }
 
-    public static function removeAvatarsNotExistOnDatabase($model, $field)
+    public static function removeAvatarsNotExistOnDatabase($field, $avatar)
     {
         if (!App::environment(['local', 'staging']) || !app()->environment(['local', 'staging'])) {
-            // $storagePath = ($field === 'teachersAvatar' ? 'teachers/avatars/' : 'avatars/');
-            $storagePath = ($field === 'teachersAvatar' ? 'storage/public/teachers/avatars/' : 'storage/public/avatars/');
+            $storagePath = ($field == 'teachersAvatar' ? 'storage/teachers/avatars/' . $avatar : 'storage/avatars/' . $avatar);
         } else {
-            // $storagePath = ($field === 'teachersAvatar' ? 'app/public/public/teachers/avatars/' : 'app/public/public/avatars/');
-            $storagePath = ($field === 'teachersAvatar' ? 'storage/public/teachers/avatars/' : 'storage/public/avatars/');
+            $storagePath = ($field == 'teachersAvatar' ? 'storage/public/teachers/avatars/' . $avatar : 'storage/public/avatars/'. $avatar);
         }
 
-        $existingImages = $model->pluck($field)->all();
-        $avatarDirectory = public_path($storagePath);
-        $filesInDirectory = scandir($avatarDirectory);
-        foreach ($filesInDirectory as $file) {
-            if ($file !== '.' && $file !== '..') {
-                $filePath = $storagePath . $file;
-                if (!in_array($file, $existingImages)) {
-                    unlink(public_path($filePath));
-                }
-            }
+        if (File::exists(public_path($storagePath))) {
+            File::delete(public_path($storagePath));
         }
     }
 

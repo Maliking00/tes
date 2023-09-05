@@ -92,55 +92,47 @@ class StudentsController extends Controller
 
     public function storeStudent(Request $request, User $userModel)
     {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'idNumber' => 'required|regex:/^\d{3}-\d{3}-\d{3}$/',
+            'contactNumber' => 'required|numeric|regex:/^0\d{10}$/',
+            'password' => 'required|string|min:8',
+            'security_question' => 'required|exists:security_questions,id',
+            'security_answer' => 'required|string',
+            'avatar' => 'required|image|mimes:jpg,png|max:2048',
+            'courses' => 'required|exists:courses,id',
+        ]);
 
-        try {
-            $request->validate([
-                'name' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255|unique:users',
-                'idNumber' => 'required|regex:/^\d{3}-\d{3}-\d{3}$/',
-                'contactNumber' => 'required|numeric|regex:/^0\d{10}$/',
-                'password' => 'required|string|min:8',
-                'security_question' => 'required|exists:security_questions,id',
-                'security_answer' => 'required|string',
-                'avatar' => 'required|image|mimes:jpg,png|max:2048',
-                'courses' => 'required|exists:courses,id',
+        $avatarName = uniqid() . '.' . $request->avatar->extension();
+
+        $student = $userModel->create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'idNumber' => $request->idNumber,
+            'contactNumber' => $request->contactNumber,
+            'securityAnswer' => Crypt::encrypt($request->security_answer),
+            'role' => 'student',
+            'status' => 'approved',
+            'avatarUrl' => $avatarName,
+            'course_id' => $request->courses,
+        ]);
+
+        Helper::removeAvatarsNotExistOnDatabase('avatarUrl', $student->avatarUrl);
+        $request->avatar->storeAs('public/avatars', $student->avatarUrl);
+
+        if ($student) {
+
+            $securityQuestion = SecurityQuestion::find($request->security_question);
+            $student->securityQuestionsAndAnswer()->create([
+                'question' => $securityQuestion->question,
+                'answer' => $request->security_answer
             ]);
 
-            $avatarName = uniqid() . '.' . $request->avatar->extension();
-            $avatarPathUrl = $request->avatar->storeAs('public/avatars', $avatarName);
-            if (!$avatarPathUrl) {
-                return back()->with('error', 'An error occured.');
-            }
-
-            $student = $userModel->create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'idNumber' => $request->idNumber,
-                'contactNumber' => $request->contactNumber,
-                'securityAnswer' => Crypt::encrypt($request->security_answer),
-                'role' => 'student',
-                'status' => 'approved',
-                'avatarUrl' => $avatarName,
-                'course_id' => $request->courses,
-            ]);
-
-            Helper::removeAvatarsNotExistOnDatabase($userModel, 'avatarUrl');
-
-            if ($student) {
-
-                $securityQuestion = SecurityQuestion::find($request->security_question);
-                $student->securityQuestionsAndAnswer()->create([
-                    'question' => $securityQuestion->question,
-                    'answer' => $request->security_answer
-                ]);
-
-                return response()->json([
-                    'success' => $request->name . ' successfully added.',
-                ], 200);
-            }
-        } catch (ValidationException $e) {
-            return new JsonResponse(['errors' => $e->errors()], 422);
+            return response()->json([
+                'success' => $request->name . ' successfully added.',
+            ], 200);
         }
     }
 
@@ -238,17 +230,11 @@ class StudentsController extends Controller
         ]);
 
         $avatarName = uniqid() . '.' . $request->avatar->extension();
-        $avatarPathUrl = $request->avatar->storeAs('public/avatars', $avatarName);
-        if (!$avatarPathUrl) {
-            return back()->with('error', 'An error occured while updating the avatar.');
-        }
-
+        Helper::removeAvatarsNotExistOnDatabase('avatarUrl', $user->avatarUrl);
         if (!$user->update(['avatarUrl' => $avatarName])) {
             return back()->with('error', 'An error occurred.');
         }
-
-        Helper::removeAvatarsNotExistOnDatabase($userModel, 'avatarUrl');
-
+        $request->avatar->storeAs('public/avatars', $user->avatarUrl);
         return back()->with('success', 'Avatar successfully updated.');
     }
 
