@@ -103,19 +103,21 @@ class Helper
     public static function removeAvatarsNotExistOnDatabase($model, $field)
     {
         if (!App::environment(['local', 'staging']) || !app()->environment(['local', 'staging'])) {
-            $storagePath = ($field === 'teachersAvatar' ? 'teachers/avatars/' : 'avatars/');
+            // $storagePath = ($field === 'teachersAvatar' ? 'teachers/avatars/' : 'avatars/');
+            $storagePath = ($field === 'teachersAvatar' ? 'storage/public/teachers/avatars/' : 'storage/public/avatars/');
         } else {
-            $storagePath = ($field === 'teachersAvatar' ? 'app/public/public/teachers/avatars/' : 'app/public/public/avatars/');
+            // $storagePath = ($field === 'teachersAvatar' ? 'app/public/public/teachers/avatars/' : 'app/public/public/avatars/');
+            $storagePath = ($field === 'teachersAvatar' ? 'storage/public/teachers/avatars/' : 'storage/public/avatars/');
         }
 
         $existingImages = $model->pluck($field)->all();
-        $avatarDirectory = storage_path($storagePath);
-        $filesInDirectory = scandir('app/public/public/teachers/avatars/');
+        $avatarDirectory = public_path($storagePath);
+        $filesInDirectory = scandir($avatarDirectory);
         foreach ($filesInDirectory as $file) {
             if ($file !== '.' && $file !== '..') {
                 $filePath = $storagePath . $file;
                 if (!in_array($file, $existingImages)) {
-                    unlink(storage_path($filePath));
+                    unlink(public_path($filePath));
                 }
             }
         }
