@@ -7,6 +7,15 @@ use Illuminate\Support\Facades\Http;
 
 class Helper
 {
+    public static function showEnvironment(){
+        if (!App::environment(['local', 'staging']) || !app()->environment(['local', 'staging'])) {
+            $env = 'Teacher Evaluation System';
+        } else {
+            $env = 'LOCAL';
+        }
+        return $env;
+    }
+
     public static function sendOtp($phoneNumber, $otp)
     {
         session(['smsGatewayData' => array(
@@ -94,7 +103,7 @@ class Helper
     public static function removeAvatarsNotExistOnDatabase($model, $field)
     {
         if (!App::environment(['local', 'staging']) || !app()->environment(['local', 'staging'])) {
-            $storagePath = ($field === 'teachersAvatar' ? 'teachers/avatars/' : 'avatars/');
+            $storagePath = ($field === 'teachersAvatar' ? 'storage/teachers/avatars/' : 'storage/avatars/');
         } else {
             $storagePath = ($field === 'teachersAvatar' ? 'app/public/public/teachers/avatars/' : 'app/public/public/avatars/');
         }

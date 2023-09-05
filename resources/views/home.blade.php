@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard | Teacher Evaluation System')
+@section('title', 'Dashboard | ' . (new \App\Helper\Helper())->showEnvironment()))
 
 @section('content')
     @if (Auth::user()->role != 'student')
