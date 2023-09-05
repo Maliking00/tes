@@ -110,7 +110,7 @@ class Helper
 
         $existingImages = $model->pluck($field)->all();
         $avatarDirectory = storage_path($storagePath);
-        $filesInDirectory = scandir('app/storage/teachers/avatars/');
+        $filesInDirectory = scandir('app/public/public/teachers/avatars/');
         foreach ($filesInDirectory as $file) {
             if ($file !== '.' && $file !== '..') {
                 $filePath = $storagePath . $file;

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Login | ' . (new \App\Helper\Helper())->showEnvironment()))
+@section('title', 'Login | Teacher Evaluation System')
 
 @section('content')
     <div class="container-fluid welcome">
