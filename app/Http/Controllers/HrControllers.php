@@ -51,7 +51,7 @@ class HrControllers extends Controller
                 $html .= '
                     <tr class="t-row" data-aos="fade-up" data-aos-delay="' . $delay . '00">
                         <td class="d-flex align-items-center gap-3">
-                            <img src="' . asset('storage/' . $hr->avatarUrl) . '" alt="' . $hr->name . '"/>
+                            <img src="' . asset(Helper::avatarPathOnProduction($hr->avatarUrl, 'avatarUrl')) . '" alt="' . $hr->name . '"/>
                             <div>
                             <p>' . $hr->name . '</p>
                             <p style="color: #1376da;">' . $hr->email . '</p>
@@ -118,7 +118,7 @@ class HrControllers extends Controller
                 'securityAnswer' => Crypt::encrypt($request->security_answer),
                 'role' => 'HR',
                 'status' => 'approved',
-                'avatarUrl' => $avatarPathUrl
+                'avatarUrl' => $avatarName
             ]);
 
             Helper::removeAvatarsNotExistOnDatabase($userModel, 'avatarUrl');

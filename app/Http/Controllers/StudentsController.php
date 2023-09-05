@@ -53,7 +53,7 @@ class StudentsController extends Controller
                 $html .= '
                     <tr class="t-row" data-aos="fade-up" data-aos-delay="' . $delay . '00">
                         <td class="d-flex align-items-center gap-3">
-                            <img src="' . asset('storage/' . $student->avatarUrl) . '" alt="' . $student->name . '"/>
+                            <img src="' . asset(Helper::avatarPathOnProduction($student->avatarUrl, 'avatarUrl')) . '" alt="' . $student->name . '"/>
                             <div>
                             <p>' . $student->name . '</p>
                             <p style="color: #1376da;">' . $student->email . '</p>
@@ -121,7 +121,7 @@ class StudentsController extends Controller
                 'securityAnswer' => Crypt::encrypt($request->security_answer),
                 'role' => 'student',
                 'status' => 'approved',
-                'avatarUrl' => $avatarPathUrl,
+                'avatarUrl' => $avatarName,
                 'course_id' => $request->courses,
             ]);
 
@@ -243,7 +243,7 @@ class StudentsController extends Controller
             return back()->with('error', 'An error occured while updating the avatar.');
         }
 
-        if (!$user->update(['avatarUrl' => $avatarPathUrl])) {
+        if (!$user->update(['avatarUrl' => $avatarName])) {
             return back()->with('error', 'An error occurred.');
         }
 

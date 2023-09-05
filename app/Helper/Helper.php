@@ -2,6 +2,7 @@
 
 namespace App\Helper;
 
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Http;
 
 class Helper
@@ -42,7 +43,7 @@ class Helper
 
             if ($currentTime >= $sessionTimeLimit) {
                 return true;
-            }else{
+            } else {
                 return false;
             }
         }
@@ -53,99 +54,73 @@ class Helper
         return preg_replace('/\d{8}(\d{3})/', '******$1', $phone_number);
     }
 
-    public static function isAccessingPrivateUrl($session){
-        if(!$session){
+    public static function isAccessingPrivateUrl($session)
+    {
+        if (!$session) {
             abort(404, 'Resource Not Found');
         }
     }
 
-    public static function isAcaddemicFocusRoutes($routeName){
+    public static function isAcaddemicFocusRoutes($routeName)
+    {
         $arrayRouteName = array('subjects', 'courses', 'academics');
 
-        if(!in_array($routeName, $arrayRouteName)){
+        if (!in_array($routeName, $arrayRouteName)) {
             return false;
         }
         return true;
     }
 
-    public static function isUsersRoutes($routeName){
+    public static function isUsersRoutes($routeName)
+    {
         $arrayRouteName = array('teachers', 'students', 'hrs');
 
-        if(!in_array($routeName, $arrayRouteName)){
+        if (!in_array($routeName, $arrayRouteName)) {
             return false;
         }
         return true;
     }
 
-    public static function isListPage($routeName){
+    public static function isListPage($routeName)
+    {
         $arrayRouteName = array('subjects', 'courses', 'academics', 'criterias', 'students', 'hrs', 'teachers', 'questionnaires');
 
-        if(!in_array($routeName, $arrayRouteName)){
+        if (!in_array($routeName, $arrayRouteName)) {
             return false;
         }
         return true;
     }
 
-    public static function removeAvatarsNotExistOnDatabase($model, $field) {
-        $existingImages = $model->pluck($field)->all();
-        // $avatarDirectory = storage_path('app/public/public/avatars');
-        $avatarDirectory = storage_path('public/avatars');
-        $filesInDirectory = scandir($avatarDirectory);
-
-        foreach ($filesInDirectory as $file) {
-            if ($file !== '.' && $file !== '..') {
-                $filePath = 'public/avatars/' . $file;
-                if (!in_array($filePath, $existingImages)) {
-                    unlink(storage_path('app/public/' . $filePath));
-                }
-            }
+    public static function removeAvatarsNotExistOnDatabase($model, $field)
+    {
+        if (!App::environment(['local', 'staging']) || !app()->environment(['local', 'staging'])) {
+            $storagePath = ($field === 'teachersAvatar' ? 'storage/teachers/avatars/' : 'storage/avatars/');
+        } else {
+            $storagePath = ($field === 'teachersAvatar' ? 'app/public/public/teachers/avatars/' : 'app/public/public/avatars/');
         }
-    }
 
-    public static function removeTeacherAvatarsNotExistOnDatabase($model, $field) {
         $existingImages = $model->pluck($field)->all();
-        $avatarDirectory = storage_path('app/public/public/teachers/avatars');
+        $avatarDirectory = storage_path($storagePath);
         $filesInDirectory = scandir($avatarDirectory);
-
         foreach ($filesInDirectory as $file) {
             if ($file !== '.' && $file !== '..') {
-                $filePath = 'public/teachers/avatars/' . $file;
-                if (!in_array($filePath, $existingImages)) {
-                    unlink(storage_path('app/public/' . $filePath));
-                }
-            }
-        }
-    }
-
-
-    // PRODUCTION
-    public static function removeAvatarsNotExistOnDatabaseProd($model, $field) {
-        $existingImages = $model->pluck($field)->all();
-        $avatarDirectory = storage_path('avatars');
-        $filesInDirectory = scandir($avatarDirectory);
-
-        foreach ($filesInDirectory as $file) {
-            if ($file !== '.' && $file !== '..') {
-                $filePath = 'avatars/' . $file;
-                if (!in_array($filePath, $existingImages)) {
+                $filePath = $storagePath . $file;
+                if (!in_array($file, $existingImages)) {
                     unlink(storage_path($filePath));
                 }
             }
         }
     }
 
-    public static function removeTeacherAvatarsNotExistOnDatabaseProd($model, $field) {
-        $existingImages = $model->pluck($field)->all();
-        $avatarDirectory = storage_path('teachers/avatars');
-        $filesInDirectory = scandir($avatarDirectory);
-
-        foreach ($filesInDirectory as $file) {
-            if ($file !== '.' && $file !== '..') {
-                $filePath = 'avatars/' . $file;
-                if (!in_array($filePath, $existingImages)) {
-                    unlink(storage_path('teachers/' . $filePath));
-                }
-            }
+    // PRODUCTION
+    public static function avatarPathOnProduction($userAvatar, $field)
+    {
+        if (!App::environment(['local', 'staging']) || !app()->environment(['local', 'staging'])) {
+            $path = ($field === 'teachersAvatar' ? 'storage/teachers/avatars/' . $userAvatar : 'storage/avatars/' . $userAvatar);
+        } else {
+            $path = ($field === 'teachersAvatar' ? 'storage/public/teachers/avatars/' . $userAvatar : 'storage/public/avatars/' . $userAvatar);
+            
         }
+        return $path;
     }
 }

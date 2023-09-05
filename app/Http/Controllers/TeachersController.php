@@ -46,7 +46,7 @@ class TeachersController extends Controller
                 $html .= '
                     <tr class="t-row" data-aos="fade-up" data-aos-delay="' . $delay . '00">
                         <td class="d-flex align-items-center gap-3">
-                            <img src="' . asset('storage/teachers/avatars/' . $teacher->teachersAvatar) . '" alt="' . $teacher->teachersFullName . '"/>
+                            <img src="' . asset(Helper::avatarPathOnProduction($teacher->teachersAvatar, 'teachersAvatar')) . '" alt="' . $teacher->teachersFullName . '"/>
                             <div>
                             <p>' . $teacher->teachersFullName . '</p>
                             <p style="color: #1376da;">' . $teacher->teachersEmail . '</p>
@@ -107,7 +107,7 @@ class TeachersController extends Controller
                 'teachersAvatar' => $avatarName
             ]);
 
-            // Helper::removeTeacherAvatarsNotExistOnDatabase($teacherModel, 'teachersAvatar');
+            Helper::removeAvatarsNotExistOnDatabase($teacherModel, 'teachersAvatar');
 
             if ($teacher) {
                 return response()->json([
@@ -162,8 +162,7 @@ class TeachersController extends Controller
             return back()->with('error', 'An error occurred.');
         }
 
-        // Helper::removeTeacherAvatarsNotExistOnDatabase($teacherModel, 'teachersAvatar');
-
+        Helper::removeAvatarsNotExistOnDatabase($teacherModel, 'teachersAvatar');
         return back()->with('success', 'Avatar successfully updated.');
     }
 

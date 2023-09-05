@@ -109,7 +109,7 @@
             <div class="v-100 text-center mb-3" data-aos="fade-up" data-aos-delay="400">
                 <div class="card">
                     <div class="card-body">
-                        <img src="{{ asset($student->avatarUrl ? 'storage/' . $student->avatarUrl . '' : 'assets/images/logo.png') }}"
+                        <img src="{{ asset((new \App\Helper\Helper())->avatarPathOnProduction($student->avatarUrl, 'avatarUrl')) }}"
                             class="user-avatar" alt="profile" />
                         <h3 class="font-weight-normal mt-4">Student Information</h3>
                         <p>Please review the information and make any necessary updates</p>
