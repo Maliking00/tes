@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'HR Info | Teacher Evaluation System')
+@section('title', 'HR Info | ' . (new \App\Helper\Helper())->showEnvironment()))
 
 @section('pageTitle', 'HR Info | '. $hr->name)
 

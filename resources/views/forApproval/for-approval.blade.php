@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Approval | Teacher Evaluation System')
+@section('title', 'Approval | ' . (new \App\Helper\Helper())->showEnvironment()))
 
 @section('content')
     <div class="container-fluid for-approval">

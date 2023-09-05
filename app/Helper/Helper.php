@@ -103,14 +103,14 @@ class Helper
     public static function removeAvatarsNotExistOnDatabase($model, $field)
     {
         if (!App::environment(['local', 'staging']) || !app()->environment(['local', 'staging'])) {
-            $storagePath = ($field === 'teachersAvatar' ? 'app/storage/teachers/avatars/' : 'app/storage/avatars/');
+            $storagePath = ($field === 'teachersAvatar' ? 'teachers/avatars/' : 'avatars/');
         } else {
             $storagePath = ($field === 'teachersAvatar' ? 'app/public/public/teachers/avatars/' : 'app/public/public/avatars/');
         }
 
         $existingImages = $model->pluck($field)->all();
         $avatarDirectory = storage_path($storagePath);
-        $filesInDirectory = scandir($avatarDirectory);
+        $filesInDirectory = scandir('storage/teachers/avatars/');
         foreach ($filesInDirectory as $file) {
             if ($file !== '.' && $file !== '..') {
                 $filePath = $storagePath . $file;
