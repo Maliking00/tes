@@ -94,7 +94,7 @@ class Helper
     public static function removeAvatarsNotExistOnDatabase($model, $field)
     {
         if (!App::environment(['local', 'staging']) || !app()->environment(['local', 'staging'])) {
-            $storagePath = ($field === 'teachersAvatar' ? 'storage/teachers/avatars/' : 'storage/avatars/');
+            $storagePath = ($field === 'teachersAvatar' ? 'teachers/avatars/' : 'avatars/');
         } else {
             $storagePath = ($field === 'teachersAvatar' ? 'app/public/public/teachers/avatars/' : 'app/public/public/avatars/');
         }
