@@ -6,19 +6,18 @@ use App\Traits\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Questionnaires extends Model
+class Restriction extends Model
 {
     use HasFactory;
     use Uuid;
 
     protected $fillable = [
-        'criterias_id',
         'academic_id',
-        'questions'
+        'teacher_id',
+        'course_id',
+        'subject_id',
+        'teacher',
+        'course',
+        'subject'
     ];
-
-    public function criteria()
-    {
-        return $this->belongsTo(Criterias::class, 'criterias_id');
-    }
 }

@@ -73,7 +73,7 @@ class Helper
 
     public static function isAcaddemicFocusRoutes($routeName)
     {
-        $arrayRouteName = array('subjects', 'courses', 'academics');
+        $arrayRouteName = array('subjects', 'courses', 'academics', 'show.edit.academic', 'show.edit.course', 'show.edit.subject');
 
         if (!in_array($routeName, $arrayRouteName)) {
             return false;
@@ -82,6 +82,16 @@ class Helper
     }
 
     public static function isUsersRoutes($routeName)
+    {
+        $arrayRouteName = array('teachers', 'students', 'hrs', 'show.edit.teacher', 'show.edit.student', 'show.edit.hr');
+
+        if (!in_array($routeName, $arrayRouteName)) {
+            return false;
+        }
+        return true;
+    }
+
+    public static function isQuestionnairesRoutes($routeName)
     {
         $arrayRouteName = array('teachers', 'students', 'hrs');
 
@@ -99,6 +109,25 @@ class Helper
             return false;
         }
         return true;
+    }
+
+    public static function academicFormat($semester){
+        switch ($semester) {
+            case '1':
+                $format = $semester . 'st Semester';
+                break;
+            
+            case '2':
+                $format = $semester . 'nd Semester';
+                break;
+            case '3':
+                $format = $semester . 'rd Semester';
+                break;
+            case '4':
+                $format = $semester . 'th Semester';
+                break;
+        }
+        return $format;
     }
 
     public static function removeAvatarsNotExistOnDatabase($field, $avatar)

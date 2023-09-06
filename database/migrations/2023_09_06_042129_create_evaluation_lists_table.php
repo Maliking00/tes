@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateQuestionnairesTable extends Migration
+class CreateEvaluationListsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,15 @@ class CreateQuestionnairesTable extends Migration
      */
     public function up()
     {
-        Schema::create('questionnaires', function (Blueprint $table) {
+        Schema::create('evaluation_lists', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('criterias_id');
             $table->uuid('academic_id');
-            $table->text('questions');
+            $table->uuid('course_id');
+            $table->uuid('subject_id');
+            $table->uuid('student_id');
+            $table->uuid('teacher_id');
+            $table->uuid('restriction_id');
             $table->timestamps();
-            $table->foreign('criterias_id')->references('id')->on('criterias')->onDelete('cascade');
         });
     }
 
@@ -30,6 +32,6 @@ class CreateQuestionnairesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('questionnaires');
+        Schema::dropIfExists('evaluation_lists');
     }
 }

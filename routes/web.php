@@ -49,7 +49,7 @@ Route::middleware('auth')->group(function () {
             Route::post('/dashboard/subjects/update/{id}', [App\Http\Controllers\AcademicFocus\SubjectsController::class, 'updateSubject'])->name('update.subject');
             Route::post('/dashboard/subjects/delete/{id}', [App\Http\Controllers\AcademicFocus\SubjectsController::class, 'deleteSubject'])->name('delete.subject');
 
-            // courses 711085 
+            // courses  
             Route::get('/dashboard/courses', [App\Http\Controllers\AcademicFocus\CoursesController::class, 'index'])->name('courses');
             Route::get('/dashboard/load-courses', [App\Http\Controllers\AcademicFocus\CoursesController::class, 'loadCourses'])->name('load.courses');
             Route::post('/dashboard/store-courses', [App\Http\Controllers\AcademicFocus\CoursesController::class, 'storeCourse'])->name('store.course');
@@ -109,8 +109,17 @@ Route::middleware('auth')->group(function () {
             // questionnaire
             Route::get('/dashboard/questionnaires', [App\Http\Controllers\QuestionnairesController::class, 'index'])->name('questionnaires');
             Route::get('/dashboard/load-questionnaires', [App\Http\Controllers\QuestionnairesController::class, 'loadQuestionnaire'])->name('load.questionnaires');
+            Route::get('/dashboard/load-questionnaires-list', [App\Http\Controllers\QuestionnairesController::class, 'loadQuestionnaireList'])->name('questionnaireList');
+            Route::get('/dashboard/questionnaires/{id}', [App\Http\Controllers\QuestionnairesController::class, 'showManageQuestionnaire'])->name('show.manage.questionnaires');
+            Route::get('/dashboard/load-manage-questionnaire/{id}', [App\Http\Controllers\QuestionnairesController::class, 'loadManageQuestionnaire'])->name('load.manage.questionnaires');
             Route::post('/dashboard/store-questionnaires', [App\Http\Controllers\QuestionnairesController::class, 'storeQuestionnaire'])->name('store.questionnaire');
+            Route::post('/dashboard/questionnaires/update-academic-status/{id}', [App\Http\Controllers\QuestionnairesController::class, 'updateAcademicEvaluationStatus'])->name('update.academic.status');
             Route::post('/dashboard/questionnaires/delete/{id}', [App\Http\Controllers\QuestionnairesController::class, 'deleteQuestionnaire'])->name('delete.questionnaire');
+
+            // restrictions
+            Route::get('/dashboard/questionnaires/{id}/restrictions', [App\Http\Controllers\RestrictionsController::class, 'index'])->name('restrictions');
+            Route::post('/dashboard/store-restrictions', [App\Http\Controllers\RestrictionsController::class, 'storeRestriction'])->name('store.restriction');
+            Route::post('/dashboard/restrictions/delete/{id}', [App\Http\Controllers\RestrictionsController::class, 'deleteRestriction'])->name('delete.restriction');
         });
 
         // // routes for HR only

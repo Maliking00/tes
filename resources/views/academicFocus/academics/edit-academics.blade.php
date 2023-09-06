@@ -25,10 +25,10 @@
                             <label for="academicSemester">Semester</label>
                             <div>
                                 <select id="academicSemester" class="form-select form-control" name="academicSemester">
-                                    <option value="1" {{ $academic->academicSemester == 1 ? 'selected' : '' }}>1</option>
-                                    <option value="2" {{ $academic->academicSemester == 2 ? 'selected' : '' }}>2</option>
-                                    <option value="3" {{ $academic->academicSemester == 3 ? 'selected' : '' }}>3</option>
-                                    <option value="4" {{ $academic->academicSemester == 4 ? 'selected' : '' }}>4</option>
+                                    <option value="1" {{ $academic->academicSemester == 1 ? 'selected' : '' }}>1st Semester</option>
+                                    <option value="2" {{ $academic->academicSemester == 2 ? 'selected' : '' }}>2nd Semester</option>
+                                    <option value="3" {{ $academic->academicSemester == 3 ? 'selected' : '' }}>3rd Semester</option>
+                                    <option value="4" {{ $academic->academicSemester == 4 ? 'selected' : '' }}>4th Semester</option>
                                 </select>
                             </div>
                         </div>

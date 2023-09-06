@@ -48,7 +48,7 @@
     <div class="d-flex align-items-center">
         <strong class="alert-warning"><i class="ti-hand-stop"></i></strong>
         <div>
-            <p class="mt-2">{{ session()->get('warning') }}</p>
+            <p class="mt-2">{!! session()->get('warning') !!}</p>
         </div>
     </div>
     <i class="ti-close close-alert-btn" data-bs-dismiss="alert" aria-label="Close"></i>

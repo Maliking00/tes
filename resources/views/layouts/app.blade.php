@@ -122,14 +122,14 @@
                                     </div>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link @if (\Route::currentRouteName() == 'criterias') active @endif"
+                                    <a class="nav-link @if (\Route::currentRouteName() == 'criterias' || \Route::currentRouteName() == 'show.edit.criteria') active @endif"
                                         href="{{ route('criterias') }}">
                                         <i class="ti-calendar menu-icon"></i>
                                         <span class="menu-title">Evaluation Criteria</span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('questionnaires') }}">
+                                    <a class="nav-link @if (\Route::currentRouteName() == 'questionnaires' || \Route::currentRouteName() == 'show.manage.questionnaires') active @endif" href="{{ route('questionnaires') }}">
                                         <i class="ti-clipboard menu-icon"></i>
                                         <span class="menu-title">Questionnaires</span>
                                     </a>
@@ -161,7 +161,7 @@
                             <div class="row">
                                 <div class="col-md-12 grid-margin">
                                     <div class="row">
-                                        <div class="col-5 col-xl-9 mb-4 mb-xl-0">
+                                        <div class="col-5 col-xl-10 mb-4 mb-xl-0">
                                             @if (\Route::currentRouteName() == 'dashboard')
                                                 <h3 class="font-weight-bold">Welcome {{ Auth::user()->name }}</h3>
                                             @else
@@ -186,7 +186,7 @@
                                                 @endfor
                                             </ul>
                                         </div>
-                                        <div class="col-7 col-xl-3 mb-8">
+                                        <div class="col-7 col-xl-2 mb-8">
                                             @if ((new \App\Helper\Helper())->isListPage(\Route::currentRouteName()))
                                                 <div class="input-group flex-nowrap" data-aos="fade-up"
                                                     data-aos-delay="100">
@@ -198,6 +198,7 @@
                                                         placeholder="Search for {{ \Route::currentRouteName() }}">
                                                 </div>
                                             @endif
+                                            @yield('questionnairesActions')
                                         </div>
                                     </div>
                                 </div>
