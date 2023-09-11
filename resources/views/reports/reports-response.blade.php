@@ -92,20 +92,47 @@
                                 @endphp
                                 @if (!in_array($item->question, $uniqueQuestions))
                                     <div class="card mb-2 border py-3 px-4">
-                                        <h6 class="my-2">Questions</h6>
-                                        <p>{{ $item->question }}</p>
-                                        <h6 class="my-2">Answers</h6>
-                                        <div class="d-flex align-items-center gap-3">
-                                            <small class="badge border text-dark">Strongly Disagree: <span
-                                                    class="text-info font-weight-normal">{{ $stronglyDisagree }}</span></small>
-                                            <small class="badge border text-dark">Disagree: <span
-                                                    class="text-info font-weight-normal">{{ $disagree }}</span></small>
-                                            <small class="badge border text-dark">Uncertain: <span
-                                                    class="text-info font-weight-normal">{{ $uncertain }}</span></small>
-                                            <small class="badge border text-dark">Agree: <span
-                                                    class="text-info font-weight-normal">{{ $agree }}</span></small>
-                                            <small class="badge border text-dark">Strongly Agree: <span
-                                                    class="text-info font-weight-normal">{{ $stronglyAgree }}</span></small>
+                                        <div class="row">
+                                            <div class="col-lg-7">
+                                                <h6 class="my-2">Questions</h6>
+                                                <p>{{ $item->question }}</p>
+                                                <h6 class="my-2">Answers</h6>
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <small class="badge text-white" style="background: #e63946;">Strongly Disagree: <span
+                                                            class="font-weight-normal">{{ $stronglyDisagree }}</span></small>
+                                                    <small class="badge text-white" style="background: #254BDD;">Disagree: <span
+                                                            class="font-weight-normal">{{ $disagree }}</span></small>
+                                                    <small class="badge text-white" style="background: #ffbe0b;">Uncertain: <span
+                                                            class="font-weight-normal">{{ $uncertain }}</span></small>
+                                                    <small class="badge text-white" style="background: #1d3557;">Agree: <span
+                                                            class="font-weight-normal">{{ $agree }}</span></small>
+                                                    <small class="badge text-white" style="background: #326998;">Strongly Agree: <span
+                                                            class="font-weight-normal">{{ $stronglyAgree }}</span></small>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-5">
+                                                <canvas id="pie-chart{{$item->id}}" width="150" height="150"></canvas>
+                                                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                                                <script>
+                                                    new Chart(document.getElementById('pie-chart{{$item->id}}'), {
+                                                        type: 'pie',
+                                                        data: {
+                                                            labels: ["Strongly Disagree", "Disagree", "Uncertain", "Agree", "Strongly Agree"],
+                                                            datasets: [{
+                                                                backgroundColor: ["#e63946", "#254BDD",
+                                                                    "#ffbe0b", "#1d3557", "#326998"
+                                                                ],
+                                                                data: [{{ $stronglyDisagree }}, {{ $disagree }}, {{ $uncertain }}, {{ $agree }}, {{ $stronglyAgree }}]
+                                                            }]
+                                                        },
+                                                        options: {
+                                                            responsive: true,
+                                                            maintainAspectRatio: false,
+                                                            aspectRatio: 1,
+                                                        }
+                                                    });
+                                                </script>
+                                            </div>
                                         </div>
                                     </div>
                                     @php

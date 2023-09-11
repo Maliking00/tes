@@ -19,10 +19,9 @@
                                     class="rl-avatar" alt="{{$record->teacherName}}" />
                                 </div>
                                 <div class="card-content">
-                                    <h4 class="card-title">{{$record->teacherName}}</h4>
-                                    <h5 class="card-text text-info">{{$record->courseName}}</h5>
-                                    <p>{{$record->subjectCode}}</p>
-                                    <a href="/dashboard/evaluation-reports/{{$record->academicID}}/{{$record->teacherID}}/{{$record->courseID}}/{{$record->subjectID}}" class="btn btn-sm tes-btn p-2 px-3">View Responses</a>
+                                    <h5>{{$record->teacherName}}</h5>
+                                    <h6 class="card-text text-dark">{{$record->courseName . ' | ' . $record->subjectCode}}</h6>
+                                    <a href="/dashboard/evaluation-reports/{{$record->academicID}}/{{$record->teacherID}}/{{$record->courseID}}/{{$record->subjectID}}" class="btn btn-sm btn-outline-info p-2 px-3">View Responses</a>
                                 </div>
                             </div>
                         </div>

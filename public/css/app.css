@@ -12345,11 +12345,10 @@ table td .show-options {
   font-weight: 400;
   color: #0d58a0;
   font-size: 24px;
-  text-shadow: 2px 4px 4px rgba(0, 0, 0, 0);
 }
 .report-list .card {
   padding: 10px 20px;
-  border: 1px solid rgba(13, 88, 160, 0.2196078431);
+  border: 1px solid rgba(13, 89, 160, 0.137254902);
   display: flex;
   align-items: center;
   flex-direction: row;
@@ -12371,6 +12370,14 @@ table td .show-options {
 .report-list .card .card-content * {
   padding: 0;
   margin: 4px 0;
+}
+.report-list .card .card-content .btn {
+  border: 1px solid rgba(13, 89, 160, 0.137254902) !important;
+  color: var(--primary);
+}
+.report-list .card .card-content .btn:hover {
+  background: var(--primary) !important;
+  color: var(--white) !important;
 }
 .report-list .no-data {
   max-width: 300px;

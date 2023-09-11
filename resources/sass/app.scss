@@ -462,12 +462,11 @@ table {
         font-weight: 400;
         color: #0d58a0;
         font-size: 24px;
-        text-shadow: 2px 4px 4px rgb(0 0 0 / 0%);
     }
 
     .card {
         padding: 10px 20px;
-        border: 1px solid #0d58a038;
+        border: 1px solid #0d59a023;
         display: flex;
         align-items: center;
         flex-direction: row;
@@ -490,6 +489,15 @@ table {
                 margin: 4px 0;
             }
 
+            .btn{
+                border: 1px solid #0d59a023 !important;
+                color: var(--primary);
+
+                &:hover{
+                    background: var(--primary) !important;
+                    color: var(--white) !important;
+                }
+            }
         }
     }
 
