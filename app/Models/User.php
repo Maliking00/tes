@@ -28,7 +28,8 @@ class User extends Authenticatable
         'idNumber',
         'contactNumber',
         'securityAnswer',
-        'avatarUrl'
+        'avatarUrl',
+        'course_id'
     ];
 
     /**
@@ -53,5 +54,10 @@ class User extends Authenticatable
     public function securityQuestionsAndAnswer()
     {
         return $this->hasMany(SecurityQuestionAndAnswer::class);
+    }
+
+    public function subjects()
+    {
+        return $this->hasMany(StudentSubject::class, 'studentID');
     }
 }

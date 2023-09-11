@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Academic;
+use App\Models\Courses;
+use App\Models\Teachers;
 use App\Models\User;
-use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -24,8 +27,31 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $users = User::all();
+        $academics = Academic::where('academicSystemDefault', 1)->get();
+        if ($academics->count() === 0) {
+            $currentYear = Carbon::now()->year;
+            $lastYear = $currentYear - 1;
+            $formattedYears = $lastYear . '-' . $currentYear;
 
-        return view('home', compact('users'));
+            $isNotCurrentYear = Academic::orderBy('academicSemester', 'DESC')->where('academicYear', $formattedYears)->first();
+            if(!empty($isNotCurrentYear)){
+                $academicDefault = $isNotCurrentYear;
+            }else{
+                $academicDefault = Academic::orderBy('academicSemester', 'DESC')->where('academicYear', '!=', $formattedYears)->first();
+            }
+        } else {
+            $academicDefault = Academic::orderBy('academicSemester', 'DESC')->where('academicSystemDefault', 1)->first();
+        }
+
+        $models = [
+            'usersOverAll' => User::count() + Teachers::count(),
+            'students' => User::where('role', 'student')->count(),
+            'pendingStudents' => User::where('role', 'student')->where('status', 'pending')->count(),
+            'teachers' => Teachers::count(),
+            'courses' => Courses::count(),
+            'academicDefault' => $academicDefault
+        ];
+
+        return view('home', compact('models'));
     }
 }

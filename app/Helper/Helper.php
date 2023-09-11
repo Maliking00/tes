@@ -17,6 +17,15 @@ class Helper
         return $env;
     }
 
+    public static function userAvatar($avatar){
+        if (!App::environment(['local', 'staging']) || !app()->environment(['local', 'staging'])) {
+            $path = (empty($avatar) ? 'assets/images/logo.png' : 'storage/avatars/' . $avatar);
+        } else {
+            $path = (empty($avatar) ? 'assets/images/logo.png' : 'storage/public/avatars/' . $avatar);
+        }
+        return $path;
+    }
+
     public static function sendOtp($phoneNumber, $otp)
     {
         session(['smsGatewayData' => array(

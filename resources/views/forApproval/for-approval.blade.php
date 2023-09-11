@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Approval | ' . (new \App\Helper\Helper())->showEnvironment()))
+@section('title', 'Approval | ' . (new \App\Helper\Helper())->showEnvironment())
 
 @section('content')
     <div class="container-fluid for-approval">
@@ -9,7 +9,7 @@
                 <div class="d-flex justify-content-center align-items-center vh-100">
                     <div class="card">
                         <div class="card-body text-center">
-                            <img class="my-3" src="{{asset('storage/'.Auth::user()->avatarUrl.'')}}" alt="approval-logo">
+                            <img class="my-3" src="{{asset( (new \App\Helper\Helper())->avatarPathOnProduction(Auth::user()->avatarUrl, 'avatarUrl') )}}" alt="approval-logo">
                             <h2>Hello {{ Auth::user()->name }}</h2>
                             <p>Your account is currently pending approval. <br /> Please contact the administrator for
                                 further information.</p>

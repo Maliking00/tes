@@ -1,6 +1,5 @@
 <?php
 
-use App\Helper\Helper;
 use Illuminate\Support\Facades\Route;
 
 Auth::routes();
@@ -35,99 +34,100 @@ Route::group(['middleware' => ['guest']], function () {
 // is Authenticate
 Route::middleware('auth')->group(function () {
     Route::get('/for-approval', [App\Http\Controllers\ForApprovalController::class, 'index'])->name('show.for.approval');
-    // Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
     Route::middleware('isApproved')->group(function () {
         Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
 
         // routes for admin only
         Route::middleware('isAdmin')->group(function () {
             // subjects
-            Route::get('/dashboard/subjects', [App\Http\Controllers\AcademicFocus\SubjectsController::class, 'index'])->name('subjects');
-            Route::get('/dashboard/load-subjects', [App\Http\Controllers\AcademicFocus\SubjectsController::class, 'loadSubjects'])->name('load.subjects');
-            Route::post('/dashboard/store-subjects', [App\Http\Controllers\AcademicFocus\SubjectsController::class, 'storeSubject'])->name('store.subject');
-            Route::get('/dashboard/subjects/{id}', [App\Http\Controllers\AcademicFocus\SubjectsController::class, 'showEditSubject'])->name('show.edit.subject');
-            Route::post('/dashboard/subjects/update/{id}', [App\Http\Controllers\AcademicFocus\SubjectsController::class, 'updateSubject'])->name('update.subject');
-            Route::post('/dashboard/subjects/delete/{id}', [App\Http\Controllers\AcademicFocus\SubjectsController::class, 'deleteSubject'])->name('delete.subject');
+            Route::get('/dashboard/subjects', [App\Http\Controllers\Admin\AcademicFocus\SubjectsController::class, 'index'])->name('subjects');
+            Route::get('/dashboard/load-subjects', [App\Http\Controllers\Admin\AcademicFocus\SubjectsController::class, 'loadSubjects'])->name('load.subjects');
+            Route::post('/dashboard/store-subjects', [App\Http\Controllers\Admin\AcademicFocus\SubjectsController::class, 'storeSubject'])->name('store.subject');
+            Route::get('/dashboard/subjects/{id}', [App\Http\Controllers\Admin\AcademicFocus\SubjectsController::class, 'showEditSubject'])->name('show.edit.subject');
+            Route::post('/dashboard/subjects/update/{id}', [App\Http\Controllers\Admin\AcademicFocus\SubjectsController::class, 'updateSubject'])->name('update.subject');
+            Route::post('/dashboard/subjects/delete/{id}', [App\Http\Controllers\Admin\AcademicFocus\SubjectsController::class, 'deleteSubject'])->name('delete.subject');
 
             // courses  
-            Route::get('/dashboard/courses', [App\Http\Controllers\AcademicFocus\CoursesController::class, 'index'])->name('courses');
-            Route::get('/dashboard/load-courses', [App\Http\Controllers\AcademicFocus\CoursesController::class, 'loadCourses'])->name('load.courses');
-            Route::post('/dashboard/store-courses', [App\Http\Controllers\AcademicFocus\CoursesController::class, 'storeCourse'])->name('store.course');
-            Route::get('/dashboard/courses/{id}', [App\Http\Controllers\AcademicFocus\CoursesController::class, 'showEditCourse'])->name('show.edit.course');
-            Route::post('/dashboard/courses/update/{id}', [App\Http\Controllers\AcademicFocus\CoursesController::class, 'updateCourse'])->name('update.course');
-            Route::post('/dashboard/courses/delete/{id}', [App\Http\Controllers\AcademicFocus\CoursesController::class, 'deleteCourse'])->name('delete.course');
+            Route::get('/dashboard/courses', [App\Http\Controllers\Admin\AcademicFocus\CoursesController::class, 'index'])->name('courses');
+            Route::get('/dashboard/load-courses', [App\Http\Controllers\Admin\AcademicFocus\CoursesController::class, 'loadCourses'])->name('load.courses');
+            Route::post('/dashboard/store-courses', [App\Http\Controllers\Admin\AcademicFocus\CoursesController::class, 'storeCourse'])->name('store.course');
+            Route::get('/dashboard/courses/{id}', [App\Http\Controllers\Admin\AcademicFocus\CoursesController::class, 'showEditCourse'])->name('show.edit.course');
+            Route::post('/dashboard/courses/update/{id}', [App\Http\Controllers\Admin\AcademicFocus\CoursesController::class, 'updateCourse'])->name('update.course');
+            Route::post('/dashboard/courses/delete/{id}', [App\Http\Controllers\Admin\AcademicFocus\CoursesController::class, 'deleteCourse'])->name('delete.course');
 
             // academic year
-            Route::get('/dashboard/academics', [App\Http\Controllers\AcademicFocus\AcademicsController::class, 'index'])->name('academics');
-            Route::get('/dashboard/load-academics', [App\Http\Controllers\AcademicFocus\AcademicsController::class, 'loadAcademics'])->name('load.academics');
-            Route::post('/dashboard/store-academics', [App\Http\Controllers\AcademicFocus\AcademicsController::class, 'storeAcademic'])->name('store.academic');
-            Route::get('/dashboard/academics/{id}', [App\Http\Controllers\AcademicFocus\AcademicsController::class, 'showEditAcademic'])->name('show.edit.academic');
-            Route::post('/dashboard/academics/update/{id}', [App\Http\Controllers\AcademicFocus\AcademicsController::class, 'updateAcademic'])->name('update.academic');
-            Route::post('/dashboard/academics/update/academic/year/{id}', [App\Http\Controllers\AcademicFocus\AcademicsController::class, 'updateAcademicDefaultYear'])->name('update.academic.default.year');
-            Route::post('/dashboard/academics/update/academic/evaluation-status/{id}', [App\Http\Controllers\AcademicFocus\AcademicsController::class, 'updateAcademicEvaluationStatus'])->name('update.academic.evaluation.status');
-            Route::post('/dashboard/academics/delete/{id}', [App\Http\Controllers\AcademicFocus\AcademicsController::class, 'deleteAcademic'])->name('delete.academic');
+            Route::get('/dashboard/academics', [App\Http\Controllers\Admin\AcademicFocus\AcademicsController::class, 'index'])->name('academics');
+            Route::get('/dashboard/load-academics', [App\Http\Controllers\Admin\AcademicFocus\AcademicsController::class, 'loadAcademics'])->name('load.academics');
+            Route::post('/dashboard/store-academics', [App\Http\Controllers\Admin\AcademicFocus\AcademicsController::class, 'storeAcademic'])->name('store.academic');
+            Route::get('/dashboard/academics/{id}', [App\Http\Controllers\Admin\AcademicFocus\AcademicsController::class, 'showEditAcademic'])->name('show.edit.academic');
+            Route::post('/dashboard/academics/update/{id}', [App\Http\Controllers\Admin\AcademicFocus\AcademicsController::class, 'updateAcademic'])->name('update.academic');
+            Route::post('/dashboard/academics/update/academic/year/{id}', [App\Http\Controllers\Admin\AcademicFocus\AcademicsController::class, 'updateAcademicDefaultYear'])->name('update.academic.default.year');
+            Route::post('/dashboard/academics/update/academic/evaluation-status/{id}', [App\Http\Controllers\Admin\AcademicFocus\AcademicsController::class, 'updateAcademicEvaluationStatus'])->name('update.academic.evaluation.status');
+            Route::post('/dashboard/academics/delete/{id}', [App\Http\Controllers\Admin\AcademicFocus\AcademicsController::class, 'deleteAcademic'])->name('delete.academic');
 
             //teachers
-            Route::get('/dashboard/teachers', [App\Http\Controllers\TeachersController::class, 'index'])->name('teachers');
-            Route::get('/dashboard/load-teachers', [App\Http\Controllers\TeachersController::class, 'loadTeachers'])->name('load.teachers');
-            Route::post('/dashboard/store-teachers', [App\Http\Controllers\TeachersController::class, 'storeTeacher'])->name('store.teacher');
-            Route::get('/dashboard/teachers/{id}', [App\Http\Controllers\TeachersController::class, 'showEditTeacher'])->name('show.edit.teacher');
-            Route::post('/dashboard/teachers/update/{id}', [App\Http\Controllers\TeachersController::class, 'updateTeacher'])->name('update.teacher');
-            Route::post('/dashboard/teachers/delete/{id}', [App\Http\Controllers\TeachersController::class, 'deleteTeacher'])->name('delete.teacher');
-            Route::post('/dashboard/teachers/update/avatar/{id}', [App\Http\Controllers\TeachersController::class, 'updateTeacherAvatar'])->name('update.teacher.avatar');
+            Route::get('/dashboard/teachers', [App\Http\Controllers\Admin\TeachersController::class, 'index'])->name('teachers');
+            Route::get('/dashboard/load-teachers', [App\Http\Controllers\Admin\TeachersController::class, 'loadTeachers'])->name('load.teachers');
+            Route::post('/dashboard/store-teachers', [App\Http\Controllers\Admin\TeachersController::class, 'storeTeacher'])->name('store.teacher');
+            Route::get('/dashboard/teachers/{id}', [App\Http\Controllers\Admin\TeachersController::class, 'showEditTeacher'])->name('show.edit.teacher');
+            Route::post('/dashboard/teachers/update/{id}', [App\Http\Controllers\Admin\TeachersController::class, 'updateTeacher'])->name('update.teacher');
+            Route::post('/dashboard/teachers/delete/{id}', [App\Http\Controllers\Admin\TeachersController::class, 'deleteTeacher'])->name('delete.teacher');
+            Route::post('/dashboard/teachers/update/avatar/{id}', [App\Http\Controllers\Admin\TeachersController::class, 'updateTeacherAvatar'])->name('update.teacher.avatar');
 
             // student
-            Route::get('/dashboard/students', [App\Http\Controllers\StudentsController::class, 'index'])->name('students');
-            Route::get('/dashboard/load-students', [App\Http\Controllers\StudentsController::class, 'loadStudents'])->name('load.students');
-            Route::post('/dashboard/store-students', [App\Http\Controllers\StudentsController::class, 'storeStudent'])->name('store.student');
-            Route::get('/dashboard/students/{id}', [App\Http\Controllers\StudentsController::class, 'showEditStudent'])->name('show.edit.student');
-            Route::post('/dashboard/students/update/{id}', [App\Http\Controllers\StudentsController::class, 'updateStudent'])->name('update.student');
-            Route::post('/dashboard/students/delete/{id}', [App\Http\Controllers\StudentsController::class, 'deleteStudent'])->name('delete.student');
-            Route::post('/dashboard/students/update/role/{id}', [App\Http\Controllers\StudentsController::class, 'updateStudentRole'])->name('update.student.role');
-            Route::post('/dashboard/students/update/status/{id}', [App\Http\Controllers\StudentsController::class, 'updateStudentStatus'])->name('update.student.status');
-            Route::post('/dashboard/students/update/avatar/{id}', [App\Http\Controllers\StudentsController::class, 'updateStudentAvatar'])->name('update.student.avatar');
+            Route::get('/dashboard/students', [App\Http\Controllers\Admin\StudentsController::class, 'index'])->name('students');
+            Route::get('/dashboard/load-students', [App\Http\Controllers\Admin\StudentsController::class, 'loadStudents'])->name('load.students');
+            Route::post('/dashboard/store-students', [App\Http\Controllers\Admin\StudentsController::class, 'storeStudent'])->name('store.student');
+            Route::get('/dashboard/students/{id}', [App\Http\Controllers\Admin\StudentsController::class, 'showEditStudent'])->name('show.edit.student');
+            Route::post('/dashboard/students/update/{id}', [App\Http\Controllers\Admin\StudentsController::class, 'updateStudent'])->name('update.student');
+            Route::post('/dashboard/students/delete/{id}', [App\Http\Controllers\Admin\StudentsController::class, 'deleteStudent'])->name('delete.student');
+            Route::post('/dashboard/students/update/role/{id}', [App\Http\Controllers\Admin\StudentsController::class, 'updateStudentRole'])->name('update.student.role');
+            Route::post('/dashboard/students/update/status/{id}', [App\Http\Controllers\Admin\StudentsController::class, 'updateStudentStatus'])->name('update.student.status');
+            Route::post('/dashboard/students/update/avatar/{id}', [App\Http\Controllers\Admin\StudentsController::class, 'updateStudentAvatar'])->name('update.student.avatar');
 
             // HR
-            Route::get('/dashboard/hrs', [App\Http\Controllers\HrControllers::class, 'index'])->name('hrs');
-            Route::get('/dashboard/load-hrs', [App\Http\Controllers\HrControllers::class, 'loadHrs'])->name('load.hrs');
-            Route::post('/dashboard/store-hrs', [App\Http\Controllers\HrControllers::class, 'storeHr'])->name('store.hrs');
-            Route::get('/dashboard/hrs/{id}', [App\Http\Controllers\HrControllers::class, 'showEditHr'])->name('show.edit.hr');
-            Route::post('/dashboard/hrs/update/{id}', [App\Http\Controllers\HrControllers::class, 'updateHr'])->name('update.hr');
-            Route::post('/dashboard/hrs/delete/{id}', [App\Http\Controllers\HrControllers::class, 'deleteHr'])->name('delete.hr');
-            Route::post('/dashboard/hrs/update/role/{id}', [App\Http\Controllers\HrControllers::class, 'updateHrRole'])->name('update.hr.role');
-            Route::post('/dashboard/hrs/update/status/{id}', [App\Http\Controllers\HrControllers::class, 'updateHrStatus'])->name('update.hr.status');
-            Route::post('/dashboard/hrs/update/avatar/{id}', [App\Http\Controllers\HrControllers::class, 'updateHrAvatar'])->name('update.hr.avatar');
+            Route::get('/dashboard/hrs', [App\Http\Controllers\Admin\HrControllers::class, 'index'])->name('hrs');
+            Route::get('/dashboard/load-hrs', [App\Http\Controllers\Admin\HrControllers::class, 'loadHrs'])->name('load.hrs');
+            Route::post('/dashboard/store-hrs', [App\Http\Controllers\Admin\HrControllers::class, 'storeHr'])->name('store.hrs');
+            Route::get('/dashboard/hrs/{id}', [App\Http\Controllers\Admin\HrControllers::class, 'showEditHr'])->name('show.edit.hr');
+            Route::post('/dashboard/hrs/update/{id}', [App\Http\Controllers\Admin\HrControllers::class, 'updateHr'])->name('update.hr');
+            Route::post('/dashboard/hrs/delete/{id}', [App\Http\Controllers\Admin\HrControllers::class, 'deleteHr'])->name('delete.hr');
+            Route::post('/dashboard/hrs/update/role/{id}', [App\Http\Controllers\Admin\HrControllers::class, 'updateHrRole'])->name('update.hr.role');
+            Route::post('/dashboard/hrs/update/status/{id}', [App\Http\Controllers\Admin\HrControllers::class, 'updateHrStatus'])->name('update.hr.status');
+            Route::post('/dashboard/hrs/update/avatar/{id}', [App\Http\Controllers\Admin\HrControllers::class, 'updateHrAvatar'])->name('update.hr.avatar');
 
             // criteria
-            Route::get('/dashboard/criterias', [App\Http\Controllers\CriteriasController::class, 'index'])->name('criterias');
-            Route::get('/dashboard/load-criterias', [App\Http\Controllers\CriteriasController::class, 'loadCriterias'])->name('load.criterias');
-            Route::post('/dashboard/store-criterias', [App\Http\Controllers\CriteriasController::class, 'storeCriteria'])->name('store.criteria');
-            Route::get('/dashboard/criterias/{id}', [App\Http\Controllers\CriteriasController::class, 'showEditCriteria'])->name('show.edit.criteria');
-            Route::post('/dashboard/criterias/update/{id}', [App\Http\Controllers\CriteriasController::class, 'updateCriteria'])->name('update.criteria');
-            Route::post('/dashboard/criterias/delete/{id}', [App\Http\Controllers\CriteriasController::class, 'deleteCriteria'])->name('delete.criteria');
+            Route::get('/dashboard/criterias', [App\Http\Controllers\Admin\CriteriasController::class, 'index'])->name('criterias');
+            Route::get('/dashboard/load-criterias', [App\Http\Controllers\Admin\CriteriasController::class, 'loadCriterias'])->name('load.criterias');
+            Route::post('/dashboard/store-criterias', [App\Http\Controllers\Admin\CriteriasController::class, 'storeCriteria'])->name('store.criteria');
+            Route::get('/dashboard/criterias/{id}', [App\Http\Controllers\Admin\CriteriasController::class, 'showEditCriteria'])->name('show.edit.criteria');
+            Route::post('/dashboard/criterias/update/{id}', [App\Http\Controllers\Admin\CriteriasController::class, 'updateCriteria'])->name('update.criteria');
+            Route::post('/dashboard/criterias/delete/{id}', [App\Http\Controllers\Admin\CriteriasController::class, 'deleteCriteria'])->name('delete.criteria');
 
             // questionnaire
-            Route::get('/dashboard/questionnaires', [App\Http\Controllers\QuestionnairesController::class, 'index'])->name('questionnaires');
-            Route::get('/dashboard/load-questionnaires', [App\Http\Controllers\QuestionnairesController::class, 'loadQuestionnaire'])->name('load.questionnaires');
-            Route::get('/dashboard/load-questionnaires-list', [App\Http\Controllers\QuestionnairesController::class, 'loadQuestionnaireList'])->name('questionnaireList');
-            Route::get('/dashboard/questionnaires/{id}', [App\Http\Controllers\QuestionnairesController::class, 'showManageQuestionnaire'])->name('show.manage.questionnaires');
-            Route::get('/dashboard/load-manage-questionnaire/{id}', [App\Http\Controllers\QuestionnairesController::class, 'loadManageQuestionnaire'])->name('load.manage.questionnaires');
-            Route::post('/dashboard/store-questionnaires', [App\Http\Controllers\QuestionnairesController::class, 'storeQuestionnaire'])->name('store.questionnaire');
-            Route::post('/dashboard/questionnaires/update-academic-status/{id}', [App\Http\Controllers\QuestionnairesController::class, 'updateAcademicEvaluationStatus'])->name('update.academic.status');
-            Route::post('/dashboard/questionnaires/delete/{id}', [App\Http\Controllers\QuestionnairesController::class, 'deleteQuestionnaire'])->name('delete.questionnaire');
+            Route::get('/dashboard/questionnaires', [App\Http\Controllers\Admin\QuestionnairesController::class, 'index'])->name('questionnaires');
+            Route::get('/dashboard/load-questionnaires', [App\Http\Controllers\Admin\QuestionnairesController::class, 'loadQuestionnaire'])->name('load.questionnaires');
+            Route::get('/dashboard/load-questionnaires-list', [App\Http\Controllers\Admin\QuestionnairesController::class, 'loadQuestionnaireList'])->name('questionnaireList');
+            Route::get('/dashboard/questionnaires/{id}', [App\Http\Controllers\Admin\QuestionnairesController::class, 'showManageQuestionnaire'])->name('show.manage.questionnaires');
+            Route::get('/dashboard/load-manage-questionnaire/{id}', [App\Http\Controllers\Admin\QuestionnairesController::class, 'loadManageQuestionnaire'])->name('load.manage.questionnaires');
+            Route::post('/dashboard/store-questionnaires', [App\Http\Controllers\Admin\QuestionnairesController::class, 'storeQuestionnaire'])->name('store.questionnaire');
+            Route::post('/dashboard/questionnaires/update-academic-status/{id}', [App\Http\Controllers\Admin\QuestionnairesController::class, 'updateAcademicEvaluationStatus'])->name('update.academic.status');
+            Route::post('/dashboard/questionnaires/delete/{id}', [App\Http\Controllers\Admin\QuestionnairesController::class, 'deleteQuestionnaire'])->name('delete.questionnaire');
 
             // restrictions
-            Route::get('/dashboard/questionnaires/{id}/restrictions', [App\Http\Controllers\RestrictionsController::class, 'index'])->name('restrictions');
-            Route::post('/dashboard/store-restrictions', [App\Http\Controllers\RestrictionsController::class, 'storeRestriction'])->name('store.restriction');
-            Route::post('/dashboard/restrictions/delete/{id}', [App\Http\Controllers\RestrictionsController::class, 'deleteRestriction'])->name('delete.restriction');
+            Route::get('/dashboard/questionnaires/{id}/restrictions', [App\Http\Controllers\Admin\RestrictionsController::class, 'index'])->name('restrictions');
+            Route::post('/dashboard/store-restrictions', [App\Http\Controllers\Admin\RestrictionsController::class, 'storeRestriction'])->name('store.restriction');
+            Route::post('/dashboard/restrictions/delete/{id}', [App\Http\Controllers\Admin\RestrictionsController::class, 'deleteRestriction'])->name('delete.restriction');
         });
 
-        // // routes for HR only
-        // Route::middleware('isHR')->group(function () {
-        // });
+        // Evaluation Report
+        Route::get('/dashboard/evaluation-reports', [App\Http\Controllers\EvaluationReportsController::class, 'index'])->name('evaluation.reports');
+        Route::get('/dashboard/evaluation-reports/{academicID}/{teacherID}/{courseID}/{subjectID}/', [App\Http\Controllers\EvaluationReportsController::class, 'showEvaluationResponses'])->name('evaluation.reports.responses');
 
-        // // routes for Students only
-        // Route::middleware('isStudent')->group(function () {
-        // });
+        // Student routes
+        Route::get('/dashboard/teacher-evaluation', [App\Http\Controllers\EvaluationsController::class, 'index'])->name('teacher.evaluation');
+        Route::get('/dashboard/teacher-evaluation/{id}/{course}/{teacherID}/{subject_id}', [App\Http\Controllers\EvaluationsController::class, 'evaluateSpecificTeacher'])->name('teacher.evaluation.academic');
+        Route::post('/dashboard/teacher-evaluation/store', [App\Http\Controllers\EvaluationsController::class, 'storeEvaluateSpecificTeacher'])->name('teacher.evaluation.academic.store');
+
     });
 });

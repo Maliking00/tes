@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\AcademicFocus;
+namespace App\Http\Controllers\Admin\AcademicFocus;
 
-use App\Helper\Helper;
 use App\Http\Controllers\Controller;
+use App\Helper\Helper;
 use App\Models\Courses;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+
 
 class CoursesController extends Controller
 {

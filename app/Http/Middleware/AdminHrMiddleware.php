@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class HrMiddleware
+class AdminHrMiddleware
 {
     /**
      * Handle an incoming request.
@@ -18,13 +18,13 @@ class HrMiddleware
     public function handle(Request $request, Closure $next)
     {
         if(Auth::check()){
-            if(Auth::user()->role == 'HR'){
+            if(Auth::user()->role == 'HR' || Auth::user()->role == 'admin'){
                 return $next($request);
             }else{
-                return redirect(route('welcome'))->with('warning', 'Access Denied');
+                return back()->with('warning', 'You do not have sufficient permissions to access this area.');
             }
         }else{
-            return redirect(route('welcome'))->with('warning', 'Login first.');
+            return back()->with('warning', 'Login first.');
         }
     }
 }

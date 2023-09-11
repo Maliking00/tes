@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Academic Info | ' . (new \App\Helper\Helper())->showEnvironment()))
+@section('title', 'Academic Info | ' . (new \App\Helper\Helper())->showEnvironment())
 
 @section('pageTitle', 'Academic Info | '. $academic->academicYear)
 
@@ -49,7 +49,7 @@
                     </div>
                 </div>
             </div>
-            <div class="v-100" data-aos="fade-up" data-aos-delay="400">
+            {{-- <div class="v-100" data-aos="fade-up" data-aos-delay="400">
                 <h5 class="font-weight-normal mt-4 aos-init aos-animate" data-aos="fade-up" data-aos-delay="100">System
                     Default
                 </h5>
@@ -73,7 +73,7 @@
                         </form>
                     </div>
                 </div>
-            </div>
+            </div> --}}
             <div class="v-100" data-aos="fade-up" data-aos-delay="400">
                 <h5 class="font-weight-normal mt-4 aos-init aos-animate" data-aos="fade-up" data-aos-delay="100">Evaluation
                     Status
@@ -82,16 +82,23 @@
                     <div class="card-body d-flex justify-content-between align-items-center">
                         <div>
                             <p class="font-weight-bold">Select Evaluation Status</p>
-                            <p>This will set the academic evaluation status.</p>
+                            <p>This will set the academic evaluation status. Also set the default academic year if status is Started</p>
                         </div>
                         <form id="evaluationStatus" action="{{ route('update.academic.evaluation.status', $academic->id) }}" method="POST">
                             @csrf
                             <select name="academicEvaluationStatus" class="form-select form-control"
                                 aria-label="Default select example" style="padding-left:40px;padding-right:40px;" onchange="document.querySelector('#evaluationStatus').submit()">
-                                <option selected>Choose Status</option>
-                                <option value="Starting">Starting</option>
-                                <option value="Closed">Closed</option>
-                                <option value="Not started">Not started</option>
+                                <option selected>{{$academic->academicEvaluationStatus}}</option>
+                                @if($academic->academicEvaluationStatus == 'Not started')
+                                    <option value="Starting">Starting</option>
+                                    <option value="Closed">Closed</option>
+                                @elseif($academic->academicEvaluationStatus == 'Starting')
+                                    <option value="Not started">Not started</option>
+                                    <option value="Closed">Closed</option>
+                                @else
+                                    <option value="Starting">Starting</option>
+                                    <option value="Not started">Not started</option>
+                                @endif
                             </select>
                         </form>
                     </div>

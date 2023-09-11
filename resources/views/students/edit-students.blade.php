@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Student Info | ' . (new \App\Helper\Helper())->showEnvironment()))
+@section('title', 'Student Info | ' . (new \App\Helper\Helper())->showEnvironment())
 
 @section('pageTitle', 'Student Info | '. $student->name)
 
@@ -59,6 +59,33 @@
                                 </span>
                             @enderror
                         </div>
+                        <div class="form-group mb-4 text-left">
+                            <label for="courses" class="form-label">Select a courses</label>
+                            <select name="courses" id="courses"
+                                class="form-select form-control @error('courses') is-invalid @enderror">
+                                <option selected>Choose</option>
+                                @foreach ($courses as $course)
+                                    <option value="{{ $course->id }}" @if ($course->id == $defaultCourse) selected @endif>{{ $course->courseName . ' ' . $course->courseYearLevel . '-' . $course->courseSection}}</option>
+                                @endforeach
+                            </select>
+                            @error('contactNumber')
+                                <span class="invalid-feedback" role="alert">
+                                    <small>{{ $message }}</small>
+                                </span>
+                            @enderror
+                        </div>
+                        <div class="form-group mb-4 text-left">
+                            <label for="subjects" class="form-label">Select a subjects</label>
+                            <select name="subjects[]" id="subjects"
+                                class="form-select form-control js-example-basic-multiple @error('subjects') is-invalid @enderror"
+                                multiple="multiple">
+                                @foreach ($subjects as $subject)
+                                    <option value="{{ $subject->id }}" @if(in_array($subject->id, $defaultSubject->pluck('subjectID')->toArray())) 
+                                        selected 
+                                    @endif>{{ $subject->subjectCode }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                         <div class="form-group mb-2 text-left">
                             <label for="password" class="form-label">Password</label>
                             <input type="password" name="password" id="password"
@@ -78,8 +105,7 @@
                                 aria-label="Default select example">
                                 <option selected>Choose</option>
                                 @foreach ($securityQuestionsString as $question)
-                                    <option value="{{ $question->id }}" @if ($question->question == $defaultSecurityQA->question) selected @endif>
-                                        {{ $question->question }}</option>
+                                    <option value="{{ $question->id }}" @if ($question->question == $defaultSecurityQA->question) selected @endif>{{ $question->question }}</option>
                                 @endforeach
                             </select>
                             @error('security_question')

@@ -12,6 +12,14 @@
     <link rel="stylesheet" href="{{ asset('vendors/ti-icons/css/themify-icons.css') }}">
     <link rel="stylesheet" href="{{ asset('css/vertical-layout-light/style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/aos.css') }}" />
+    @yield('styles')
+    @if (
+        \Route::currentRouteName() == 'students' ||
+            \Route::currentRouteName() == 'show.edit.student' ||
+            \Route::currentRouteName() == 'register')
+        <link rel="stylesheet"
+            href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag/dist/css/multi-select-tag.css">
+    @endif
 </head>
 
 <body>
@@ -39,10 +47,9 @@
                             <li class="nav-item nav-profile dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown"
                                     id="profileDropdown">
-                                    <img src="{{ asset(Auth::user()->avatarUrl ? 'storage/' . Auth::user()->avatarUrl . '' : 'assets/images/logo.png') }}"
+                                    <img src="{{ asset((new \App\Helper\Helper())->userAvatar(Auth::user()->avatarUrl)) }}"
                                         alt="profile" />
                                 </a>
-                                {{-- storage/'.Auth::user()->avatarUrl.' --}}
                                 <div class="dropdown-menu dropdown-menu-right navbar-dropdown"
                                     aria-labelledby="profileDropdown">
                                     <a class="dropdown-item">
@@ -66,7 +73,7 @@
                 <div class="container-fluid page-body-wrapper">
                     <nav class="sidebar sidebar-offcanvas" id="sidebar">
                         <ul class="nav">
-                            @if (Auth::user()->role != 'student')
+                            @if (Auth::user()->role == 'admin')
                                 <li class="nav-item">
                                     <a class="nav-link @if (\Route::currentRouteName() == 'dashboard') active @endif"
                                         href="{{ route('dashboard') }}">
@@ -129,28 +136,45 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link @if (\Route::currentRouteName() == 'questionnaires' || \Route::currentRouteName() == 'show.manage.questionnaires') active @endif" href="{{ route('questionnaires') }}">
+                                    <a class="nav-link @if (\Route::currentRouteName() == 'questionnaires' || \Route::currentRouteName() == 'show.manage.questionnaires') active @endif"
+                                        href="{{ route('questionnaires') }}">
                                         <i class="ti-clipboard menu-icon"></i>
                                         <span class="menu-title">Questionnaires</span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('dashboard') }}">
+                                    <a class="nav-link" href="{{ route('evaluation.reports') }}">
                                         <i class="ti-agenda menu-icon"></i>
                                         <span class="menu-title">Evaluation Report</span>
                                     </a>
                                 </li>
-                            @else
+                            @elseif(Auth::user()->role == 'student')
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('dashboard') }}">
+                                    <a class="nav-link @if (\Route::currentRouteName() == 'dashboard') active @endif"
+                                        href="{{ route('dashboard') }}">
                                         <i class="icon-grid menu-icon"></i>
                                         <span class="menu-title">Dashboard</span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="">
+                                    <a class="nav-link @if (\Route::currentRouteName() == 'teacher.evaluation') active @endif"
+                                        href="{{ route('teacher.evaluation') }}">
                                         <i class="ti-calendar menu-icon"></i>
-                                        <span class="menu-title">Evaluation</span>
+                                        <span class="menu-title">Teacher Evaluation</span>
+                                    </a>
+                                </li>
+                            @else
+                                <li class="nav-item">
+                                    <a class="nav-link @if (\Route::currentRouteName() == 'dashboard') active @endif"
+                                        href="{{ route('dashboard') }}">
+                                        <i class="icon-grid menu-icon"></i>
+                                        <span class="menu-title">Dashboard</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('evaluation.reports') }}">
+                                        <i class="ti-calendar menu-icon"></i>
+                                        <span class="menu-title">Evaluation Reports</span>
                                     </a>
                                 </li>
                             @endif
@@ -163,27 +187,47 @@
                                     <div class="row">
                                         <div class="col-5 col-xl-10 mb-4 mb-xl-0">
                                             @if (\Route::currentRouteName() == 'dashboard')
-                                                <h3 class="font-weight-bold">Welcome {{ Auth::user()->name }}</h3>
+                                                <h3 class="font-weight-bold main-panel-title">Welcome
+                                                    {{ Auth::user()->name }}</h3>
                                             @else
-                                                <h3 class="font-weight-bold">@yield('pageTitle')</h3>
+                                                <h3 class="font-weight-bold main-panel-title">@yield('pageTitle')</h3>
                                             @endif
                                             <ul class="breadcrumb">
                                                 <li>
                                                     <a class="active" href="{{ route('dashboard') }}">Dashboard</a>
                                                 </li>
-                                                @for ($i = 2; $i <= count(Request::segments()); $i++)
+                                                @if (\Route::currentRouteName() == 'teacher.evaluation.academic')
                                                     <li><i class='ti-angle-right menu-icon'></i></li>
                                                     <li>
-                                                        <a class="text-capitalize"
-                                                            href="{{ URL::to(implode('/', array_slice(Request::segments(), 0, $i, true))) }}">
-                                                            @if (preg_match('/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/', Request::segment($i)))
-                                                                @yield('uuid')
-                                                            @else
-                                                                {{ str_replace('-', ' ', Request::segment($i)) }}
-                                                            @endif
-                                                        </a>
+                                                        <a class="active"
+                                                            href="{{ route('teacher.evaluation') }}">Back</a>
                                                     </li>
-                                                @endfor
+                                                @elseif(\Route::currentRouteName() == 'evaluation.reports.responses')
+                                                    <li><i class='ti-angle-right menu-icon'></i></li>
+                                                    <li>
+                                                        <a class="active"
+                                                            href="{{ route('evaluation.reports') }}">Evaluation Reports</a>
+                                                    </li>
+                                                    <li><i class='ti-angle-right menu-icon'></i></li>
+                                                    <li>
+                                                        @yield('param')
+                                                    </li>
+                                                @else
+                                                    @for ($i = 2; $i <= count(Request::segments()); $i++)
+                                                        <li><i class='ti-angle-right menu-icon'></i></li>
+                                                        <li>
+
+                                                            <a class="text-capitalize"
+                                                                href="{{ URL::to(implode('/', array_slice(Request::segments(), 0, $i, true))) }}">
+                                                                @if (preg_match('/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/', Request::segment($i)))
+                                                                    @yield('uuid')
+                                                                @else
+                                                                    {{ str_replace('-', ' ', Request::segment($i)) }}
+                                                                @endif
+                                                            </a>
+                                                        </li>
+                                                    @endfor
+                                                @endif
                                             </ul>
                                         </div>
                                         <div class="col-7 col-xl-2 mb-8">
@@ -276,12 +320,24 @@
     {{-- DYNAMIC SCRIPTS --}}
     @yield('scripts')
     <script>
-        if(document.querySelector('.alert')){
+        if (document.querySelector('.alert')) {
             setTimeout(() => {
-            document.querySelector('.alert').style.display = 'none';
-        }, 20000);
+                document.querySelector('.alert').style.display = 'none';
+            }, 20000);
         }
     </script>
+    @if (
+        \Route::currentRouteName() == 'students' ||
+            \Route::currentRouteName() == 'show.edit.student' ||
+            \Route::currentRouteName() == 'register')
+        <script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag/dist/js/multi-select-tag.js"></script>
+        <script>
+            new MultiSelectTag('subjects', {
+                rounded: true,
+                placeholder: 'Search subjects'
+            })
+        </script>
+    @endif
 </body>
 
 </html>

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Criterias Info | ' . (new \App\Helper\Helper())->showEnvironment()))
+@section('title', 'Criterias Info | ' . (new \App\Helper\Helper())->showEnvironment())
 
 @section('pageTitle', 'Criteria Info | '. $criteria->criterias)
 

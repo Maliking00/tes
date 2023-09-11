@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Students | ' . (new \App\Helper\Helper())->showEnvironment()))
+@section('title', 'Students | ' . (new \App\Helper\Helper())->showEnvironment())
 
 @section('pageTitle', 'Students')
 
@@ -42,10 +42,23 @@
                                 class="form-select form-control @error('courses') is-invalid @enderror">
                                 <option selected>Choose</option>
                                 @foreach ($courses as $course)
-                                    <option value="{{ $course->id }}">{{ $course->courseName . ' ' . $course->courseYearLevel . '-' . $course->courseSection}}</option>
+                                    <option value="{{ $course->id }}">
+                                        {{ $course->courseName . ' ' . $course->courseYearLevel . '-' . $course->courseSection }}
+                                    </option>
                                 @endforeach
                             </select>
-                            <small class="text-danger" id="security_question-error"></small>
+                            <small class="text-danger" id="courses-error"></small>
+                        </div>
+                        <div class="form-group mb-4 text-left">
+                            <label for="subjects" class="form-label">Select a subjects</label>
+                            <select name="subjects[]" id="subjects"
+                                class="form-select form-control js-example-basic-multiple @error('subjects') is-invalid @enderror"
+                                multiple="multiple">
+                                @foreach ($subjects as $subject)
+                                    <option value="{{ $subject->id }}">{{ $subject->subjectCode }}</option>
+                                @endforeach
+                            </select>
+                            <small class="text-danger" id="subjects-error"></small>
                         </div>
                         <div class="form-group mb-2 text-left">
                             <label for="password" class="form-label">Password</label>
@@ -109,7 +122,7 @@
             const page_total = document.querySelector('.page_total')
 
             {{ \Route::currentRouteName() }}Output.innerHTML = `<div class="text-center">
-            <img src="{{asset('assets/images/loading.gif')}}" alt="loading">
+            <img src="{{ asset('assets/images/loading.gif') }}" alt="loading">
             <p>I am about to search for it.</p>
             </div>`;
 

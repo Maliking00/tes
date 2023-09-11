@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Course Info | ' . (new \App\Helper\Helper())->showEnvironment()))
+@section('title', 'Course Info | ' . (new \App\Helper\Helper())->showEnvironment())
 
 @section('pageTitle', 'Course Info | '. $course->courseName)
 

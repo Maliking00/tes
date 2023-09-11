@@ -1,16 +1,17 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Helper\Helper;
 use App\Models\Courses;
 use App\Models\SecurityQuestion;
+use App\Models\StudentSubject;
+use App\Models\Subjects;
 use App\Models\User;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
 
 class StudentsController extends Controller
 {
@@ -23,7 +24,14 @@ class StudentsController extends Controller
     {
         $studentSecurityQuestions = SecurityQuestion::all();
         $courses = Courses::all();
-        return view('students.students', compact(['studentSecurityQuestions', 'courses']));
+        $subjects = Subjects::all();
+        if($courses->count() === 0){
+            return redirect()->route('courses')->with('warning', 'Please add a courses before adding a student.');
+        }
+        if($subjects->count() === 0){
+            return redirect()->route('subjects')->with('warning', 'Please add a subjects before adding a student.');
+        }
+        return view('students.students', compact(['studentSecurityQuestions', 'courses', 'subjects']));
     }
 
     public function loadStudents(Request $request, User $userModel)
@@ -92,7 +100,7 @@ class StudentsController extends Controller
 
     public function storeStudent(Request $request, User $userModel)
     {
-        $request->validate([
+        $validate = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'idNumber' => 'required|regex:/^\d{3}-\d{3}-\d{3}$/',
@@ -102,27 +110,34 @@ class StudentsController extends Controller
             'security_answer' => 'required|string',
             'avatar' => 'required|image|mimes:jpg,png|max:2048',
             'courses' => 'required|exists:courses,id',
+            'subjects' => 'required|array',
+            'subjects.*' => 'exists:subjects,id'
         ]);
 
         $avatarName = uniqid() . '.' . $request->avatar->extension();
 
         $student = $userModel->create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'idNumber' => $request->idNumber,
-            'contactNumber' => $request->contactNumber,
-            'securityAnswer' => Crypt::encrypt($request->security_answer),
+            'name' => $validate['name'],
+            'email' => $validate['email'],
+            'password' => Hash::make($validate['password']),
+            'idNumber' => $validate['idNumber'],
+            'contactNumber' => $validate['contactNumber'],
+            'securityAnswer' => Crypt::encrypt($validate['security_answer']),
             'role' => 'student',
             'status' => 'approved',
             'avatarUrl' => $avatarName,
-            'course_id' => $request->courses,
+            'course_id' => $validate['courses'],
         ]);
 
         Helper::removeAvatarsNotExistOnDatabase('avatarUrl', $student->avatarUrl);
         $request->avatar->storeAs('public/avatars', $student->avatarUrl);
 
         if ($student) {
+            foreach ($request->input('subjects', []) as $subjectID) {
+                $student->subjects()->create([
+                    'subjectID' => $subjectID,
+                ]);
+            }
 
             $securityQuestion = SecurityQuestion::find($request->security_question);
             $student->securityQuestionsAndAnswer()->create([
@@ -142,38 +157,56 @@ class StudentsController extends Controller
         $securityQuestionsString = SecurityQuestion::all();
         $defaultSecurityQA = $student->securityQuestionsAndAnswer->first();
         $studentID = $student->id;
-        return view('students.edit-students', compact(['student', 'securityQuestionsString', 'defaultSecurityQA']));
+        $courses = Courses::all();
+        $subjects = Subjects::all();
+        $defaultCourse = $student->course_id;
+        $defaultSubject = $student->subjects()->get();
+        return view('students.edit-students', compact(['student', 'securityQuestionsString', 'defaultSecurityQA', 'courses', 'defaultCourse', 'subjects', 'defaultSubject']));
     }
 
     public function updateStudent($id, Request $request, User $userModel)
     {
         $students = $userModel->findOrFail($id);
-        $request->validate([
+        $validate = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $students->id,
             'idNumber' => 'required|regex:/^\d{3}-\d{3}-\d{3}$/',
             'contactNumber' => 'required|numeric|regex:/^0\d{10}$/',
+            'courses' => 'required|exists:courses,id',
             'password' => 'required|string|min:8',
             'security_question' => 'required|exists:security_questions,id',
-            'security_answer' => 'required|string'
+            'security_answer' => 'required|string',
+            'subjects' => 'required|array',
+            'subjects.*' => 'exists:subjects,id'
         ]);
 
         if ($request->password === '********') {
             $students->update([
-                'name' => $request->name,
-                'email' => $request->email,
-                'idNumber' => $request->idNumber,
-                'contactNumber' => $request->contactNumber,
-                'securityAnswer' => Crypt::encrypt($request->security_answer),
+                'name' => $validate['name'],
+                'email' => $validate['email'],
+                'idNumber' => $validate['idNumber'],
+                'contactNumber' => $validate['contactNumber'],
+                'course_id' => $validate['courses'],
+                'securityAnswer' => Crypt::encrypt($validate['security_answer'])
             ]);
         } else {
             $students->update([
-                'name' => $request->name,
-                'email' => $request->email,
+                'name' => $validate['name'],
+                'email' => $validate['email'],
                 'password' => Hash::make($request->password),
-                'idNumber' => $request->idNumber,
-                'contactNumber' => $request->contactNumber,
-                'securityAnswer' => Crypt::encrypt($request->security_answer),
+                'idNumber' => $validate['idNumber'],
+                'contactNumber' => $validate['contactNumber'],
+                'course_id' => $validate['courses'],
+                'securityAnswer' => Crypt::encrypt($validate['security_answer'])
+            ]);
+        }
+
+        $subjectsToDelete  = $students->subjects->pluck('subjectID')->toArray();
+        StudentSubject::whereIn('subjectID', $subjectsToDelete)->where('studentID', $students->id)->delete();
+
+        foreach ($validate['subjects'] ?? [] as $subjectID) {
+            $students->subjects()->create([
+                'subjectID' => $subjectID,
             ]);
         }
 

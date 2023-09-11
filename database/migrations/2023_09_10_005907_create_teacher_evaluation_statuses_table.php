@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateEvaluationListsTable extends Migration
+class CreateTeacherEvaluationStatusesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,17 @@ class CreateEvaluationListsTable extends Migration
      */
     public function up()
     {
-        Schema::create('evaluation_lists', function (Blueprint $table) {
+        Schema::create('teacher_evaluation_statuses', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('restriction_id');
+            $table->uuid('evaluator_id');
             $table->uuid('academic_id');
             $table->uuid('teacher_id');
             $table->uuid('course_id');
             $table->uuid('subject_id');
-            $table->string('teacher');
-            $table->string('criteria');
-            $table->text('question');
-            $table->string('answer');
+            $table->text('teacher');
+            $table->text('course');
+            $table->text('subject');
             $table->timestamps();
         });
     }
@@ -35,6 +35,6 @@ class CreateEvaluationListsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('evaluation_lists');
+        Schema::dropIfExists('teacher_evaluation_statuses');
     }
 }

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Academic | ' . (new \App\Helper\Helper())->showEnvironment()))
+@section('title', 'Academic | ' . (new \App\Helper\Helper())->showEnvironment())
 
 @section('pageTitle', 'Academic')
 
@@ -34,7 +34,7 @@
                             </div>
                         </div>
                         <hr class="hr-divider">
-                        <button type="submit" class="btn tes-btn">Add Course</button>
+                        <button type="submit" class="btn tes-btn">Add Academic Year</button>
                     </form>
                 </div>
             </div>

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Subject Info | ' . (new \App\Helper\Helper())->showEnvironment()))
+@section('title', 'Subject Info | ' . (new \App\Helper\Helper())->showEnvironment())
 
 @section('pageTitle', 'Subject Info | '. $subject->subjectCode)
 
@@ -48,7 +48,7 @@
                         <img class="img-fluid" src="{{ asset('assets/images/dashboard/bg-wave-logo.jpg') }}"
                             alt="Not found">
                         <h3 class="font-weight-normal mt-4">Subject Information</h3>
-                        <p>Please review the information below and make any necessary updates</p>
+                        <p>{{ $subject->subjectDescription }}</p>
                     </div>
                 </div>
             </div>

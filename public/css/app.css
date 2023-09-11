@@ -11987,6 +11987,11 @@ textarea.form-control-lg {
   box-sizing: border-box;
 }
 
+#profileDropdown img {
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
 .sidebar .nav .nav-item > .nav-link.active {
   background: var(--primary) !important;
   color: var(--white) !important;
@@ -12136,6 +12141,10 @@ span#addon-wrapping {
   border: none !important;
 }
 
+.mult-select-tag .body {
+  min-height: 2.95rem !important;
+}
+
 table tr.t-row-head {
   background: #ffffff;
 }
@@ -12243,6 +12252,13 @@ table td .show-options {
   justify-content: center;
   flex-direction: column;
 }
+.welcome .w-second-col .w-login-form.register-form {
+  max-width: 650px;
+  width: 100%;
+}
+.welcome .w-second-col .w-login-form.register-form img {
+  width: 30%;
+}
 .welcome .w-second-col .w-login-form {
   max-width: 400px;
   width: 100%;
@@ -12288,6 +12304,85 @@ table td .show-options {
 }
 .breadcrumb i.ti-angle-right.menu-icon {
   font-size: 12px;
+}
+.breadcrumb a:hover {
+  text-decoration: none;
+}
+
+.main-panel-title {
+  color: var(--primary);
+}
+
+.teacher-evaluation {
+  position: relative;
+}
+.teacher-evaluation a .card {
+  border: 1px solid var(--white);
+  transition: 0.3s;
+}
+.teacher-evaluation a .card .card-body {
+  display: flex;
+  align-items: center;
+  -moz-column-gap: 20px;
+       column-gap: 20px;
+}
+.teacher-evaluation a .card .card-body .t-e-avatar {
+  width: 70px;
+  height: 70px;
+  -o-object-fit: cover;
+     object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid var(--secondary-light);
+}
+.teacher-evaluation a:hover {
+  text-decoration: none;
+}
+.teacher-evaluation a:hover .card {
+  border: 1px solid var(--primary);
+}
+
+.report-list h4, .report-list .h4 {
+  font-weight: 400;
+  color: #0d58a0;
+  font-size: 24px;
+  text-shadow: 2px 4px 4px rgba(0, 0, 0, 0);
+}
+.report-list .card {
+  padding: 10px 20px;
+  border: 1px solid rgba(13, 88, 160, 0.2196078431);
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  -moz-column-gap: 20px;
+       column-gap: 20px;
+}
+.report-list .card .rl-avatar {
+  width: 90px;
+  height: 90px;
+  -o-object-fit: cover;
+     object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid #cdcdcd;
+  text-align: center;
+}
+.report-list .card .card-content {
+  padding: 10px;
+}
+.report-list .card .card-content * {
+  padding: 0;
+  margin: 4px 0;
+}
+.report-list .no-data {
+  max-width: 300px;
+}
+
+#evaluationResponse .eval-img {
+  width: 100px;
+  height: 100px;
+  -o-object-fit: cover;
+     object-fit: cover;
+  border-radius: 50%;
+  border: 4px solid var(--primary);
 }
 
 ul#pagination_link {

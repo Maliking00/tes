@@ -4,7 +4,7 @@
 
 @section('pageTitle', 'Questionnaires')
 
-@section('uuid', $academics->academicYear . ' | ' . $academics->academicSemester)
+@section('uuid', $academics->academicYear . '-' . (new \App\Helper\Helper())->academicFormat($academics->academicSemester))
 
 @section('content')
     <div class="row">
@@ -45,17 +45,9 @@
         <div class="col-md-8 grid-margin">
             <h5 class="my-3">
                 Evaluation Questionnaire for Academic:
-                <span class="badge bg-danger">
-                    <form id="academicStatus" action="{{ route('update.academic.status', $academics->id) }}" method="POST">
-                        @csrf
-                        <span>{{ $academics->academicYear . ' | ' . (new \App\Helper\Helper())->academicFormat($academics->academicSemester) }} |</span>
-                        <select name="academicEvaluationStatus" class="border-0 bg-danger text-white rounded" onchange="document.querySelector('#academicStatus').submit()">
-                            <option selected>{{$academics->academicEvaluationStatus}}</option>
-                            <option value="Starting">Starting</option>
-                            <option value="Closed">Closed</option>
-                            <option value="Not started">Not started</option>
-                        </select>
-                    </form>
+                <span class="badge bg-light text-black shadow-sm">
+                    <span>{{ $academics->academicYear . ' | ' . (new \App\Helper\Helper())->academicFormat($academics->academicSemester) }} |</span>
+                    <a href="{{route('show.edit.academic', $academics->id)}}" class="badge bg-dark text-light">Update Academic Status</a>
                 </span>
             </h5>
             <hr>
@@ -73,8 +65,8 @@
 
 @section('questionnairesActions')
     <a href="{{ route('restrictions', $academics->id) }}"
-        class="btn tes-btn d-flex align-items-center gap-4 justify-content-center">
-        <i class="ti-shield"></i><span>Restriction</span>
+        class="btn tes-btn btn-sm d-flex align-items-center gap-4 justify-content-center">
+        <i class="ti-shield"></i><span>Evaluation Restriction</span>
     </a>
 @endsection
 

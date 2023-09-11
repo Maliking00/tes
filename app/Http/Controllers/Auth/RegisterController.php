@@ -35,6 +35,8 @@ class RegisterController extends Controller
             'courses' => 'required|exists:courses,id',
             'contactNumber' => 'required|numeric|regex:/^0\d{10}$/',
             'password' => 'required|string|min:8|confirmed',
+            'subjects' => 'required|array',
+            'subjects.*' => 'exists:subjects,id'
         ]);
 
         session(['registrationData' => $request->all()]);
@@ -77,10 +79,7 @@ class RegisterController extends Controller
         ]);
 
         $avatarName = uniqid().'.'.$request->avatarUrl->extension();
-        $avatarPathUrl = $request->avatarUrl->storeAs('public/avatars', $avatarName);
-        if(!$avatarPathUrl){
-            return back()->with('error', 'An error occured.');
-        }
+        $request->avatarUrl->storeAs('public/avatars', $avatarName);
 
         $registrationData = session('registrationData');
         $sessionSecurityQuestionAndAnswer = session('registerSecurityQuestions');
@@ -91,9 +90,15 @@ class RegisterController extends Controller
             'idNumber' => $registrationData['idNumber'],
             'contactNumber' => $registrationData['contactNumber'],
             'securityAnswer' => Crypt::encrypt($sessionSecurityQuestionAndAnswer['security_answer']),
-            'avatarUrl' => $avatarPathUrl
+            'avatarUrl' => $avatarName,
+            'course_id' => $registrationData['courses']
         ]);
 
+        foreach ($registrationData['subjects'] ?? [] as $subjectID) {
+            $user->subjects()->create([
+                'subjectID' => $subjectID,
+            ]);
+        }
         
         $securityQuestion = SecurityQuestion::find($sessionSecurityQuestionAndAnswer['security_question']);
         $user->securityQuestionsAndAnswer()->create([

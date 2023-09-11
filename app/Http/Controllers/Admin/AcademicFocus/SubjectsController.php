@@ -1,14 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\AcademicFocus;
+namespace App\Http\Controllers\Admin\AcademicFocus;
 
-use App\Helper\Helper;
 use App\Http\Controllers\Controller;
+use App\Helper\Helper;
 use App\Models\Subjects;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
-
 class SubjectsController extends Controller
 {
     public function __construct()
@@ -81,53 +78,52 @@ class SubjectsController extends Controller
 
     public function storeSubject(Request $request, Subjects $subjectModel)
     {
-        try {
-            $validatedData = $request->validate([
-                'subjectCode' => 'required|string|unique:subjects',
-                'subjectName' => 'required|string',
-                'subjectDescription' => 'required|string',
-            ]);
-            if ($subjectModel->create($validatedData)) {
-                return response()->json([
-                    'success' => $request->subjectName . ' successfully added.',
-                ], 200);
-            }
-        } catch (ValidationException $e) {
-            return new JsonResponse(['errors' => $e->errors()], 422);
+        $validatedData = $request->validate([
+            'subjectCode' => 'required|string|unique:subjects',
+            'subjectName' => 'required|string',
+            'subjectDescription' => 'required|string',
+        ]);
+        if ($subjectModel->create($validatedData)) {
+            return response()->json([
+                'success' => $request->subjectName . ' successfully added.',
+            ], 200);
         }
     }
 
-    public function showEditSubject($id, Subjects $subjectModel) {
+    public function showEditSubject($id, Subjects $subjectModel)
+    {
         $subject = $subjectModel->findOrFail($id);
         return view('academicFocus.subjects.edit-subject', compact('subject'));
     }
 
-    public function updateSubject($id, Request $request, Subjects $subjectModel) {
+    public function updateSubject($id, Request $request, Subjects $subjectModel)
+    {
         $subject = $subjectModel->findOrFail($id);
         $validatedData = $request->validate([
             'subjectCode' => 'required|string|unique:subjects,subjectCode,' . $subject->id,
             'subjectName' => 'required|string',
             'subjectDescription' => 'required|string',
         ]);
-        
+
         $existingSubject = $subjectModel->where('subjectCode', $validatedData['subjectCode'])->where('id', '<>', $id)->first();
         if ($existingSubject) {
             $validatedData['subjectCode'] = $validatedData['subjectCode'] . '-copy';
         }
-    
+
         if (!$subject->update($validatedData)) {
             return back()->with('error', 'An error occurred.');
         }
-    
+
         return redirect()->route('subjects')->with('success', 'Subject successfully updated.');
     }
 
-    public function deleteSubject($id, Subjects $subjectModel) {
+    public function deleteSubject($id, Subjects $subjectModel)
+    {
         $subject = $subjectModel->findOrFail($id);
         if (!$subject->delete()) {
             return back()->with('error', 'An error occurred.');
         }
-    
+
         return redirect()->route('subjects')->with('success', 'Subject successfully deleted.');
     }
 }

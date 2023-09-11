@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Course Info | ' . (new \App\Helper\Helper())->showEnvironment()))
+@section('title', 'Teacher Restriction | ' . (new \App\Helper\Helper())->showEnvironment())
 
-@section('pageTitle', 'Restriction Info | ' . $academics->academicYear)
+@section('pageTitle', 'Restriction Info | ' . $academics->academicYear . ' ' . (new \App\Helper\Helper())->academicFormat($academics->academicSemester))
 
-@section('uuid', $academics->academicYear . ' | ' . $academics->academicSemester)
+@section('uuid', $academics->academicYear . ' ' . (new \App\Helper\Helper())->academicFormat($academics->academicSemester))
 
 @section('content')
     <div class="row">
@@ -33,7 +33,7 @@
                                     <option selected>Choose</option>
                                     @foreach ($models['courses'] as $course)
                                         <option value="{{ $course->id }}">
-                                            {{ $course->courseName . '-' . $course->courseYearLevel . '-' . $course->courseSection }}
+                                            {{ $course->courseName . '-' . $course->courseYearLevel . $course->courseSection }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -63,7 +63,7 @@
                         <thead>
                             <tr class="t-row-head" data-aos="fade-up" data-aos-delay="100">
                                 <th>Teacher</th>
-                                <th>Coursse</th>
+                                <th>Course</th>
                                 <th>Subject</th>
                                 <th>Date Created</th>
                                 <th></th>

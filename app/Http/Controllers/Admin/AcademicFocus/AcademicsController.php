@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\AcademicFocus;
+namespace App\Http\Controllers\Admin\AcademicFocus;
 
 use App\Http\Controllers\Controller;
+use App\Helper\Helper;
 use App\Models\Academic;
 use Illuminate\Http\Request;
 
@@ -46,9 +47,9 @@ class AcademicsController extends Controller
                 $html .= '
                     <tr class="t-row" data-aos="fade-up" data-aos-delay="' . $delay . '00">
                         <td class="text-capitalize">' . $academic->academicYear . '</td>
-                        <td class="text-capitalize">' . $academic->academicSemester . '</td>
+                        <td class="text-capitalize">' . Helper::academicFormat($academic->academicSemester) . '</td>
                         <td class="text-capitalize">' . ($academic->academicSystemDefault ? '<span class="badge bg-primary">Yes</span>' : '<span class="badge bg-danger">No</span>') . '</td>
-                        <td class="text-capitalize"><span class="badge bg-'.($academic->academicEvaluationStatus == 'Starting' ? 'success' : 'primary').'">' . $academic->academicEvaluationStatus . '</span></td>
+                        <td class="text-capitalize"><span class="badge bg-' . ($academic->academicEvaluationStatus == 'Starting' ? 'success' : ($academic->academicEvaluationStatus == 'Closed' ? 'secondary' : 'primary')) . '">' . $academic->academicEvaluationStatus . '</span></td>
                         <td class="text-lowercase">' . $academic->updated_at->diffForHumans() . '</td>
                         <td>
                         <div class="dropup">
@@ -104,7 +105,7 @@ class AcademicsController extends Controller
                 )
             ], 422);
         }
-        
+
         if ($academicModel->create($validatedData)) {
             return response()->json([
                 'success' => $request->courseName . ' successfully added.',
@@ -160,20 +161,24 @@ class AcademicsController extends Controller
     public function updateAcademicEvaluationStatus($id, Request $request, Academic $academicModel)
     {
         $academic = $academicModel->findOrFail($id);
-        $validatedData = $request->validate(
-            [
-                'academicEvaluationStatus' => 'in:Starting,Closed,Not started'
-            ],
-            [
-                'academicEvaluationStatus.in' => 'Evaluation status is invalid.',
-            ]
-        );
+        $validatedData = $request->validate([
+            'academicEvaluationStatus' => 'in:Starting,Closed,Not started'
+        ], [
+            'academicEvaluationStatus.in' => 'Evaluation status is invalid.',
+        ]);
 
-        if (!$academic->update($validatedData)) {
-            return back()->with('error', 'An error occurred.');
+        if ($validatedData['academicEvaluationStatus'] == 'Starting') {
+            $academicModel->where('academicSystemDefault', 1)->update(['academicEvaluationStatus' => 'Not started', 'academicSystemDefault' => 0]);
+            $academic->update(['academicEvaluationStatus' => 'Starting', 'academicSystemDefault' => 1]);
+        }elseif($validatedData['academicEvaluationStatus'] == 'Closed'){
+            $academic->update(['academicEvaluationStatus' => 'Closed']);
+            $academic->update(['academicSystemDefault' => 0]);
+        }else{
+            $academic->where('academicSystemDefault', 1)->update(['academicEvaluationStatus' => 'Not started', 'academicSystemDefault' => 0]);
         }
         return redirect()->route('academics')->with('success', 'Evaluation status successfully updated.');
     }
+
 
     public function deleteAcademic($id, Academic $academicModel)
     {

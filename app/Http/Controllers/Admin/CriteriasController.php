@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use App\Models\Criterias;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
 class CriteriasController extends Controller
@@ -126,3 +127,4 @@ class CriteriasController extends Controller
         return redirect()->route('criterias')->with('success', 'Criteria successfully deleted.');
     }
 }
+

@@ -1,15 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Helper\Helper;
 use App\Models\Academic;
-use App\Models\Courses;
 use App\Models\Criterias;
 use App\Models\EvaluationList;
 use App\Models\Questionnaires;
-use App\Models\Subjects;
-use App\Models\Teachers;
 use Illuminate\Http\Request;
 
 class QuestionnairesController extends Controller
@@ -143,7 +141,7 @@ class QuestionnairesController extends Controller
                     $formNum++;
                     $html .= '
                     <tr class="t-row" data-aos="fade-up" data-aos-delay="' . $delay2 . '00">
-                        <td colspan="8" style="text-wrap: wrap;line-height: 20px;">' . $question->questions . '</td>
+                        <td colspan="8" style="white-space: normal; line-height: 20px;">' . $question->questions . '</td>
                         <td class="text-lowercase"><input type="radio" name="placeholder'.$formNum.'"></td>
                         <td class="text-lowercase"><input type="radio" name="placeholder'.$formNum.'"></td>
                         <td class="text-lowercase"><input type="radio" name="placeholder'.$formNum.'"></td>

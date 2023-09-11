@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Academic;
 use App\Models\Courses;
 use App\Models\Criterias;
@@ -43,7 +44,7 @@ class RestrictionsController extends Controller
         return view('questionnaires.restrictions', compact(['academics', 'models', 'restrictions']));
     }
 
-    public function storeRestriction(Request $request, Restriction $courseModel)
+    public function storeRestriction(Request $request, Restriction $restrictionModel)
     {
         $validate = $request->validate([
             'academic_id' => 'required|string|exists:academics,id',
@@ -52,17 +53,23 @@ class RestrictionsController extends Controller
             'subject_id' => 'required|string|exists:subjects,id'
         ]);
 
+        $isRestrictionExist = $restrictionModel::where('academic_id', $validate['academic_id'])->where('course_id', $validate['course_id'])->where('subject_id', $validate['subject_id'])->exists();
+        if($isRestrictionExist){
+            return back()->with('error', 'Restriction already exist.');
+        }
+        
+
         $teacher = Teachers::find($validate['teacher_id']);
         $course = Courses::find($validate['course_id']);
         $subject = Subjects::find($validate['subject_id']);
 
-        $isRestrictionCreated = $courseModel->create([
+        $isRestrictionCreated = $restrictionModel->create([
             'academic_id' => $validate['academic_id'],
             'teacher_id' => $validate['teacher_id'],
             'course_id' => $validate['course_id'],
             'subject_id' => $validate['subject_id'],
             'teacher' => $teacher->teachersFullName,
-            'course' => $course->courseName,
+            'course' => $course->courseName . ' - ' . $course->courseYearLevel . $course->courseSection,
             'subject' => $subject->subjectCode
         ]);
 
