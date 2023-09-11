@@ -66,26 +66,31 @@
                                 @php
                                     $stronglyDisagree = (new \App\Models\EvaluationList())
                                         ->where('teacher_id', $item->teacher_id)
+                                        ->where('subject_id', $item->subject_id)
                                         ->where('question', $item->question)
                                         ->where('answer', 1)
                                         ->count();
                                     $disagree = (new \App\Models\EvaluationList())
                                         ->where('teacher_id', $item->teacher_id)
+                                        ->where('subject_id', $item->subject_id)
                                         ->where('question', $item->question)
                                         ->where('answer', 2)
                                         ->count();
                                     $uncertain = (new \App\Models\EvaluationList())
                                         ->where('teacher_id', $item->teacher_id)
+                                        ->where('subject_id', $item->subject_id)
                                         ->where('question', $item->question)
                                         ->where('answer', 3)
                                         ->count();
                                     $agree = (new \App\Models\EvaluationList())
                                         ->where('teacher_id', $item->teacher_id)
+                                        ->where('subject_id', $item->subject_id)
                                         ->where('question', $item->question)
                                         ->where('answer', 4)
                                         ->count();
                                     $stronglyAgree = (new \App\Models\EvaluationList())
                                         ->where('teacher_id', $item->teacher_id)
+                                        ->where('subject_id', $item->subject_id)
                                         ->where('question', $item->question)
                                         ->where('answer', 5)
                                         ->count();
