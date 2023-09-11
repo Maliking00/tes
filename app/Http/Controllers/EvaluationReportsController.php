@@ -41,7 +41,7 @@ class EvaluationReportsController extends Controller
             ->whereIn('teacher_evaluation_statuses.id', function ($query) {
                 $query->select(DB::raw('MAX(id)'))
                     ->from('teacher_evaluation_statuses')
-                    ->groupBy('teacher_id');
+                    ->groupBy('subject_id');
             })
             ->get()
             ->groupBy('academicYear');
@@ -56,7 +56,7 @@ class EvaluationReportsController extends Controller
             ->where('subject_id', $subjectID)
             ->get()
             ->groupBy('criteria');
-            
+
         if ($evalResponses->count() === 0) {
             return back()->with('error', 'Opps! Attempting to retrieve data that does not exist.');
         }
