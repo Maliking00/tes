@@ -103,7 +103,7 @@ class StudentsController extends Controller
         $validate = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'idNumber' => 'required|regex:/^\d{3}-\d{3}-\d{3}$/',
+            'idNumber' => 'required|regex:/^\d{10}$/',
             'contactNumber' => 'required|numeric|regex:/^0\d{10}$/',
             'password' => 'required|string|min:8',
             'security_question' => 'required|exists:security_questions,id',
@@ -170,7 +170,7 @@ class StudentsController extends Controller
         $validate = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $students->id,
-            'idNumber' => 'required|regex:/^\d{3}-\d{3}-\d{3}$/',
+            'idNumber' => 'required|regex:/^\d{10}$/',
             'contactNumber' => 'required|numeric|regex:/^0\d{10}$/',
             'courses' => 'required|exists:courses,id',
             'password' => 'required|string|min:8',
@@ -216,7 +216,7 @@ class StudentsController extends Controller
             'answer' => $request->security_answer
         ]);
 
-        return redirect()->route('students')->with('success', 'Students successfully updated.');
+        return back()->with('success', 'Students successfully updated.');
     }
 
     public function updateStudentRole($id, Request $request, User $userModel)

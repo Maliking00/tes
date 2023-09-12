@@ -18,8 +18,14 @@ class TeacherEvaluationStatus extends Model
         'teacher_id',
         'course_id',
         'subject_id',
+        'academicYear',
+        'academicYearAndSemester',
         'teacher',
+        'teacherAvatar',
+        'teacherEmail',
         'course',
-        'subject'
+        'subjectCode',
+        'subjectName',
+        'subjectDescription',
     ];
 }

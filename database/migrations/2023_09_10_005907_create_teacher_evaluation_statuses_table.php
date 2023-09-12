@@ -21,9 +21,15 @@ class CreateTeacherEvaluationStatusesTable extends Migration
             $table->uuid('teacher_id');
             $table->uuid('course_id');
             $table->uuid('subject_id');
+            $table->text('academicYear');
+            $table->text('academicYearAndSemester');
             $table->text('teacher');
+            $table->text('teacherAvatar');
+            $table->text('teacherEmail');
             $table->text('course');
-            $table->text('subject');
+            $table->text('subjectCode');
+            $table->text('subjectName');
+            $table->text('subjectDescription');
             $table->timestamps();
         });
     }

@@ -37,13 +37,12 @@
                     <div class="text-center">
                         <img id="teacher_avatar" class="eval-img"
                             src="{{ asset((new \App\Helper\Helper())->avatarPathOnProduction($data->teacherAvatar, 'teachersAvatar')) }}"
-                            alt="{{ $data->teacherName }}">
-                        <h4 class="text-center my-2">{{ $data->teacherName }}</h4>
+                            alt="{{ $data->teacher }}">
+                        <h4 class="text-center my-2">{{ $data->teacher }}</h4>
                         <p class="text-center my-2">
-                            {{ $data->courseName . '-' . $data->courseYearLevel . $data->courseSection }} Teacher <span
+                            {{ $data->course }} Teacher <span
                                 style="font-weight: 600;">|</span> {{ $data->subjectCode }} Subject</p>
-                        <p>{{ $data->academicYear }}
-                            {{ (new \App\Helper\Helper())->academicFormat($data->academicSemester) }}</p>
+                        <p>{{ $data->academicYearAndSemester }}</p>
                         <hr>
                     </div>
                     <h3 class="mb-4">Rating Legend</h3>

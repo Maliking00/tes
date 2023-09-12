@@ -86,7 +86,7 @@ class TeachersController extends Controller
         $request->validate([
             'teachersFullName' => 'required|string|max:255',
             'teachersEmail' => 'required|string|email|max:255|unique:teachers',
-            'teachersIdNumber' => 'required|regex:/^\d{3}-\d{3}-\d{3}$/',
+            'teachersIdNumber' => 'required|regex:/^\d{10}$/',
             'teachersContactNumber' => 'required|numeric|regex:/^0\d{10}$/',
             'teachersAvatar' => 'required|image|mimes:jpg,png|max:2048',
         ]);
@@ -101,7 +101,7 @@ class TeachersController extends Controller
             'teachersAvatar' => $avatarName
         ]);
 
-        Helper::removeAvatarsNotExistOnDatabase('teachersAvatar', $teacher->teachersAvatar);
+        // Helper::removeAvatarsNotExistOnDatabase('teachersAvatar', $teacher->teachersAvatar);
         $request->teachersAvatar->storeAs('public/teachers/avatars', $teacher->teachersAvatar);
 
         if ($teacher) {
@@ -122,9 +122,9 @@ class TeachersController extends Controller
         $teachers = $teacherModel->findOrFail($id);
         $request->validate([
             'teachersFullName' => 'required|string|max:255',
-                'teachersEmail' => 'required|string|email|max:255|unique:teachers,teachersEmail,' . $teachers->id,
-                'teachersIdNumber' => 'required|regex:/^\d{3}-\d{3}-\d{3}$/|unique:teachers,teachersIdNumber,' . $teachers->id,
-                'teachersContactNumber' => 'required|numeric|regex:/^0\d{10}$/'
+            'teachersEmail' => 'required|string|email|max:255|unique:teachers,teachersEmail,' . $teachers->id,
+            'teachersIdNumber' => 'required|regex:/^\d{10}$/|unique:teachers,teachersIdNumber,' . $teachers->id,
+            'teachersContactNumber' => 'required|numeric|regex:/^0\d{10}$/'
         ]);
 
         $teachers->update([
@@ -134,7 +134,7 @@ class TeachersController extends Controller
             'teachersContactNumber' => $request->teachersContactNumber
         ]);
 
-        return redirect()->route('teachers')->with('success', 'Teacher successfully updated.');
+        return back()->with('success', 'Teacher successfully updated.');
     }
 
     public function updateTeacherAvatar($id, Request $request, Teachers $teacherModel)
@@ -145,7 +145,7 @@ class TeachersController extends Controller
         ]);
 
         $avatarName = uniqid() . '.' . $request->teachersAvatar->extension();
-        Helper::removeAvatarsNotExistOnDatabase('teachersAvatar', $user->teachersAvatar);
+        // Helper::removeAvatarsNotExistOnDatabase('teachersAvatar', $user->teachersAvatar);
         if (!$user->update(['teachersAvatar' => $avatarName])) {
             return back()->with('error', 'An error occurred.');
         }

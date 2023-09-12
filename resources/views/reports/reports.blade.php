@@ -16,12 +16,13 @@
                             <div class="card mb-3">
                                 <div class="text-center">
                                     <img src="{{ asset((new \App\Helper\Helper())->avatarPathOnProduction($record->teacherAvatar, 'teachersAvatar')) }}"
-                                    class="rl-avatar" alt="{{$record->teacherName}}" />
+                                    class="rl-avatar" alt="{{$record->teacher}}" />
+                                    <small>{{$record->subjectCode}}</small>
                                 </div>
                                 <div class="card-content">
-                                    <h5>{{$record->teacherName}}</h5>
-                                    <h6 class="card-text text-dark">{{$record->courseName . ' | ' . $record->subjectCode}}</h6>
-                                    <a href="/dashboard/evaluation-reports/{{$record->academicID}}/{{$record->teacherID}}/{{$record->courseID}}/{{$record->subjectID}}" class="btn btn-sm btn-outline-info p-2 px-3">View Responses</a>
+                                    <h5>{{$record->teacher}}</h5>
+                                    <p class="card-text text-dark">{{$record->course}}</p>
+                                    <a href="/dashboard/evaluation-reports/{{$record->academic_id}}/{{$record->teacher_id}}/{{$record->course_id}}/{{$record->subject_id}}" class="btn btn-sm btn-outline-info p-2 px-3">View Responses</a>
                                 </div>
                             </div>
                         </div>

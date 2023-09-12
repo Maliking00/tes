@@ -92,7 +92,7 @@ class HrControllers extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'idNumber' => 'required|regex:/^\d{3}-\d{3}-\d{3}$/',
+            'idNumber' => 'required|regex:/^\d{10}$/',
             'contactNumber' => 'required|numeric|regex:/^0\d{10}$/',
             'password' => 'required|string|min:8',
             'security_question' => 'required|exists:security_questions,id',
@@ -145,7 +145,7 @@ class HrControllers extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $hrs->id,
-            'idNumber' => 'required|regex:/^\d{3}-\d{3}-\d{3}$/',
+            'idNumber' => 'required|regex:/^\d{10}$/',
             'contactNumber' => 'required|numeric|regex:/^0\d{10}$/',
             'password' => 'required|string|min:8',
             'security_question' => 'required|exists:security_questions,id',
@@ -177,7 +177,7 @@ class HrControllers extends Controller
             'answer' => $request->security_answer
         ]);
 
-        return redirect()->route('hrs')->with('success', 'Hrs successfully updated.');
+        return back()->with('success', 'Hrs successfully updated.');
     }
 
     public function updateHrRole($id, Request $request, User $userModel)

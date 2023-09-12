@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\AcademicFocus;
 
 use App\Http\Controllers\Controller;
 use App\Helper\Helper;
+use App\Models\StudentSubject;
 use App\Models\Subjects;
 use Illuminate\Http\Request;
 class SubjectsController extends Controller
@@ -120,7 +121,8 @@ class SubjectsController extends Controller
     public function deleteSubject($id, Subjects $subjectModel)
     {
         $subject = $subjectModel->findOrFail($id);
-        if (!$subject->delete()) {
+        $studentSubject = StudentSubject::where('subjectID', $id)->delete();
+        if (!$subject->delete() && !$studentSubject) {
             return back()->with('error', 'An error occurred.');
         }
 

@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\Helper;
 use App\Models\Academic;
 use App\Models\Courses;
 use App\Models\Criterias;
 use App\Models\EvaluationList;
 use App\Models\Subjects;
 use App\Models\TeacherEvaluationStatus;
+use App\Models\Teachers;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -38,8 +40,7 @@ class EvaluationsController extends Controller
                 'subjectCode',
                 'subjectName',
                 'academicYear',
-                'academicSemester',
-                DB::raw('UNIX_TIMESTAMP(restrictions.created_at) as dateAssigned')
+                'academicSemester'
             ])
             ->join('academics', 'academics.id', '=', 'restrictions.academic_id')
             ->join('teachers', 'teachers.id', '=', 'restrictions.teacher_id')
@@ -143,6 +144,9 @@ class EvaluationsController extends Controller
 
             $subject = Subjects::find($validate['subject_id']);
             $course = Courses::find($validate['course_id']);
+            $teacher = Teachers::find($validate['teacher_id']);
+            $academicY = Academic::find($validate['academic_id']);
+            $academicYearAndSemester = $academicY->academicYear . ' ' . Helper::academicFormat($academicY->academicSemester);
 
             foreach ($request->input() as $key => $value) {
                 if (strpos($key, 'criteria') === 0) {
@@ -178,9 +182,15 @@ class EvaluationsController extends Controller
                 'teacher_id' => $validate['teacher_id'],
                 'course_id' => $validate['course_id'],
                 'subject_id' => $validate['subject_id'],
+                'academicYear' => $academicY->academicYear,
+                'academicYearAndSemester' => $academicYearAndSemester,
                 'teacher' => $validate['teacher'],
+                'teacherAvatar' => $teacher->teachersAvatar,
+                'teacherEmail' => $teacher->teachersEmail,
                 'course' => $course->courseName . '-' . $course->courseYearLevel . '' . $course->courseSection,
-                'subject' => $subject->subjectCode
+                'subjectCode' => $subject->subjectCode,
+                'subjectName' => $subject->subjectName,
+                'subjectDescription' => $subject->subjectDescription
             ]);
             if (!$isStoreTeacherEvaluationStatus) {
                 return redirect()->back()->with('error', 'An error occurred while storing the data.');

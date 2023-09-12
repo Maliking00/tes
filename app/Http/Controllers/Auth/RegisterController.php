@@ -32,7 +32,7 @@ class RegisterController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'idNumber' => 'required|regex:/^\d{3}-\d{3}-\d{3}$/',
+            'idNumber' => 'required|regex:/^\d{10}$/',
             'courses' => 'required|exists:courses,id',
             'contactNumber' => 'required|numeric|regex:/^0\d{10}$/',
             'password' => 'required|string|min:8|confirmed',
