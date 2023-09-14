@@ -20,6 +20,7 @@ class CreateEvaluationListsTable extends Migration
             $table->uuid('teacher_id');
             $table->uuid('course_id');
             $table->uuid('subject_id');
+            $table->uuid('questionID');
             $table->string('teacher');
             $table->string('criteria');
             $table->text('question');

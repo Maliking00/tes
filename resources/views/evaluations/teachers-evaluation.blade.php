@@ -55,11 +55,13 @@
                     <div>
                         <h5>Welcome to</h5>
                         <h2>Teacher Evaluation System</h2>
+                        @if(!empty($academicDefault))
                         <h3 class="font-weight-bold">{{ $academicDefault->academicYear }}
                             {{ (new \App\Helper\Helper())->academicFormat($academicDefault->academicSemester) }}</h3>
                         <p
                             class="badge bg-{{ $academicDefault->academicEvaluationStatus == 'Starting' ? 'success' : 'secondary' }}">
                             {{ $academicDefault->academicEvaluationStatus }}</p>
+                        @endif
                         <p>Secure and Reliable Web-based Teacher Evaluation System <br /> with Multi-Factor Authentication
                             and Advance Encryption Standard</p>
                     </div>

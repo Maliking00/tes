@@ -17,6 +17,7 @@ class EvaluationList extends Model
         'teacher_id',
         'course_id',
         'subject_id',
+        'questionID',
         'teacher',
         'criteria',
         'question',

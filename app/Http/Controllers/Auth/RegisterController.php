@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\Courses;
 use App\Models\SecurityQuestion;
+use App\Models\Subjects;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -17,13 +18,23 @@ use Illuminate\Support\Facades\URL;
 
 class RegisterController extends Controller
 {
-    use RegistersUsers;
+    // use RegistersUsers;
 
     protected $redirectTo = RouteServiceProvider::HOME;
 
     public function __construct()
     {
         $this->middleware('guest');
+    }
+
+    public function showRegistrationForm()
+    {
+        $courses = Courses::all();
+        $subjects = Subjects::all();
+        if($courses->count() === 0 || $subjects->count() === 0){
+            return back()->with('info', 'Registration is temporarily closed.');
+        }
+        return view('auth.register', compact(['courses', 'subjects']));
     }
 
     public function registrationFirst(Request $request)

@@ -119,7 +119,7 @@ button {
     position: fixed !important;
     top: 2em !important;
     right: 3em !important;
-    padding: 10px 70px 10px 20px !important;
+    padding: 15px 60px 15px 20px !important;
     z-index: 90000 !important;
     color: #747474 !important;
     background-color: #ffffff !important;
@@ -129,6 +129,10 @@ button {
 
     strong {
         background-color: #00000000 !important;
+
+        i {
+            font-size: 35px;
+        }
     }
 
     p {
@@ -182,19 +186,19 @@ button {
 }
 
 .a-success {
-    border-left: 2px solid #00880b !important;
+    border-left: 3px solid #00880b !important;
 }
 
 .a-error {
-    border-left: 2px solid #ff6b6b !important;
+    border-left: 3px solid #ff6b6b !important;
 }
 
 .a-info {
-    border-left: 2px solid #004b97 !important;
+    border-left: 3px solid #004b97 !important;
 }
 
 .a-warning {
-    border-left: 2px solid #ee842e !important;
+    border-left: 3px solid #ee842e !important;
 }
 
 span#addon-wrapping {
@@ -466,55 +470,96 @@ table {
 
     .card {
         padding: 10px 20px;
-        border: 1px solid #0d59a023;
-        display: flex;
-        align-items: center;
-        flex-direction: row;
-        column-gap: 20px;
 
-        .rl-avatar {
-            width: 90px;
-            height: 90px;
-            object-fit: cover;
-            border-radius: 50%;
-            border: 3px solid #cdcdcd;
-            text-align: center;
-        }
+        .card-body {
+            display: flex;
+            align-items: center;
+            flex-direction: row;
+            column-gap: 10px;
 
-        .card-content {
-            padding: 10px;
-
-            * {
-                padding: 0;
-                margin: 4px 0;
+            .rl-avatar {
+                width: 120px;
+                height: 120px;
+                object-fit: cover;
+                border-radius: 50%;
+                border: 2px solid #cdcdcd;
+                text-align: center;
             }
 
-            .btn{
-                border: 1px solid #0d59a023 !important;
-                color: var(--primary);
+            .card-content {
+                padding: 10px;
 
-                &:hover{
-                    background: var(--primary) !important;
-                    color: var(--white) !important;
+                h5 {
+                    color: var(--primary);
+                    font-weight: 600;
+                }
+
+                * {
+                    padding: 0;
+                    margin: 4px 0;
+                }
+
+                .btn {
+                    border: 1px solid #0d59a023 !important;
+                    color: var(--primary);
+
+                    &:hover {
+                        background: var(--primary) !important;
+                        color: var(--white) !important;
+                    }
                 }
             }
         }
     }
 
-    .no-data{
+    .no-data {
         max-width: 300px;
     }
 }
 
 // Evaluation Response
-#evaluationResponse{
+#evaluationResponse {
 
-    .eval-img{
+    .eval-img {
         width: 100px;
         height: 100px;
         object-fit: cover;
         border-radius: 50%;
         border: 4px solid var(--primary);
+    }
+
+    h6 {
+        font-weight:700;
+        color: var(--primary);
+    }
+
+    .b-red{
+        background: #e63946;
+    }
+    .b-blue{
+        background: #254BDD;
+    }
+    .b-yellow{
+        background: #ffbe0b;
+    }
+    .b-sky-blue{
+        background: #78b7f1;
+    }
+    .b-green{
+        background: #32984b;
+    }
+
+    .r-legend {
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        span {
+            font-weight: bold;
+        }
     }
 }
 

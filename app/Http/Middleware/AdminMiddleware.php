@@ -24,7 +24,7 @@ class AdminMiddleware
                 return back()->with('warning', 'You do not have sufficient permissions to access this area.');
             }
         }else{
-            return redirect(route('welcome'))->with('warning', 'Login first.');
+            return back()->with('warning', 'Login first.');
         }
     }
 }

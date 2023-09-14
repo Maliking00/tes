@@ -14,16 +14,20 @@
                     @foreach ($groupedData as $record)
                         <div class="col-lg-3">
                             <div class="card mb-3">
-                                <div class="text-center">
-                                    <img src="{{ asset((new \App\Helper\Helper())->avatarPathOnProduction($record->teacherAvatar, 'teachersAvatar')) }}"
-                                    class="rl-avatar" alt="{{$record->teacher}}" />
-                                    <small>{{$record->subjectCode}}</small>
+                                <div class="card-body p-0">
+                                    <div class="text-center">
+                                        <img src="{{ asset((new \App\Helper\Helper())->avatarPathOnProduction($record->teacherAvatar, 'teachersAvatar')) }}"
+                                        class="rl-avatar" alt="{{$record->teacher}}" />
+                                    </div>
+                                    <div class="card-content">
+                                        <h5>{{$record->teacher}}</h5>
+                                        <p>{{$record->teacherEmail}}</p>
+                                        <p>{{$record->subjectCode}} | {{$record->academicYear}}</p>
+                                        <a href="/dashboard/evaluation-reports/{{$record->academic_id}}/{{$record->teacher_id}}/{{$record->course_id}}/{{$record->subject_id}}" class="btn btn-sm btn-outline-info p-2 px-3">View Responses</a>
+                                    </div>
                                 </div>
-                                <div class="card-content">
-                                    <h5>{{$record->teacher}}</h5>
-                                    <p class="card-text text-dark">{{$record->course}}</p>
-                                    <a href="/dashboard/evaluation-reports/{{$record->academic_id}}/{{$record->teacher_id}}/{{$record->course_id}}/{{$record->subject_id}}" class="btn btn-sm btn-outline-info p-2 px-3">View Responses</a>
-                                </div>
+                                <hr class="m-0 p-0">
+                                <p class="text-text text-dark p-1">{{$record->course}}</p>
                             </div>
                         </div>
                     @endforeach

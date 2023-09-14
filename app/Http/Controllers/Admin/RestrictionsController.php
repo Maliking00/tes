@@ -36,7 +36,7 @@ class RestrictionsController extends Controller
         $criteriaList = Criterias::get();
 
         foreach ($criteriaList as $criteria) {
-            if ($criteria->questionnaires->count() == 0) {
+            if ($criteria->questionnaires->where('academic_id', $academics->id)->count() == 0) {
                 return back()->with('warning', "Criteria {$criteria->criterias} has no questionnaires.\n");
             }
         }

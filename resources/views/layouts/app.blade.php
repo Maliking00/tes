@@ -48,14 +48,10 @@
                                 <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown"
                                     id="profileDropdown">
                                     <img src="{{ asset((new \App\Helper\Helper())->userAvatar(Auth::user()->avatarUrl)) }}"
-                                        alt="profile" />
+                                        alt="profile" title="{{Auth::user()->email}}" />
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right navbar-dropdown"
                                     aria-labelledby="profileDropdown">
-                                    <a class="dropdown-item">
-                                        <i class="ti-settings text-primary"></i>
-                                        Settings
-                                    </a>
                                     <a class="dropdown-item"
                                         onclick="event.preventDefault();
                                 document.getElementById('logout-form').submit();">
@@ -146,6 +142,12 @@
                                     <a class="nav-link" href="{{ route('evaluation.reports') }}">
                                         <i class="ti-agenda menu-icon"></i>
                                         <span class="menu-title">Evaluation Report</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link @if (\Route::currentRouteName() == 'settings') active @endif" href="{{ route('settings') }}">
+                                        <i class="ti-settings menu-icon"></i>
+                                        <span class="menu-title">Settings</span>
                                     </a>
                                 </li>
                             @elseif(Auth::user()->role == 'student')
@@ -295,7 +297,11 @@
                 }
             }
 
-            const city = "{{ config('app.dashboard_weather_city.city') }}";
+            @php 
+                $setting = (new \App\Models\Setting())->first();
+            @endphp
+
+            const city = "{{ $setting->weatherCity }}";
             const weatherTemperature = document.querySelector('.weather-temp');
             const weatherLocation = document.querySelector('.weather-location');
             const weatherType = document.querySelector('.weather-type');

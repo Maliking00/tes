@@ -2,6 +2,7 @@
 
 namespace App\Helper;
 
+use App\Models\Setting;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Http;
 use File;
@@ -32,15 +33,23 @@ class Helper
             'otp' => $otp,
             'phoneNumber' => $phoneNumber
         )]);
-        Http::post('https://api.semaphore.co/api/v4/messages', [
-            'apikey' => config('app.semaphore_api_key'),
-            'number' => $phoneNumber,
-            'message' => "Your OTP is: $otp",
-        ]);
-        $response = array(
-            'status' => true
-        );
-        return $response;
+
+        $setting = Setting::first();
+        if($setting->smsMode === 1){
+            $data = Http::post('https://semaphore.co/api/v4/messages', [
+                'apikey' => "config('app.semaphore_api_key.key')",
+                'number' => $phoneNumber,
+                'message' => "Your OTP is: $otp",
+            ]);
+            $response = $data->json();
+            if($response['apikey'][0] == 'The selected apikey is invalid.'){
+                return false;
+            }else{
+                return true;
+            }
+        }else{
+            return true;
+        }
     }
 
     public static function shortenDescription($description, $max_length)

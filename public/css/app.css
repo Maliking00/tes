@@ -12059,7 +12059,7 @@ button {
   position: fixed !important;
   top: 2em !important;
   right: 3em !important;
-  padding: 10px 70px 10px 20px !important;
+  padding: 15px 60px 15px 20px !important;
   z-index: 90000 !important;
   color: #747474 !important;
   background-color: #ffffff !important;
@@ -12069,6 +12069,9 @@ button {
 }
 .alert strong {
   background-color: rgba(0, 0, 0, 0) !important;
+}
+.alert strong i {
+  font-size: 35px;
 }
 .alert p {
   margin-bottom: 0 !important;
@@ -12115,19 +12118,19 @@ button {
 }
 
 .a-success {
-  border-left: 2px solid #00880b !important;
+  border-left: 3px solid #00880b !important;
 }
 
 .a-error {
-  border-left: 2px solid #ff6b6b !important;
+  border-left: 3px solid #ff6b6b !important;
 }
 
 .a-info {
-  border-left: 2px solid #004b97 !important;
+  border-left: 3px solid #004b97 !important;
 }
 
 .a-warning {
-  border-left: 2px solid #ee842e !important;
+  border-left: 3px solid #ee842e !important;
 }
 
 span#addon-wrapping {
@@ -12348,34 +12351,39 @@ table td .show-options {
 }
 .report-list .card {
   padding: 10px 20px;
-  border: 1px solid rgba(13, 89, 160, 0.137254902);
+}
+.report-list .card .card-body {
   display: flex;
   align-items: center;
   flex-direction: row;
-  -moz-column-gap: 20px;
-       column-gap: 20px;
+  -moz-column-gap: 10px;
+       column-gap: 10px;
 }
-.report-list .card .rl-avatar {
-  width: 90px;
-  height: 90px;
+.report-list .card .card-body .rl-avatar {
+  width: 120px;
+  height: 120px;
   -o-object-fit: cover;
      object-fit: cover;
   border-radius: 50%;
-  border: 3px solid #cdcdcd;
+  border: 2px solid #cdcdcd;
   text-align: center;
 }
-.report-list .card .card-content {
+.report-list .card .card-body .card-content {
   padding: 10px;
 }
-.report-list .card .card-content * {
+.report-list .card .card-body .card-content h5, .report-list .card .card-body .card-content .h5 {
+  color: var(--primary);
+  font-weight: 600;
+}
+.report-list .card .card-body .card-content * {
   padding: 0;
   margin: 4px 0;
 }
-.report-list .card .card-content .btn {
+.report-list .card .card-body .card-content .btn {
   border: 1px solid rgba(13, 89, 160, 0.137254902) !important;
   color: var(--primary);
 }
-.report-list .card .card-content .btn:hover {
+.report-list .card .card-body .card-content .btn:hover {
   background: var(--primary) !important;
   color: var(--white) !important;
 }
@@ -12390,6 +12398,36 @@ table td .show-options {
      object-fit: cover;
   border-radius: 50%;
   border: 4px solid var(--primary);
+}
+#evaluationResponse h6, #evaluationResponse .h6 {
+  font-weight: 700;
+  color: var(--primary);
+}
+#evaluationResponse .b-red {
+  background: #e63946;
+}
+#evaluationResponse .b-blue {
+  background: #254BDD;
+}
+#evaluationResponse .b-yellow {
+  background: #ffbe0b;
+}
+#evaluationResponse .b-sky-blue {
+  background: #78b7f1;
+}
+#evaluationResponse .b-green {
+  background: #32984b;
+}
+#evaluationResponse .r-legend {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#evaluationResponse .r-legend span {
+  font-weight: bold;
 }
 
 ul#pagination_link {

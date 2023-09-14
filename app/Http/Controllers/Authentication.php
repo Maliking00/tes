@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Helper\Helper;
 use App\Models\SecurityQuestion;
+use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 
 class Authentication extends Controller
@@ -64,9 +66,15 @@ class Authentication extends Controller
         $user = User::where('email', $loginData['email'])->first();
         if ($user && Crypt::decrypt($user->securityAnswer) === $request->security_answer) {
             $phoneNumber = $user->contactNumber;
-            $otp = mt_rand(100000, 999999); // Generate a random 6-digit OTP 
-            Helper::sendOtp($phoneNumber, $otp);
+            $otp = mt_rand(100000, 999999); // Generate a random 6-digit OTP
+            if (!Helper::sendOtp($phoneNumber, $otp)) {
+                return back()->with('error', 'An error occurred while processing the request.');
+            }
             session(['loginSecurityOtpTimeLimit' => now()->addMinutes(2)]);
+            $setting = Setting::first();
+            if($setting->smsMode != 0){
+                return redirect()->route('login.otp.security')->with('success', 'Your one-time passcode has been sent to your number. Please check.');
+            }
             return redirect()->route('login.otp.security')->with('success', 'Temporary OTP: ' . $otp);
         }
 

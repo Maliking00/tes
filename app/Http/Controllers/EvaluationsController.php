@@ -7,6 +7,7 @@ use App\Models\Academic;
 use App\Models\Courses;
 use App\Models\Criterias;
 use App\Models\EvaluationList;
+use App\Models\Questionnaires;
 use App\Models\Subjects;
 use App\Models\TeacherEvaluationStatus;
 use App\Models\Teachers;
@@ -14,6 +15,7 @@ use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 
 class EvaluationsController extends Controller
@@ -154,9 +156,16 @@ class EvaluationsController extends Controller
                     continue;
                 }
 
-                if (strpos($key, 'question') === 0) {
-                    $question = $value[0];
+                if (strpos($key, 'questionID') === 0) {
+                    $questionID = $value[0];
+                    $questionString = Questionnaires::find($questionID)->questions;
                 }
+
+                
+
+                // if (strpos($key, 'question') === 0) {
+                //     $question = $value[0];
+                // }
 
                 if (strpos($key, 'answer') === 0) {
                     $answer = $value[0];
@@ -169,7 +178,8 @@ class EvaluationsController extends Controller
                         'subject_id' => $validate['subject_id'],
                         'teacher' => $validate['teacher'],
                         'criteria' => $criteria,
-                        'question' => $question,
+                        'question' => $questionString,
+                        'questionID' => $questionID,
                         'answer' => $answer,
                     ]);
                 }

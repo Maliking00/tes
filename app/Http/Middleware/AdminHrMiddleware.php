@@ -18,7 +18,8 @@ class AdminHrMiddleware
     public function handle(Request $request, Closure $next)
     {
         if(Auth::check()){
-            if(Auth::user()->role == 'HR' || Auth::user()->role == 'admin'){
+            if(Auth::user()->role == 'HR'){
+            // if(Auth::user()->role == 'HR' || Auth::user()->role == 'admin'){
                 return $next($request);
             }else{
                 return back()->with('warning', 'You do not have sufficient permissions to access this area.');

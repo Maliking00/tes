@@ -15,6 +15,7 @@ Route::group(['middleware' => ['guest']], function () {
     })->name('welcome');
 
     // registration
+    Route::get('/register', [App\Http\Controllers\Auth\RegisterController::class, 'showRegistrationForm'])->name('register');
     Route::post('/register-data', [App\Http\Controllers\Auth\RegisterController::class, 'registrationFirst'])->name('register.data');
     Route::get('/registration-security-question', [App\Http\Controllers\Auth\RegisterController::class, 'showRegistrationSecurityQuestion'])->name('register.security.question');
     Route::post('/registration-security-question', [App\Http\Controllers\Auth\RegisterController::class, 'postRegistrationSecurityQuestion']);
@@ -118,6 +119,11 @@ Route::middleware('auth')->group(function () {
             Route::get('/dashboard/questionnaires/{id}/restrictions', [App\Http\Controllers\Admin\RestrictionsController::class, 'index'])->name('restrictions');
             Route::post('/dashboard/store-restrictions', [App\Http\Controllers\Admin\RestrictionsController::class, 'storeRestriction'])->name('store.restriction');
             Route::post('/dashboard/restrictions/delete/{id}', [App\Http\Controllers\Admin\RestrictionsController::class, 'deleteRestriction'])->name('delete.restriction');
+
+            // settings
+            Route::get('/dashboard/settings', [App\Http\Controllers\Admin\SettingsController::class, 'index'])->name('settings');
+            Route::post('/dashboard/settings', [App\Http\Controllers\Admin\SettingsController::class, 'updateSetting']);
+            Route::post('/dashboard/settings/update/{id}', [App\Http\Controllers\Admin\SettingsController::class, 'updateAdmin'])->name('update.admin.credentials');
         });
 
         // Evaluation Report

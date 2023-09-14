@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\SecurityQuestionAndAnswer;
+use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Crypt;
@@ -34,6 +35,11 @@ class AdminCredentialTableSeeder extends Seeder
             'user_id' => $userId,
             'question' => 'What is Recursion?',
             'answer' => config('app.adminCredentials.securityAnswer')
+        ]);
+
+        Setting::create([
+            'semaphoreApiKey' => config('app.semaphore_api_key.key'),
+            'weatherCity' => config('app.dashboard_weather_city.city')
         ]);
     }
 }

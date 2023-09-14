@@ -30,10 +30,10 @@
                     <div class="card shadow-sm">
                         <div class="card-body">
                             @if(!empty($models['academicDefault']))
-                                <h2>Academic Year: <span class="text-info font-weight-bold">{{$models['academicDefault']->academicYear}}</span></h2>
+                                <h3>Academic Year: <span class="text-info font-weight-bold">{{$models['academicDefault']->academicYear}}</span></h3>
                                 <h4>{{(new \App\Helper\Helper())->academicFormat($models['academicDefault']->academicSemester)}}</h4>
                                 <p>Evaluation Status: @if($models['academicDefault']->academicEvaluationStatus == 'Starting') <span class="badge bg-success text-white">Starting</span> @elseif($models['academicDefault']->academicEvaluationStatus == 'Closed') <span class="badge bg-secondary text-white">Closed</span> @else <span class="badge bg-info text-white">Not Started</span> @endif</p>
-                                @if(Auth::user()->role == 'admin') <a href="{{route('academics')}}" class="btn tes-btn btn-sm">Change Status</a> @endif
+                                @if(Auth::user()->role == 'admin') <a href="{{route('show.edit.academic', $models['academicDefault']->id)}}" class="btn tes-btn btn-sm">Change Status</a> @endif
                             @else
                                 <h4>There has been no academic year set yet.</h4>
                                 <p>We will provide updates as soon as the schedule is finalized.</p>

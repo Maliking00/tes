@@ -76,9 +76,8 @@
                                         <tr class="t-row aos-init aos-animate" data-aos="fade-up" data-aos-delay="300">
                                             <td colspan="8" style="white-space: normal; line-height: 20px;">
                                                 {{ $questionnaire->questions }}
-                                                <input type="hidden"
-                                                    name="question{{$num1}}{{$num2}}[]"
-                                                    value="{{ $questionnaire->questions }}">
+                                                <input type="hidden" name="questionID{{$num1}}{{$num2}}[]" value="{{ $questionnaire->id }}">
+                                                <input type="hidden" name="question{{$num1}}{{$num2}}[]" value="{{ $questionnaire->questions }}">
                                             </td>
                                             <td class="text-lowercase">
                                                 <input type="radio"
