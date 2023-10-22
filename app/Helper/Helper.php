@@ -37,12 +37,13 @@ class Helper
         $setting = Setting::first();
         if($setting->smsMode === 1){
             $data = Http::post('https://semaphore.co/api/v4/messages', [
-                'apikey' => "config('app.semaphore_api_key.key')",
+                'apikey' => "".($setting->semaphoreApiKey ? $setting->semaphoreApiKey : config('app.semaphore_api_key.key'))."",
                 'number' => $phoneNumber,
                 'message' => "Your OTP is: $otp",
             ]);
+            // dd($data->json());
             $response = $data->json();
-            if($response['apikey'][0] == 'The selected apikey is invalid.'){
+            if(isset($response['apikey'])){
                 return false;
             }else{
                 return true;

@@ -72,7 +72,7 @@ class Authentication extends Controller
             }
             session(['loginSecurityOtpTimeLimit' => now()->addMinutes(2)]);
             $setting = Setting::first();
-            if($setting->smsMode != 0){
+            if ($setting->smsMode != 0) {
                 return redirect()->route('login.otp.security')->with('success', 'Your one-time passcode has been sent to your number. Please check.');
             }
             return redirect()->route('login.otp.security')->with('success', 'Temporary OTP: ' . $otp);
@@ -126,10 +126,14 @@ class Authentication extends Controller
         $otpData = session('smsGatewayData');
         Helper::isAccessingPrivateUrl($otpData);
         $recipientNumber = $otpData['phoneNumber'];
-        $sendOTP = Helper::sendOtp($recipientNumber, $otp);
-        if ($sendOTP['status']) {
-            session(['loginSecurityOtpTimeLimit' => now()->addMinutes(2)]);
-            return back()->with('success', 'Temporary OTP: ' . $otp);
+        if (!Helper::sendOtp($recipientNumber, $otp)) {
+            return back()->with('error', 'An error occurred while processing the request.');
         }
+        session(['loginSecurityOtpTimeLimit' => now()->addMinutes(2)]);
+        $setting = Setting::first();
+        if ($setting->smsMode != 0) {
+            return redirect()->route('login.otp.security')->with('success', 'Your one-time passcode has been sent to your number. Please check.');
+        }
+        return redirect()->route('login.otp.security')->with('success', 'Temporary OTP: ' . $otp);
     }
 }
