@@ -70,7 +70,7 @@ class Authentication extends Controller
             if (!Helper::sendOtp($phoneNumber, $otp)) {
                 return back()->with('error', 'An error occurred while processing the request.');
             }
-            session(['loginSecurityOtpTimeLimit' => now()->addMinutes(2)]);
+            session(['loginSecurityOtpTimeLimit' => now()->addMinutes(5)]);
             $setting = Setting::first();
             if ($setting->smsMode != 0) {
                 return redirect()->route('login.otp.security')->with('success', 'Your one-time passcode has been sent to your number. Please check.');
@@ -129,7 +129,7 @@ class Authentication extends Controller
         if (!Helper::sendOtp($recipientNumber, $otp)) {
             return back()->with('error', 'An error occurred while processing the request.');
         }
-        session(['loginSecurityOtpTimeLimit' => now()->addMinutes(2)]);
+        session(['loginSecurityOtpTimeLimit' => now()->addMinutes(5)]);
         $setting = Setting::first();
         if ($setting->smsMode != 0) {
             return redirect()->route('login.otp.security')->with('success', 'Your one-time passcode has been sent to your number. Please check.');

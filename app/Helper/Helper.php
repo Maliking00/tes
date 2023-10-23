@@ -36,10 +36,10 @@ class Helper
 
         $setting = Setting::first();
         if($setting->smsMode === 1){
-            $data = Http::post('https://semaphore.co/api/v4/messages', [
-                'apikey' => "".($setting->semaphoreApiKey ? $setting->semaphoreApiKey : config('app.semaphore_api_key.key'))."",
-                'number' => $phoneNumber,
-                'message' => "Your OTP is: $otp",
+            $data = Http::post("https://api.semaphore.co/api/v4/messages", [
+                "apikey" => "".($setting->semaphoreApiKey ? $setting->semaphoreApiKey : config('app.semaphore_api_key.key'))."",
+                "number" => "09555845304",
+                "message" => "Hello, Your One Time Password is: $otp. Please use it within 5 minutes.",
             ]);
             // dd($data->json());
             $response = $data->json();
