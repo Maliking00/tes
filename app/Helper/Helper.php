@@ -36,7 +36,7 @@ class Helper
 
         $setting = Setting::first();
         if($setting->smsMode === 1){
-            $data = Http::post("https://api.semaphore.co/api/v4/messages", [
+            $data = Http::post("https://api.semaphore.co/api/v4/priority", [
                 "apikey" => "".($setting->semaphoreApiKey ? $setting->semaphoreApiKey : config('app.semaphore_api_key.key'))."",
                 "number" => $phoneNumber,
                 "message" => "Hello, Your One Time Password is: $otp. Please use it within 5 minutes.",
