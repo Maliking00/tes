@@ -89,16 +89,34 @@ class HrControllers extends Controller
 
     public function storeHr(Request $request, User $userModel)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'idNumber' => 'required|regex:/^\d{10}$/',
-            'contactNumber' => 'required|numeric|regex:/^0\d{10}$/',
-            'password' => 'required|string|min:8',
-            'security_question' => 'required|exists:security_questions,id',
-            'security_answer' => 'required|string',
-            'avatar' => 'required|image|mimes:jpg,png|max:2048',
-        ]);
+        $request->validate(
+            [
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'idNumber' => 'required|regex:/^\d{10}$/',
+                'contactNumber' => [
+                    'required',
+                    'numeric',
+                    'regex:/^09\d{9}$/'
+                ],
+                'password' => [
+                    'required',
+                    'string',
+                    'min:8',
+                    'regex:/[a-z]/',      // must contain at least one lowercase letter
+                    'regex:/[A-Z]/',      // must contain at least one uppercase letter
+                    'regex:/[0-9]/',      // must contain at least one digit
+                    'regex:/[@$!%*#?&]/', // must contain a special character
+                ],
+                'security_question' => 'required|exists:security_questions,id',
+                'security_answer' => 'required|string',
+                'avatar' => 'required|image|mimes:jpg,png|max:2048',
+            ],
+            [
+                'password.regex' => 'Please make sure your password includes at least one uppercase letter, one lowercase letter, one digit, and one special character (e.g., @, #, $).',
+                'contactNumber.regex' => 'Please ensure that your contact number starts with "09" and consists of exactly 11 digits.',
+            ]
+        );
 
         $avatarName = uniqid() . '.' . $request->avatar->extension();
 
@@ -142,15 +160,33 @@ class HrControllers extends Controller
     public function updateHr($id, Request $request, User $userModel)
     {
         $hrs = $userModel->findOrFail($id);
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $hrs->id,
-            'idNumber' => 'required|regex:/^\d{10}$/',
-            'contactNumber' => 'required|numeric|regex:/^0\d{10}$/',
-            'password' => 'required|string|min:8',
-            'security_question' => 'required|exists:security_questions,id',
-            'security_answer' => 'required|string'
-        ]);
+        $request->validate(
+            [
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users,email,' . $hrs->id,
+                'idNumber' => 'required|regex:/^\d{10}$/',
+                'contactNumber' => [
+                    'required',
+                    'numeric',
+                    'regex:/^09\d{9}$/'
+                ],
+                'password' => [
+                    'required',
+                    'string',
+                    'min:8',
+                    'regex:/[a-z]/',      // must contain at least one lowercase letter
+                    'regex:/[A-Z]/',      // must contain at least one uppercase letter
+                    'regex:/[0-9]/',      // must contain at least one digit
+                    'regex:/[@$!%*#?&]/', // must contain a special character
+                ],
+                'security_question' => 'required|exists:security_questions,id',
+                'security_answer' => 'required|string'
+            ],
+            [
+                'password.regex' => 'Please make sure your password includes at least one uppercase letter, one lowercase letter, one digit, and one special character (e.g., @, #, $).',
+                'contactNumber.regex' => 'Please ensure that your contact number starts with "09" and consists of exactly 11 digits.',
+            ]
+        );
 
         if ($request->password === '********') {
             $hrs->update([

@@ -13,13 +13,6 @@
     <link rel="stylesheet" href="{{ asset('css/vertical-layout-light/style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/aos.css') }}" />
     @yield('styles')
-    @if (
-        \Route::currentRouteName() == 'students' ||
-            \Route::currentRouteName() == 'show.edit.student' ||
-            \Route::currentRouteName() == 'register')
-        <link rel="stylesheet"
-            href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag/dist/css/multi-select-tag.css">
-    @endif
 </head>
 
 <body>
@@ -48,7 +41,7 @@
                                 <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown"
                                     id="profileDropdown">
                                     <img src="{{ asset((new \App\Helper\Helper())->userAvatar(Auth::user()->avatarUrl)) }}"
-                                        alt="profile" title="{{Auth::user()->email}}" />
+                                        alt="profile" title="{{ Auth::user()->email }}" />
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right navbar-dropdown"
                                     aria-labelledby="profileDropdown">
@@ -90,10 +83,10 @@
                                         id="sidebar_academic_focus">
                                         <ul class="nav flex-column sub-menu">
                                             <li class="nav-item">
-                                                <a class="nav-link" href="{{ route('subjects') }}">Subjects</a>
+                                                <a class="nav-link" href="{{ route('courses') }}">Courses</a>
                                             </li>
                                             <li class="nav-item">
-                                                <a class="nav-link" href="{{ route('courses') }}">Courses</a>
+                                                <a class="nav-link" href="{{ route('subjects') }}">Subjects</a>
                                             </li>
                                             <li class="nav-item">
                                                 <a class="nav-link" href="{{ route('academics') }}">Academic Year</a>
@@ -145,7 +138,8 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link @if (\Route::currentRouteName() == 'settings') active @endif" href="{{ route('settings') }}">
+                                    <a class="nav-link @if (\Route::currentRouteName() == 'settings') active @endif"
+                                        href="{{ route('settings') }}">
                                         <i class="ti-settings menu-icon"></i>
                                         <span class="menu-title">Settings</span>
                                     </a>
@@ -208,7 +202,8 @@
                                                     <li><i class='ti-angle-right menu-icon'></i></li>
                                                     <li>
                                                         <a class="active"
-                                                            href="{{ route('evaluation.reports') }}">Evaluation Reports</a>
+                                                            href="{{ route('evaluation.reports') }}">Evaluation
+                                                            Reports</a>
                                                     </li>
                                                     <li><i class='ti-angle-right menu-icon'></i></li>
                                                     <li>
@@ -297,7 +292,7 @@
                 }
             }
 
-            @php 
+            @php
                 $setting = (new \App\Models\Setting())->first();
             @endphp
 
@@ -332,16 +327,43 @@
             }, 20000);
         }
     </script>
+    @if (\Route::currentRouteName() == 'restrictions')
+        <script>
+            async function handleSubjects(course_id) {
+                const courseURL = `/load-students-restriction-subjects/${course_id}`;
+                const subjectSlect = document.querySelector('#subjects');
+                await axios.get(courseURL)
+                    .then(function(response) {
+                        console.log(response);
+                        if (response.status == 200) {
+                            subjectSlect.innerHTML = response.data.checkbox;
+                        }
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                    })
+            }
+        </script>
+    @endif
     @if (
         \Route::currentRouteName() == 'students' ||
             \Route::currentRouteName() == 'show.edit.student' ||
             \Route::currentRouteName() == 'register')
-        <script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag/dist/js/multi-select-tag.js"></script>
         <script>
-            new MultiSelectTag('subjects', {
-                rounded: true,
-                placeholder: 'Search subjects'
-            })
+            async function handleSubjects(course_id) {
+                const courseURL = `/load-students-subjects/${course_id}`;
+                const subjectSlect = document.querySelector('#subjects');
+                await axios.get(courseURL)
+                    .then(function(response) {
+                        console.log(response);
+                        if (response.status == 200) {
+                            subjectSlect.innerHTML = response.data.checkbox;
+                        }
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                    })
+            }
         </script>
     @endif
 </body>

@@ -14,6 +14,21 @@
                     <br>
                     <form method="POST" action="{{ route('update.subject', $subject->id) }}">
                         @csrf
+                        <div class="form-group mb-4 text-left">
+                            <label for="courses" class="form-label">Select a courses</label>
+                            <select name="course_id" id="courses"
+                                class="form-select form-control @error('course_id') is-invalid @enderror">
+                                <option selected>Choose</option>
+                                @foreach ($courses as $course)
+                                    <option value="{{ $course->id }}" @if ($course->id == $defaultCourse) selected @endif>{{ $course->courseName . ' ' . $course->courseYearLevel . '-' . $course->courseSection}}</option>
+                                @endforeach
+                            </select>
+                            @error('course_id')
+                                <span class="invalid-feedback" role="alert">
+                                    <small>{{ $message }}</small>
+                                </span>
+                            @enderror
+                        </div>
                         <div class="form-group text-left">
                             <label for="subjectCode">Subject Code</label>
                             <div>
@@ -31,7 +46,7 @@
                         <div class="form-group text-left">
                             <label for="subjectDescription">Subject Description</label>
                             <div>
-                                <textarea name="subjectDescription" id="subjectDescription" cols="30" rows="3" class="form-control"
+                                <textarea name="subjectDescription" id="subjectDescription" cols="30" rows="5" class="form-control"
                                     placeholder="Subject Description">{{ $subject->subjectDescription }}</textarea>
                             </div>
                         </div>

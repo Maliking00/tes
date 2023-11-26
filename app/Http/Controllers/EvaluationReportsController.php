@@ -18,9 +18,12 @@ class EvaluationReportsController extends Controller
     {
         $evaluatedTeacher = TeacherEvaluationStatus::orderBy('created_at', 'DESC')->get()->groupBy('academicYearAndSemester')->map(function ($groupedItems) {
             return $groupedItems->unique('teacher_id');
-        });;
+        });
+        $evalList = TeacherEvaluationStatus::orderBy('created_at', 'DESC')
+            ->get()
+            ->unique('subject_id');
 
-        return view('reports.reports', compact(['evaluatedTeacher']));
+        return view('reports.reports', compact(['evaluatedTeacher', 'evalList']));
     }
 
     public function showEvaluationResponses($academicID, $teacherID, $courseID, $subjectID)
@@ -29,6 +32,7 @@ class EvaluationReportsController extends Controller
             ->where('teacher_id', $teacherID)
             ->where('course_id', $courseID)
             ->where('subject_id', $subjectID)
+            // ->where('restriction_id', $restrictionID)
             ->get()
             ->groupBy('criteria');
 

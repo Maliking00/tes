@@ -83,13 +83,22 @@ class TeachersController extends Controller
 
     public function storeTeacher(Request $request, Teachers $teacherModel)
     {
-        $request->validate([
-            'teachersFullName' => 'required|string|max:255',
-            'teachersEmail' => 'required|string|email|max:255|unique:teachers',
-            'teachersIdNumber' => 'required|regex:/^\d{10}$/',
-            'teachersContactNumber' => 'required|numeric|regex:/^0\d{10}$/',
-            'teachersAvatar' => 'required|image|mimes:jpg,png|max:2048',
-        ]);
+        $request->validate(
+            [
+                'teachersFullName' => 'required|string|max:255',
+                'teachersEmail' => 'required|string|email|max:255|unique:teachers',
+                'teachersIdNumber' => 'required|regex:/^\d{10}$/',
+                'teachersContactNumber' => [
+                    'required',
+                    'numeric',
+                    'regex:/^09\d{9}$/'
+                ],
+                'teachersAvatar' => 'required|image|mimes:jpg,png|max:2048',
+            ],
+            [
+                'teachersContactNumber.regex' => 'Please ensure that your contact number starts with "09" and consists of exactly 11 digits.',
+            ]
+        );
 
         $avatarName = uniqid() . '.' . $request->teachersAvatar->extension();
 
@@ -120,12 +129,21 @@ class TeachersController extends Controller
     public function updateTeacher($id, Request $request, Teachers $teacherModel)
     {
         $teachers = $teacherModel->findOrFail($id);
-        $request->validate([
-            'teachersFullName' => 'required|string|max:255',
-            'teachersEmail' => 'required|string|email|max:255|unique:teachers,teachersEmail,' . $teachers->id,
-            'teachersIdNumber' => 'required|regex:/^\d{10}$/|unique:teachers,teachersIdNumber,' . $teachers->id,
-            'teachersContactNumber' => 'required|numeric|regex:/^0\d{10}$/'
-        ]);
+        $request->validate(
+            [
+                'teachersFullName' => 'required|string|max:255',
+                'teachersEmail' => 'required|string|email|max:255|unique:teachers,teachersEmail,' . $teachers->id,
+                'teachersIdNumber' => 'required|regex:/^\d{10}$/|unique:teachers,teachersIdNumber,' . $teachers->id,
+                'teachersContactNumber' => [
+                    'required',
+                    'numeric',
+                    'regex:/^09\d{9}$/'
+                ],
+            ],
+            [
+                'teachersContactNumber.regex' => 'Please ensure that your contact number starts with "09" and consists of exactly 11 digits.',
+            ]
+        );
 
         $teachers->update([
             'teachersFullName' => $request->teachersFullName,

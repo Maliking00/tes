@@ -17,18 +17,33 @@
                                 <div class="card-body p-0">
                                     <div class="text-center">
                                         <img src="{{ asset((new \App\Helper\Helper())->avatarPathOnProduction($record->teacherAvatar, 'teachersAvatar')) }}"
-                                        class="rl-avatar" alt="{{$record->teacher}}" />
+                                            class="rl-avatar" alt="{{ $record->teacher }}" />
                                     </div>
                                     <div class="card-content">
-                                        <h5>{{$record->teacher}}</h5>
-                                        <p>{{$record->teacherEmail}}</p>
-                                        <p>{{$record->subjectCode}} | {{$record->academicYear}}</p>
-                                        <a href="/dashboard/evaluation-reports/{{$record->academic_id}}/{{$record->teacher_id}}/{{$record->course_id}}/{{$record->subject_id}}" class="btn btn-sm btn-outline-info p-2 px-3">View Responses</a>
+                                        <h5>{{ $record->teacher }}</h5>
+                                        <p>{{ $record->teacherEmail }}</p>
+                                        <p>{{ $record->course }}</p>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-dark text-white dropdown-toggle" type="button"
+                                                id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                                Select Subjects
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                @foreach ($evalList as $status)
+                                                    <li>
+                                                        <a href="/dashboard/evaluation-reports/{{ $record->academic_id }}/{{ $record->teacher_id }}/{{ $record->course_id }}/{{ $status->subject_id }}"
+                                                            class="dropdown-item">{{ $status->subjectCode }}</a>
+                                                        {{-- <a href="/dashboard/evaluation-reports/{{ $record->academic_id }}/{{ $record->teacher_id }}/{{ $record->course_id }}/{{ $status->subject_id }}/{{ $status->restriction_id }}"
+                                                            class="dropdown-item">{{ $status->subjectCode }}</a> --}}
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
-                                <hr class="m-0 p-0">
-                                <p class="text-text text-dark p-1">{{$record->course}}</p>
                             </div>
+                            <hr class="m-0 p-0">
+
                         </div>
                     @endforeach
                 </div>

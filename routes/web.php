@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Subjects;
 use Illuminate\Support\Facades\Route;
 
 Auth::routes();
@@ -8,12 +9,44 @@ Route::match(['get'], 'login', function () {
     return redirect('/');
 })->name('login');
 
+Route::get('/load-students-subjects/{id}', function ($id) {
+    $subjectList = Subjects::where('course_id', $id)->get();
+        $checkbox = '<label for="subjects" class="form-label">Select a subjects</label><br>
+    <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+    ';
+        foreach ($subjectList as $key => $subject) {
+            $checkbox .= '<input type="checkbox" class="btn-check" name="subjects[]" id="sub' . $key . '" value="' . $subject->id . '">
+        <label class="btn btn-outline-dark btn-sm mr-1" for="sub' . $key . '">' . $subject->subjectCode . '</label>';
+        }
+        $checkbox .= '</div><br><small class="text-danger" id="subjects-error"></small>';
+
+    return response()->json([
+        'checkbox' => $checkbox
+    ], 200);
+});
+
+Route::get('/load-students-restriction-subjects/{id}', function ($id) {
+    $subjectList = Subjects::where('course_id', $id)->get();
+    $checkbox = '<label for="subject_id">Subjects</label><div>
+        <select name="subject_id" id="subject_id" class="form-select form-control">
+            <option selected>Choose</option>';
+
+    foreach ($subjectList as $key => $subject) {
+        $checkbox .= '<option value="' . $subject->id . '">' . $subject->subjectCode . '</option>';
+    }
+
+    $checkbox .= '</select></div>';
+
+    return response()->json([
+        'checkbox' => $checkbox
+    ], 200);
+});
+
 // routes for guest only
 Route::group(['middleware' => ['guest']], function () {
     Route::get('/', function () {
         return view('welcome');
     })->name('welcome');
-
     // registration
     Route::get('/register', [App\Http\Controllers\Auth\RegisterController::class, 'showRegistrationForm'])->name('register');
     Route::post('/register-data', [App\Http\Controllers\Auth\RegisterController::class, 'registrationFirst'])->name('register.data');
@@ -128,12 +161,12 @@ Route::middleware('auth')->group(function () {
 
         // Evaluation Report
         Route::get('/dashboard/evaluation-reports', [App\Http\Controllers\EvaluationReportsController::class, 'index'])->name('evaluation.reports');
-        Route::get('/dashboard/evaluation-reports/{academicID}/{teacherID}/{courseID}/{subjectID}/', [App\Http\Controllers\EvaluationReportsController::class, 'showEvaluationResponses'])->name('evaluation.reports.responses');
+        Route::get('/dashboard/evaluation-reports/{academicID}/{teacherID}/{courseID}/{subjectID}', [App\Http\Controllers\EvaluationReportsController::class, 'showEvaluationResponses'])->name('evaluation.reports.responses');
+        // Route::get('/dashboard/evaluation-reports/{academicID}/{teacherID}/{courseID}/{subjectID}/{restrictionID}', [App\Http\Controllers\EvaluationReportsController::class, 'showEvaluationResponses'])->name('evaluation.reports.responses');
 
         // Student routes
         Route::get('/dashboard/teacher-evaluation', [App\Http\Controllers\EvaluationsController::class, 'index'])->name('teacher.evaluation');
         Route::get('/dashboard/teacher-evaluation/{id}/{course}/{teacherID}/{subject_id}', [App\Http\Controllers\EvaluationsController::class, 'evaluateSpecificTeacher'])->name('teacher.evaluation.academic');
         Route::post('/dashboard/teacher-evaluation/store', [App\Http\Controllers\EvaluationsController::class, 'storeEvaluateSpecificTeacher'])->name('teacher.evaluation.academic.store');
-
     });
 });

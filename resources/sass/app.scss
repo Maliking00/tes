@@ -145,7 +145,7 @@ button {
         li {
             i {
                 font-size: 12px;
-                margin-right: 0;
+                margin-right: 5px;
             }
         }
     }
@@ -494,10 +494,10 @@ table {
                     font-weight: 600;
                 }
 
-                * {
-                    padding: 0;
-                    margin: 4px 0;
-                }
+                // * {
+                //     padding: 0;
+                //     margin: 4px 0;
+                // }
 
                 .btn {
                     border: 1px solid #0d59a023 !important;

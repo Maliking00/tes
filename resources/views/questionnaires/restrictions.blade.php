@@ -29,7 +29,7 @@
                         <div class="form-group text-left">
                             <label for="course_id">Courses</label>
                             <div>
-                                <select name="course_id" id="course_id" class="form-select form-control">
+                                <select name="course_id" id="course_id" class="form-select form-control" onchange="handleSubjects(this.value)">
                                     <option selected>Choose</option>
                                     @foreach ($models['courses'] as $course)
                                         <option value="{{ $course->id }}">
@@ -39,7 +39,10 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group text-left">
+                        <div class="form-group mb-4 text-left" id="subjects">
+                            {{-- render subjects associate from selected courses --}}
+                        </div>
+                        {{-- <div class="form-group text-left">
                             <label for="subject_id">Subjects</label>
                             <div>
                                 <select name="subject_id" id="subject_id" class="form-select form-control">
@@ -49,7 +52,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                        </div>
+                        </div> --}}
                         <hr class="hr-divider">
                         <button type="submit" class="btn tes-btn">Assign Restriction</button>
                     </form>

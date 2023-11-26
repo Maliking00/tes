@@ -12081,7 +12081,7 @@ button {
 }
 .alert ul li i {
   font-size: 12px;
-  margin-right: 0;
+  margin-right: 5px;
 }
 
 .alert .close-alert-btn {
@@ -12374,10 +12374,6 @@ table td .show-options {
 .report-list .card .card-body .card-content h5, .report-list .card .card-body .card-content .h5 {
   color: var(--primary);
   font-weight: 600;
-}
-.report-list .card .card-body .card-content * {
-  padding: 0;
-  margin: 4px 0;
 }
 .report-list .card .card-body .card-content .btn {
   border: 1px solid rgba(13, 89, 160, 0.137254902) !important;

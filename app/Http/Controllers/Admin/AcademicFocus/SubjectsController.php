@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Admin\AcademicFocus;
 
 use App\Http\Controllers\Controller;
 use App\Helper\Helper;
+use App\Models\Courses;
 use App\Models\StudentSubject;
 use App\Models\Subjects;
 use Illuminate\Http\Request;
+
 class SubjectsController extends Controller
 {
     public function __construct()
@@ -16,7 +18,12 @@ class SubjectsController extends Controller
 
     public function index()
     {
-        return view('academicFocus.subjects.subjects');
+        $isCoursesEmpty = !Courses::query()->exists();
+        if ($isCoursesEmpty) {
+            return redirect()->route('courses')->with('warning', 'Please add a courses before adding a subject.');
+        }
+        $courses = Courses::all();
+        return view('academicFocus.subjects.subjects', compact('courses'));
     }
 
     public function loadSubjects(Request $request, Subjects $subjectResult)
@@ -31,6 +38,7 @@ class SubjectsController extends Controller
             $html = '<table class="table">
             <thead>
             <tr class="t-row-head" data-aos="fade-up" data-aos-delay="100">
+                <th>Course</th>
                 <th>Subject Code</th>
                 <th>Subject Name</th>
                 <th>Subject Description</th>
@@ -45,6 +53,7 @@ class SubjectsController extends Controller
                 $delay++;
                 $html .= '
                     <tr class="t-row" data-aos="fade-up" data-aos-delay="' . $delay . '00">
+                        <td class="text-capitalize">' . $subject->course->courseName . '</td>
                         <td class="text-capitalize">' . $subject->subjectCode . '</td>
                         <td class="text-capitalize">' . Helper::shortenDescription($subject->subjectName, 20) . '</td>
                         <td class="text-capitalize">' . Helper::shortenDescription($subject->subjectDescription, 20) . '</td>
@@ -83,6 +92,7 @@ class SubjectsController extends Controller
             'subjectCode' => 'required|string|unique:subjects',
             'subjectName' => 'required|string',
             'subjectDescription' => 'required|string',
+            'course_id' => 'required|string|exists:courses,id',
         ]);
         if ($subjectModel->create($validatedData)) {
             return response()->json([
@@ -94,7 +104,9 @@ class SubjectsController extends Controller
     public function showEditSubject($id, Subjects $subjectModel)
     {
         $subject = $subjectModel->findOrFail($id);
-        return view('academicFocus.subjects.edit-subject', compact('subject'));
+        $courses = Courses::all();
+        $defaultCourse = $subject->course_id;
+        return view('academicFocus.subjects.edit-subject', compact(['subject', 'courses', 'defaultCourse']));
     }
 
     public function updateSubject($id, Request $request, Subjects $subjectModel)
@@ -104,6 +116,7 @@ class SubjectsController extends Controller
             'subjectCode' => 'required|string|unique:subjects,subjectCode,' . $subject->id,
             'subjectName' => 'required|string',
             'subjectDescription' => 'required|string',
+            'course_id' => 'required|string|exists:courses,id',
         ]);
 
         $existingSubject = $subjectModel->where('subjectCode', $validatedData['subjectCode'])->where('id', '<>', $id)->first();

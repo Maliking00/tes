@@ -2,7 +2,7 @@
 
 @section('title', 'Student Info | ' . (new \App\Helper\Helper())->showEnvironment())
 
-@section('pageTitle', 'Student Info | '. $student->name)
+@section('pageTitle', 'Student Info | ' . $student->name)
 
 @section('uuid', $student->name)
 
@@ -62,29 +62,33 @@
                         <div class="form-group mb-4 text-left">
                             <label for="courses" class="form-label">Select a courses</label>
                             <select name="courses" id="courses"
-                                class="form-select form-control @error('courses') is-invalid @enderror">
+                                class="form-select form-control @error('courses') is-invalid @enderror"
+                                onchange="handleSubjects(this.value)">
                                 <option selected>Choose</option>
                                 @foreach ($courses as $course)
-                                    <option value="{{ $course->id }}" @if ($course->id == $defaultCourse) selected @endif>{{ $course->courseName . ' ' . $course->courseYearLevel . '-' . $course->courseSection}}</option>
+                                    <option value="{{ $course->id }}" @if ($course->id == $defaultCourse) selected @endif>
+                                        {{ $course->courseName . ' ' . $course->courseYearLevel . '-' . $course->courseSection }}
+                                    </option>
                                 @endforeach
                             </select>
-                            @error('contactNumber')
+                            @error('courses')
                                 <span class="invalid-feedback" role="alert">
                                     <small>{{ $message }}</small>
                                 </span>
                             @enderror
                         </div>
-                        <div class="form-group mb-4 text-left">
-                            <label for="subjects" class="form-label">Select a subjects</label>
-                            <select name="subjects[]" id="subjects"
-                                class="form-select form-control js-example-basic-multiple @error('subjects') is-invalid @enderror"
-                                multiple="multiple">
-                                @foreach ($subjects as $subject)
-                                    <option value="{{ $subject->id }}" @if(in_array($subject->id, $defaultSubject->pluck('subjectID')->toArray())) 
-                                        selected 
-                                    @endif>{{ $subject->subjectCode }}</option>
+                        <div class="form-group mb-4 text-left" id="subjects">
+                            <label for="subjects" class="form-label">Select a subjects</label><br>
+                            <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+                                @foreach ($subjects as $key => $subject)
+                                    @if(in_array($subject->id, $defaultSubject->pluck('subjectID')->toArray()))
+                                    <input type="checkbox" class="btn-check" name="subjects[]" id="sub{{$key}}"
+                                        value="{{$subject->id}}" checked>
+                                    <label class="btn btn-outline-dark btn-sm mr-1"
+                                        for="sub{{$key}}">{{$subject->subjectCode}}</label>
+                                    @endif
                                 @endforeach
-                            </select>
+                            </div>
                         </div>
                         <div class="form-group mb-2 text-left">
                             <label for="password" class="form-label">Password</label>
@@ -105,7 +109,8 @@
                                 aria-label="Default select example">
                                 <option selected>Choose</option>
                                 @foreach ($securityQuestionsString as $question)
-                                    <option value="{{ $question->id }}" @if ($question->question == $defaultSecurityQA->question) selected @endif>{{ $question->question }}</option>
+                                    <option value="{{ $question->id }}" @if ($question->question == $defaultSecurityQA->question) selected @endif>
+                                        {{ $question->question }}</option>
                                 @endforeach
                             </select>
                             @error('security_question')
@@ -139,11 +144,13 @@
                             class="user-avatar" alt="profile" />
                         <h3 class="font-weight-normal mt-4">Student Information</h3>
                         <p>Please review the information and make any necessary updates</p>
-                        <form id="updateAvatar" action="{{route('update.student.avatar', $student->id)}}" method="post" enctype="multipart/form-data">
+                        <form id="updateAvatar" action="{{ route('update.student.avatar', $student->id) }}"
+                            method="post" enctype="multipart/form-data">
                             @csrf
                             <div class="form-group mb-4 text-left">
                                 <input type="file" name="avatar" id="avatar" class="form-control d-none"
-                                    placeholder="Security Answer" onchange="document.querySelector('#updateAvatar').submit()">
+                                    placeholder="Security Answer"
+                                    onchange="document.querySelector('#updateAvatar').submit()">
                             </div>
                         </form>
                         <button class="btn tes-btn" onclick="document.querySelector('#avatar').click()">Change
@@ -173,7 +180,7 @@
                     </div>
                 </div>
             </div>
-            <div class="v-100" data-aos="fade-up" data-aos-delay="400">
+            {{-- <div class="v-100" data-aos="fade-up" data-aos-delay="400">
                 <h5 class="font-weight-normal mt-4 aos-init aos-animate" data-aos="fade-up" data-aos-delay="100">User
                     Role
                 </h5>
@@ -195,7 +202,7 @@
                         </form>
                     </div>
                 </div>
-            </div>
+            </div> --}}
             <div class="v-100" data-aos="fade-up" data-aos-delay="400">
                 <h5 class="font-weight-normal my-4 aos-init aos-animate" data-aos="fade-up" data-aos-delay="100">Danger
                     Zone

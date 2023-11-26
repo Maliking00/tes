@@ -16,4 +16,9 @@ class Courses extends Model
         'courseYearLevel',
         'courseSection'
     ];
+
+    public function subjects()
+    {
+        return $this->hasMany(Subjects::class, 'course_id');
+    }
 }

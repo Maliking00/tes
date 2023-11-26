@@ -13,6 +13,19 @@
                     <form id="add_{{ \Route::currentRouteName() }}_form">
                         @csrf
                         <div class="form-group text-left">
+                            <label for="courses" class="form-label">Select a courses</label>
+                            <select name="course_id" id="courses"
+                                class="form-select form-control @error('course_id') is-invalid @enderror">
+                                <option selected>Choose</option>
+                                @foreach ($courses as $course)
+                                    <option value="{{ $course->id }}">
+                                        {{ $course->courseName . ' ' . $course->courseYearLevel . '-' . $course->courseSection }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <small class="text-danger" id="course_id-error"></small>
+                        </div>
+                        <div class="form-group text-left">
                             <label>Subject Code</label>
                             <div>
                                 <input type="text" class="form-control" placeholder="Subject Code" name="subjectCode"

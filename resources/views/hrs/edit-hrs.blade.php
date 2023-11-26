@@ -147,7 +147,7 @@
                     </div>
                 </div>
             </div>
-            <div class="v-100" data-aos="fade-up" data-aos-delay="400">
+            {{-- <div class="v-100" data-aos="fade-up" data-aos-delay="400">
                 <h5 class="font-weight-normal mt-4 aos-init aos-animate" data-aos="fade-up" data-aos-delay="100">User
                     Role
                 </h5>
@@ -169,7 +169,7 @@
                         </form>
                     </div>
                 </div>
-            </div>
+            </div> --}}
             <div class="v-100" data-aos="fade-up" data-aos-delay="400">
                 <h5 class="font-weight-normal my-4 aos-init aos-animate" data-aos="fade-up" data-aos-delay="100">Danger
                     Zone

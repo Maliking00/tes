@@ -31,7 +31,7 @@ class RegisterController extends Controller
     {
         $courses = Courses::all();
         $subjects = Subjects::all();
-        if($courses->count() === 0 || $subjects->count() === 0){
+        if ($courses->count() === 0 || $subjects->count() === 0) {
             return back()->with('info', 'Registration is temporarily closed.');
         }
         return view('auth.register', compact(['courses', 'subjects']));
@@ -40,16 +40,35 @@ class RegisterController extends Controller
     public function registrationFirst(Request $request)
     {
         // validate all field 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'idNumber' => 'required|regex:/^\d{10}$/',
-            'courses' => 'required|exists:courses,id',
-            'contactNumber' => 'required|numeric|regex:/^0\d{10}$/',
-            'password' => 'required|string|min:8|confirmed',
-            'subjects' => 'required|array',
-            'subjects.*' => 'exists:subjects,id'
-        ]);
+        $request->validate(
+            [
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'idNumber' => 'required|regex:/^\d{10}$/',
+                'courses' => 'required|exists:courses,id',
+                'contactNumber' => [
+                    'required',
+                    'numeric',
+                    'regex:/^09\d{9}$/'
+                ],
+                'password' => [
+                    'required',
+                    'string',
+                    'min:8',
+                    'regex:/[a-z]/',      // must contain at least one lowercase letter
+                    'regex:/[A-Z]/',      // must contain at least one uppercase letter
+                    'regex:/[0-9]/',      // must contain at least one digit
+                    'regex:/[@$!%*#?&]/', // must contain a special character
+                    'confirmed'
+                ],
+                'subjects' => 'required|array',
+                'subjects.*' => 'exists:subjects,id'
+            ],
+            [
+                'password.regex' => 'Please make sure your password includes at least one uppercase letter, one lowercase letter, one digit, and one special character (e.g., @, #, $).',
+                'contactNumber.regex' => 'Please ensure that your contact number starts with "09" and consists of exactly 11 digits.',
+            ]
+        );
 
         session(['registrationData' => $request->all()]);
         session(['registerSecurityQuestionTimeLimit' => now()]);
@@ -63,7 +82,7 @@ class RegisterController extends Controller
         if ($registerSecurityQuestionTimeLimit && now()->diffInMinutes($registerSecurityQuestionTimeLimit) > 1) {
             return redirect()->route('register')->with('info', 'You took too long on security question. Please start again from registration.');
         }
-        
+
         $registerSecurityQuestions = SecurityQuestion::all();
         return view('auth.register-security-question', compact('registerSecurityQuestions'));
     }
@@ -79,18 +98,20 @@ class RegisterController extends Controller
         return redirect()->route('register.avatar.upload');
     }
 
-    public function showRegistrationAvatarUpload() {
+    public function showRegistrationAvatarUpload()
+    {
 
         return view('auth.register-avatar-upload');
     }
 
-    public function postRegistrationAvatarUpload(Request $request) {
+    public function postRegistrationAvatarUpload(Request $request)
+    {
 
         $request->validate([
             'avatarUrl' => 'required|image|mimes:jpg,png|max:2048',
         ]);
 
-        $avatarName = uniqid().'.'.$request->avatarUrl->extension();
+        $avatarName = uniqid() . '.' . $request->avatarUrl->extension();
         $request->avatarUrl->storeAs('public/avatars', $avatarName);
 
         $registrationData = session('registrationData');
@@ -111,13 +132,13 @@ class RegisterController extends Controller
                 'subjectID' => $subjectID,
             ]);
         }
-        
+
         $securityQuestion = SecurityQuestion::find($sessionSecurityQuestionAndAnswer['security_question']);
         $user->securityQuestionsAndAnswer()->create([
             'question' => $securityQuestion->question,
             'answer' => $sessionSecurityQuestionAndAnswer['security_answer'],
         ]);
-        
+
         Session::forget(['registerSecurityQuestionTimeLimit', 'registrationData', 'registerSecurityQuestions']);
         return redirect()->route('welcome')->with('success', 'Account registration received; login possible upon admin approval');
     }

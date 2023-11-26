@@ -39,7 +39,8 @@
                         <div class="form-group mb-4 text-left">
                             <label for="courses" class="form-label">Select a courses</label>
                             <select name="courses" id="courses"
-                                class="form-select form-control @error('courses') is-invalid @enderror">
+                                class="form-select form-control"
+                                onchange="handleSubjects(this.value)">
                                 <option selected>Choose</option>
                                 @foreach ($courses as $course)
                                     <option value="{{ $course->id }}">
@@ -49,16 +50,8 @@
                             </select>
                             <small class="text-danger" id="courses-error"></small>
                         </div>
-                        <div class="form-group mb-4 text-left">
-                            <label for="subjects" class="form-label">Select a subjects</label>
-                            <select name="subjects[]" id="subjects"
-                                class="form-select form-control js-example-basic-multiple @error('subjects') is-invalid @enderror"
-                                multiple="multiple">
-                                @foreach ($subjects as $subject)
-                                    <option value="{{ $subject->id }}">{{ $subject->subjectCode }}</option>
-                                @endforeach
-                            </select>
-                            <small class="text-danger" id="subjects-error"></small>
+                        <div class="form-group mb-4 text-left" id="subjects">
+                            
                         </div>
                         <div class="form-group mb-2 text-left">
                             <label for="password" class="form-label">Password</label>
@@ -70,7 +63,7 @@
                         <div class="form-group mb-4 text-left">
                             <label for="securityQuestion" class="form-label">Select a security question</label>
                             <select name="security_question" id="securityQuestion"
-                                class="form-select form-control @error('security_question') is-invalid @enderror">
+                                class="form-select form-control">
                                 <option selected>Choose</option>
                                 @foreach ($studentSecurityQuestions as $question)
                                     <option value="{{ $question->id }}">{{ $question->question }}</option>
@@ -195,7 +188,7 @@
                     }
                 })
         });
-
+        
         function scrollToTop() {
             window.scrollTo({
                 top: 0,

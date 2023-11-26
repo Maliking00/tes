@@ -25,10 +25,10 @@ class StudentsController extends Controller
         $studentSecurityQuestions = SecurityQuestion::all();
         $courses = Courses::all();
         $subjects = Subjects::all();
-        if($courses->count() === 0){
+        if ($courses->count() === 0) {
             return redirect()->route('courses')->with('warning', 'Please add a courses before adding a student.');
         }
-        if($subjects->count() === 0){
+        if ($subjects->count() === 0) {
             return redirect()->route('subjects')->with('warning', 'Please add a subjects before adding a student.');
         }
         return view('students.students', compact(['studentSecurityQuestions', 'courses', 'subjects']));
@@ -98,21 +98,41 @@ class StudentsController extends Controller
         ], 200);
     }
 
+
+
     public function storeStudent(Request $request, User $userModel)
     {
-        $validate = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'idNumber' => 'required|regex:/^\d{10}$/',
-            'contactNumber' => 'required|numeric|regex:/^0\d{10}$/',
-            'password' => 'required|string|min:8',
-            'security_question' => 'required|exists:security_questions,id',
-            'security_answer' => 'required|string',
-            'avatar' => 'required|image|mimes:jpg,png|max:2048',
-            'courses' => 'required|exists:courses,id',
-            'subjects' => 'required|array',
-            'subjects.*' => 'exists:subjects,id'
-        ]);
+        $validate = $request->validate(
+            [
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'idNumber' => 'required|regex:/^\d{10}$/',
+                'contactNumber' => [
+                    'required',
+                    'numeric',
+                    'regex:/^09\d{9}$/'
+                ],
+                'password' => [
+                    'required',
+                    'string',
+                    'min:8',
+                    'regex:/[a-z]/',      // must contain at least one lowercase letter
+                    'regex:/[A-Z]/',      // must contain at least one uppercase letter
+                    'regex:/[0-9]/',      // must contain at least one digit
+                    'regex:/[@$!%*#?&]/', // must contain a special character
+                ],
+                'security_question' => 'required|exists:security_questions,id',
+                'security_answer' => 'required|string',
+                'avatar' => 'required|image|mimes:jpg,png|max:2048',
+                'courses' => 'required|exists:courses,id',
+                'subjects' => 'required|array',
+                'subjects.*' => 'exists:subjects,id'
+            ],
+            [
+                'password.regex' => 'Please make sure your password includes at least one uppercase letter, one lowercase letter, one digit, and one special character (e.g., @, #, $).',
+                'contactNumber.regex' => 'Please ensure that your contact number starts with "09" and consists of exactly 11 digits.',
+            ]
+        );
 
         $avatarName = uniqid() . '.' . $request->avatar->extension();
 
@@ -167,18 +187,36 @@ class StudentsController extends Controller
     public function updateStudent($id, Request $request, User $userModel)
     {
         $students = $userModel->findOrFail($id);
-        $validate = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $students->id,
-            'idNumber' => 'required|regex:/^\d{10}$/',
-            'contactNumber' => 'required|numeric|regex:/^0\d{10}$/',
-            'courses' => 'required|exists:courses,id',
-            'password' => 'required|string|min:8',
-            'security_question' => 'required|exists:security_questions,id',
-            'security_answer' => 'required|string',
-            'subjects' => 'required|array',
-            'subjects.*' => 'exists:subjects,id'
-        ]);
+        $validate = $request->validate(
+            [
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users,email,' . $students->id,
+                'idNumber' => 'required|regex:/^\d{10}$/',
+                'contactNumber' => [
+                    'required',
+                    'numeric',
+                    'regex:/^09\d{9}$/'
+                ],
+                'courses' => 'required|exists:courses,id',
+                'password' => [
+                    'required',
+                    'string',
+                    'min:8',
+                    'regex:/[a-z]/',      // must contain at least one lowercase letter
+                    'regex:/[A-Z]/',      // must contain at least one uppercase letter
+                    'regex:/[0-9]/',      // must contain at least one digit
+                    'regex:/[@$!%*#?&]/', // must contain a special character
+                ],
+                'security_question' => 'required|exists:security_questions,id',
+                'security_answer' => 'required|string',
+                'subjects' => 'required|array',
+                'subjects.*' => 'exists:subjects,id'
+            ],
+            [
+                'password.regex' => 'Please make sure your password includes at least one uppercase letter, one lowercase letter, one digit, and one special character (e.g., @, #, $).',
+                'contactNumber.regex' => 'Please ensure that your contact number starts with "09" and consists of exactly 11 digits.',
+            ]
+        );
 
         if ($request->password === '********') {
             $students->update([

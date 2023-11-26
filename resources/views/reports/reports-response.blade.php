@@ -55,78 +55,63 @@
                         <small class="badge text-white shadow-sm" style="background: #32984b;">5 = Strongly Agree</small>
                     </div> --}}
                     <hr>
-
                     @foreach ($evalResponses as $criteria => $items)
-                        <div class="mb-4">
+                        <div class="mb-5">
                             <h4 class="my-2 font-weight-bold">{{ $criteria }}</h4>
                             @php
                                 $uniqueQuestions = [];
+                                $questionNumber = 0;
                             @endphp
                             @foreach ($items as $item)
                                 @php
-                                    $stronglyDisagree = (new \App\Models\EvaluationList())
-                                        ->where('teacher_id', $item->teacher_id)
-                                        ->where('subject_id', $item->subject_id)
-                                        ->where('questionID', $item->questionID)
-                                        ->where('answer', 1)
-                                        ->count();
-                                    $disagree = (new \App\Models\EvaluationList())
-                                        ->where('teacher_id', $item->teacher_id)
-                                        ->where('subject_id', $item->subject_id)
-                                        ->where('questionID', $item->questionID)
-                                        ->where('answer', 2)
-                                        ->count();
-                                    $uncertain = (new \App\Models\EvaluationList())
-                                        ->where('teacher_id', $item->teacher_id)
-                                        ->where('subject_id', $item->subject_id)
-                                        ->where('questionID', $item->questionID)
-                                        ->where('answer', 3)
-                                        ->count();
-                                    $agree = (new \App\Models\EvaluationList())
-                                        ->where('teacher_id', $item->teacher_id)
-                                        ->where('subject_id', $item->subject_id)
-                                        ->where('questionID', $item->questionID)
-                                        ->where('answer', 4)
-                                        ->count();
-                                    $stronglyAgree = (new \App\Models\EvaluationList())
-                                        ->where('teacher_id', $item->teacher_id)
-                                        ->where('subject_id', $item->subject_id)
-                                        ->where('questionID', $item->questionID)
-                                        ->where('answer', 5)
-                                        ->count();
+                                    $counts = [];
+
+                                    for ($answer = 1; $answer <= 5; $answer++) {
+                                        $counts["answer{$answer}"] = (new \App\Models\EvaluationList())
+                                            ->where('teacher_id', $item->teacher_id)
+                                            ->where('subject_id', $item->subject_id)
+                                            ->where('questionID', $item->questionID)
+                                            ->where('answer', $answer)
+                                            ->count();
+                                    }
+
+                                    [$stronglyDisagree, $disagree, $uncertain, $agree, $stronglyAgree] = array_values($counts);
+
+                                    $totalVotes = $stronglyDisagree + $disagree + $uncertain + $agree + $stronglyAgree;
+                                    $stronglyDisagreePercent = ($stronglyDisagree / $totalVotes) * 100;
+                                    $disagreePercent = ($disagree / $totalVotes) * 100;
+                                    $uncertainPercent = ($uncertain / $totalVotes) * 100;
+                                    $agreePercent = ($agree / $totalVotes) * 100;
+                                    $stronglyAgreePercent = ($stronglyAgree / $totalVotes) * 100;
                                 @endphp
                                 @if (!in_array($item->questionID, $uniqueQuestions))
+                                @php 
+                                    $questionNumber++;
+                                @endphp
                                     <div class="card mb-2 border py-3 px-4">
                                         <div class="row">
-                                            <div class="col-lg-7">
-                                                <h6 class="my-2">Questions</h6>
+                                            <div class="col-lg-6">
+                                                <h6 class="my-2">Questions {{$questionNumber}}</h6>
                                                 <p>{{ $item->question }}</p>
-                                                <br>
-                                                <h6 class="my-2">Answers</h6>
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <small class="b-red shadow-sm r-legend text-white"><span
-                                                            class="font-weight-normal">{{ $stronglyDisagree }}</span></small>
-                                                    <small class="b-blue shadow-sm r-legend text-white"><span class="font-weight-normal">{{ $disagree }}</span></small>
-                                                    <small class="b-yellow shadow-sm r-legend text-white"><span class="font-weight-normal">{{ $uncertain }}</span></small>
-                                                    <small class="b-sky-blue shadow-sm r-legend text-white"><span class="font-weight-normal">{{ $agree }}</span></small>
-                                                    <small class="b-green shadow-sm r-legend text-white"><span
-                                                            class="font-weight-normal">{{ $stronglyAgree }}</span></small>
-                                                </div>
                                             </div>
-                                            <div class="col-lg-5">
+                                            <div class="col-lg-6">
                                                 <canvas id="pie-chart{{ $item->id }}" width="150"
                                                     height="150"></canvas>
                                                 <script>
                                                     new Chart(document.getElementById('pie-chart{{ $item->id }}'), {
                                                         type: 'pie',
                                                         data: {
-                                                            labels: ["Strongly Disagree", "Disagree", "Uncertain", "Agree", "Strongly Agree"],
+                                                            labels: ["Strongly Disagree: {{ $stronglyDisagreePercent }}%",
+                                                                "Disagree: {{ $disagreePercent }}%", "Uncertain: {{ $uncertainPercent }}%",
+                                                                "Agree: {{ $agreePercent }}%", "Strongly Agree: {{ $stronglyAgreePercent }}%"
+                                                            ],
                                                             datasets: [{
-                                                                backgroundColor: ["#e63946", "#254BDD",
-                                                                    "#ffbe0b", "#78b7f1", "#32984b"
-                                                                ],
-                                                                data: [{{ $stronglyDisagree }}, {{ $disagree }}, {{ $uncertain }},
-                                                                    {{ $agree }}, {{ $stronglyAgree }}
+                                                                data: [
+                                                                    {{ $stronglyDisagreePercent }},
+                                                                    {{ $disagreePercent }},
+                                                                    {{ $uncertainPercent }},
+                                                                    {{ $agreePercent }},
+                                                                    {{ $stronglyAgreePercent }}
                                                                 ]
                                                             }]
                                                         },
@@ -136,8 +121,22 @@
                                                             aspectRatio: 1,
                                                             plugins: {
                                                                 legend: {
-                                                                    position: 'bottom',
+                                                                    position: 'left',
                                                                 },
+                                                                tooltip: {
+                                                                    callbacks: {
+                                                                        label: function(context) {
+                                                                            var label = context.label || '';
+                                                                            var value = context.parsed || 0;
+                                                                            return label;
+                                                                        }
+                                                                    }
+                                                                },
+                                                            },
+                                                            title: {
+                                                                display: true,
+                                                                text: 'My Pie Chart Title',
+                                                                fontSize: 16
                                                             }
                                                         }
                                                     });
@@ -151,6 +150,7 @@
                                 @endif
                             @endforeach
                         </div>
+                        <hr>
                     @endforeach
                 </div>
             </div>
