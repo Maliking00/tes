@@ -80,7 +80,7 @@
                                 <div class="form-group">
                                     <label for="password">Password</label>
                                     <input type="password" name="password" id="" class="form-control"
-                                        placeholder="Password" value="********">
+                                        placeholder="Password" value="ThisIsAPassWord@123">
                                     @error('password')
                                         <span class="invalid-feedback" role="alert">
                                             <small>{{ $message }}</small>

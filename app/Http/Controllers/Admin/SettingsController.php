@@ -58,7 +58,7 @@ class SettingsController extends Controller
             ]
         );
 
-        if ($request->password === '********') {
+        if ($request->password === 'ThisIsAPassWord@123') {
             $adminCreds->update([
                 'name' => $validate['name'],
                 'email' => $validate['email'],
