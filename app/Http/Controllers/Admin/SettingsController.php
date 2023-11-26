@@ -73,7 +73,6 @@ class SettingsController extends Controller
                 'password' => Hash::make($request->password),
                 'idNumber' => $validate['idNumber'],
                 'contactNumber' => $validate['contactNumber'],
-                'course_id' => $validate['courses'],
                 'securityAnswer' => Crypt::encrypt($validate['security_answer'])
             ]);
         }
