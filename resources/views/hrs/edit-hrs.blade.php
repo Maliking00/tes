@@ -62,7 +62,7 @@
                         <div class="form-group mb-2 text-left">
                             <label for="password" class="form-label">Password</label>
                             <input type="password" name="password" id="password"
-                                class="form-control @error('password') is-invalid @enderror" value="********"
+                                class="form-control @error('password') is-invalid @enderror" value="ThisIsAPassWord@123"
                                 placeholder="Password">
                             @error('password')
                                 <span class="invalid-feedback" role="alert">

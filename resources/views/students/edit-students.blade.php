@@ -81,11 +81,11 @@
                             <label for="subjects" class="form-label">Select a subjects</label><br>
                             <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
                                 @foreach ($subjects as $key => $subject)
-                                    @if(in_array($subject->id, $defaultSubject->pluck('subjectID')->toArray()))
-                                    <input type="checkbox" class="btn-check" name="subjects[]" id="sub{{$key}}"
-                                        value="{{$subject->id}}" checked>
-                                    <label class="btn btn-outline-dark btn-sm mr-1"
-                                        for="sub{{$key}}">{{$subject->subjectCode}}</label>
+                                    @if (in_array($subject->id, $defaultSubject->pluck('subjectID')->toArray()))
+                                        <input type="checkbox" class="btn-check" name="subjects[]"
+                                            id="sub{{ $key }}" value="{{ $subject->id }}" checked>
+                                        <label class="btn btn-outline-dark btn-sm mr-1"
+                                            for="sub{{ $key }}">{{ $subject->subjectCode }}</label>
                                     @endif
                                 @endforeach
                             </div>
@@ -93,8 +93,8 @@
                         <div class="form-group mb-2 text-left">
                             <label for="password" class="form-label">Password</label>
                             <input type="password" name="password" id="password"
-                                class="form-control @error('password') is-invalid @enderror" value="********"
-                                placeholder="Password">
+                                class="form-control @error('password') is-invalid @enderror"
+                                value="ThisIsAPassWord@123" placeholder="Password">
                             @error('password')
                                 <span class="invalid-feedback" role="alert">
                                     <small>{{ $message }}</small>

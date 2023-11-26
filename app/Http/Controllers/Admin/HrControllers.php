@@ -188,7 +188,7 @@ class HrControllers extends Controller
             ]
         );
 
-        if ($request->password === '********') {
+        if ($request->password === 'ThisIsAPassWord@123') {
             $hrs->update([
                 'name' => $request->name,
                 'email' => $request->email,

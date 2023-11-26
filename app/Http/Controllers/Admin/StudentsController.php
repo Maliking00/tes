@@ -218,7 +218,7 @@ class StudentsController extends Controller
             ]
         );
 
-        if ($request->password === '********') {
+        if ($request->password === 'ThisIsAPassWord@123') {
             $students->update([
                 'name' => $validate['name'],
                 'email' => $validate['email'],
