@@ -31,10 +31,10 @@
                                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                                 @foreach ($evalList as $status)
                                                     <li>
+                                                        @if($status->teacher_id == $record->teacher_id)
                                                         <a href="/dashboard/evaluation-reports/{{ $record->academic_id }}/{{ $record->teacher_id }}/{{ $record->course_id }}/{{ $status->subject_id }}"
                                                             class="dropdown-item">{{ $status->subjectCode }}</a>
-                                                        {{-- <a href="/dashboard/evaluation-reports/{{ $record->academic_id }}/{{ $record->teacher_id }}/{{ $record->course_id }}/{{ $status->subject_id }}/{{ $status->restriction_id }}"
-                                                            class="dropdown-item">{{ $status->subjectCode }}</a> --}}
+                                                        @endif
                                                     </li>
                                                 @endforeach
                                             </ul>
